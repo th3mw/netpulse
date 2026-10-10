@@ -9,8 +9,12 @@ Built with **Tauri v2 (Rust)**, **React 19**, **TypeScript**, **Bun**, **Tailwin
 ## 🌟 Key Features
 
 ### 📊 Complete vnStat Telemetry Suite
-- **Overview Dashboard**: Today's RX/TX vs yesterday, month-to-date run-rate forecast, 95th percentile burst rate, and 24-hour visual activity timeline.
-- **Live Bandwidth Cockpit**: High-frequency sub-second bandwidth streaming directly from `/proc/net/dev`, 60-second rolling area chart, dual download/upload speedometers, and packet rate meters.
+- **Overview Dashboard**: Today's RX/TX vs yesterday, month-to-date run-rate forecast, 95th percentile burst rate, and 24-hour visual activity timeline with side-by-side RX/TX pillars and side volume scale.
+- **Live Bandwidth Cockpit**: High-frequency sub-second bandwidth streaming directly from `/proc/net/dev`, 60-second rolling area chart with dedicated left Y-axis auto-scaling benchmarks and horizontal gridlines, dual download/upload speedometers, and interactive scrub cursor.
+- **Side-by-Side Dual Pillar Bar Charts**: Grouped side-by-side download (RX) and upload (TX) columns across Hourly, Daily, Monthly, Yearly, and 5-Minute views with left-aligned Y-axis volume estimates and horizontal scrollable overflow.
+- **Table Pagination**: Dedicated Apple-styled pagination on 5-Minute, Hourly, and Daily detailed tables with customizable entries-per-page selectors (10, 25, 50, etc.).
+- **Default Network Interface**: Star and persist your primary interface (`localStorage`) in Settings or Sidebar dropdown for instant automatic selection on app launch.
+- **Strict European Date Format (`DD/MM/YYYY`)**: Consistent date presentation across all telemetry tables, tooltips, and header time stamps.
 - **5-Minute Intervals**: High-resolution 300-second sample slots, micro-burst step curves, and average transfer rates.
 - **24-Hour Timeline**: Hourly distribution profile, peak transfer hour detection, and 95th percentile threshold line.
 - **Daily History**: Day-by-day logs, day-of-week badges, and weekday vs weekend average bandwidth comparison.
@@ -22,7 +26,7 @@ Built with **Tauri v2 (Rust)**, **React 19**, **TypeScript**, **Bun**, **Tailwin
 - **Quota & Billing Tracker**: Configurable monthly data cap with alert thresholds, billing cycle renewal day, and daily allowance budget.
 - **Dedicated Help & Documentation Center**: In-app search for networking topics, metric formulas (95th percentile, run-rate forecast, traffic balance), unit comparison matrix (SI vs IEC vs Bits), and interactive vnStat CLI cheatsheet.
 - **Component Contextual Help**: Micro `HelpTooltip` icons across all metrics, charts, tables, and settings explaining formulas and behaviors on hover/click with origin-aware spring physics.
-- **Full Settings & Interface Manager**: Register untracked network adapters (`vnstat --add`), unregister interfaces (`vnstat --remove`), synchronize database counters on demand (`vnstat -u`), set custom interface aliases (`vnstat --setalias`), configure quota alert thresholds, and export datasets.
+- **Full Settings & Interface Manager**: Register untracked network adapters (`vnstat --add`), unregister interfaces (`vnstat --remove`), synchronize database counters on demand (`vnstat -u`), set custom interface aliases (`vnstat --setalias`), configure quota alert thresholds, set default interface, and export datasets.
 - **Data Export Center**: Export telemetry to CSV or raw JSON files, or copy structure to clipboard.
 
 ### 🎨 Apple & Emil Kowalski Design Language
