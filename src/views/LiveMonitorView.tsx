@@ -35,7 +35,6 @@ export const LiveMonitorView: React.FC = () => {
 
   const hoveredSample = hoverIndex !== null && liveHistory[hoverIndex] ? liveHistory[hoverIndex] : null;
 
-  // Build SVG polygon points for 60-second stream
   const width = 800;
   const height = 240;
 
@@ -43,7 +42,8 @@ export const LiveMonitorView: React.FC = () => {
     return rates
       .map((val, idx) => {
         const x = (idx / (60 - 1)) * width;
-        const y = height - (val / maxLiveRate) * (height - 20) - 10;
+        const clampedVal = Math.min(Math.max(val, 0), maxLiveRate);
+        const y = height - (clampedVal / maxLiveRate) * height;
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       })
       .join(' ');
@@ -51,6 +51,8 @@ export const LiveMonitorView: React.FC = () => {
 
   const rxPoints = getCoordinates(liveHistory.map((s) => s.rx_bytes_per_sec));
   const txPoints = getCoordinates(liveHistory.map((s) => s.tx_bytes_per_sec));
+  const currentLastIndex = Math.max(0, liveHistory.length - 1);
+  const currentEndX = ((currentLastIndex / (60 - 1)) * width).toFixed(1);
 
   return (
     <div className="space-y-6">
@@ -235,99 +237,139 @@ export const LiveMonitorView: React.FC = () => {
           </div>
         </div>
 
-        {/* SVG Chart Container */}
-        <div
-          className="relative h-64 w-full rounded-2xl border overflow-hidden p-2"
-          style={{
-            backgroundColor: 'var(--bg-input)',
-            borderColor: 'var(--border-subtle)',
-          }}
-        >
-          {/* Background grid lines */}
-          <div className="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none opacity-20">
-            <div className="border-b text-[10px] font-mono" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-dim)' }}>
-              {formatRate(maxLiveRate, unitPreference)}
-            </div>
-            <div className="border-b text-[10px] font-mono" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-dim)' }}>
-              {formatRate(maxLiveRate * 0.5, unitPreference)}
-            </div>
-            <div className="border-b text-[10px] font-mono" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-dim)' }}>
-              0 B/s
-            </div>
+        {/* Chart with dedicated Y-Axis on the side */}
+        <div className="flex gap-3 h-64 w-full">
+          {/* Dedicated Y-Axis Benchmark Column */}
+          <div
+            className="w-20 md:w-24 shrink-0 flex flex-col justify-between items-end font-mono text-[11px] select-none py-0.5"
+            style={{ color: 'var(--text-dim)' }}
+          >
+            <span>{formatRate(maxLiveRate, unitPreference)}</span>
+            <span>{formatRate(maxLiveRate * 0.75, unitPreference)}</span>
+            <span>{formatRate(maxLiveRate * 0.5, unitPreference)}</span>
+            <span>{formatRate(maxLiveRate * 0.25, unitPreference)}</span>
+            <span>0 B/s</span>
           </div>
 
-          <svg
-            viewBox={`0 0 ${width} ${height}`}
-            className="w-full h-full overflow-visible"
-            preserveAspectRatio="none"
-          >
-            <defs>
-              <linearGradient id="rxGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--accent-rx)" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="var(--accent-rx)" stopOpacity="0.0" />
-              </linearGradient>
-              <linearGradient id="txGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--accent-tx)" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="var(--accent-tx)" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-
-            {/* RX Area & Line */}
-            {liveHistory.length > 1 && (
-              <>
-                <polygon
-                  points={`0,${height} ${rxPoints} ${((liveHistory.length - 1) / (60 - 1)) * width},${height}`}
-                  fill="url(#rxGradient)"
-                />
-                <polyline
-                  points={rxPoints}
-                  fill="none"
-                  stroke="var(--accent-rx)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </>
-            )}
-
-            {/* TX Area & Line */}
-            {liveHistory.length > 1 && (
-              <>
-                <polygon
-                  points={`0,${height} ${txPoints} ${((liveHistory.length - 1) / (60 - 1)) * width},${height}`}
-                  fill="url(#txGradient)"
-                />
-                <polyline
-                  points={txPoints}
-                  fill="none"
-                  stroke="var(--accent-tx)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </>
-            )}
-          </svg>
-
-          {/* Mouse scrub overlay */}
+          {/* SVG Chart Canvas */}
           <div
-            className="absolute inset-0 flex"
-            onMouseLeave={() => setHoverIndex(null)}
+            className="relative flex-1 h-full min-w-0 rounded-2xl border overflow-hidden"
+            style={{
+              backgroundColor: 'var(--bg-input)',
+              borderColor: 'var(--border-subtle)',
+            }}
           >
-            {Array.from({ length: 60 }).map((_, i) => (
+            {/* Background horizontal grid lines aligned with Y-axis benchmarks */}
+            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+              <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
+              <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+              <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+              <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+              <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
+            </div>
+
+            {/* Vertical grid lines (every 15s) */}
+            <div className="absolute inset-0 flex justify-between pointer-events-none opacity-10 px-[1px]">
+              <div className="h-full border-r border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+              <div className="h-full border-r border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+              <div className="h-full border-r border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+              <div className="h-full border-r border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+              <div className="h-full border-r border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+            </div>
+
+            <svg
+              viewBox={`0 0 ${width} ${height}`}
+              className="w-full h-full overflow-hidden"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <linearGradient id="rxGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--accent-rx)" stopOpacity="0.45" />
+                  <stop offset="100%" stopColor="var(--accent-rx)" stopOpacity="0.0" />
+                </linearGradient>
+                <linearGradient id="txGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--accent-tx)" stopOpacity="0.45" />
+                  <stop offset="100%" stopColor="var(--accent-tx)" stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
+
+              {/* RX Area & Line */}
+              {liveHistory.length > 1 && (
+                <>
+                  <polygon
+                    points={`0,${height} ${rxPoints} ${currentEndX},${height}`}
+                    fill="url(#rxGradient)"
+                  />
+                  <polyline
+                    points={rxPoints}
+                    fill="none"
+                    stroke="var(--accent-rx)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </>
+              )}
+
+              {/* TX Area & Line */}
+              {liveHistory.length > 1 && (
+                <>
+                  <polygon
+                    points={`0,${height} ${txPoints} ${currentEndX},${height}`}
+                    fill="url(#txGradient)"
+                  />
+                  <polyline
+                    points={txPoints}
+                    fill="none"
+                    stroke="var(--accent-tx)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </>
+              )}
+            </svg>
+
+            {/* Mouse scrub overlay */}
+            <div
+              className="absolute inset-0 flex"
+              onMouseLeave={() => setHoverIndex(null)}
+            >
+              {Array.from({ length: 60 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex-1 h-full cursor-crosshair hover:bg-white/5 transition-colors"
+                  onMouseEnter={() => setHoverIndex(i)}
+                />
+              ))}
+            </div>
+
+            {/* Scrub vertical guideline */}
+            {hoverIndex !== null && (
               <div
-                key={i}
-                className="flex-1 h-full cursor-crosshair hover:bg-white/5 transition-colors"
-                onMouseEnter={() => setHoverIndex(i)}
+                className="absolute top-0 bottom-0 pointer-events-none border-l-2 border-dashed z-10"
+                style={{
+                  left: `${(hoverIndex / (60 - 1)) * 100}%`,
+                  borderColor: 'var(--accent-primary)',
+                }}
               />
-            ))}
+            )}
           </div>
         </div>
 
-        <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
-          <span>T-60s</span>
-          <span>Sample Frequency: 1.0s (Kernel /proc/net/dev)</span>
-          <span>Live Now</span>
+        {/* Time Benchmarks X-Axis */}
+        <div className="flex items-center gap-3">
+          <div className="w-20 md:w-24 shrink-0" />
+          <div
+            className="flex-1 flex justify-between items-center text-[11px] font-mono select-none px-1"
+            style={{ color: 'var(--text-dim)' }}
+          >
+            <span>-60s</span>
+            <span>-45s</span>
+            <span>-30s</span>
+            <span>-15s</span>
+            <span>Now</span>
+          </div>
         </div>
       </GlassCard>
 
