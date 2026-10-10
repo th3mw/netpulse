@@ -347,81 +347,123 @@ export const OverviewView: React.FC = () => {
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">
             <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-rx)' }}>
-              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX (Download)
             </span>
             <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-tx)' }}>
-              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX (Upload)
             </span>
           </div>
         </div>
 
-        {/* 24-Hour Bar Chart */}
-        <div className="h-36 flex items-end gap-1.5 pt-4">
-          {hours.slice(-24).map((h: IntervalEntry, idx: number) => {
-            const hTotal = h.rx + h.tx;
-            const maxVal = Math.max(
-              ...hours.slice(-24).map((x: IntervalEntry) => x.rx + x.tx),
-              1
-            );
-            const heightPercent = Math.max(6, (hTotal / maxVal) * 100);
-            const rxRatio = hTotal > 0 ? h.rx / hTotal : 0.5;
+        {/* 24-Hour Bar Chart with Side Estimate & Scrollable Overflow */}
+        {(() => {
+          const last24 = hours.slice(-24);
+          const max24 = Math.max(...last24.map((h: IntervalEntry) => Math.max(h.rx, h.tx)), 1024);
 
-            return (
-              <div
-                key={idx}
-                className="flex-1 flex flex-col justify-end items-center h-full group relative"
-              >
-                {/* Tooltip on hover */}
+          return (
+            <div className="flex gap-3 h-40 w-full">
+              {/* Y-Axis Estimate Benchmark Column */}
+              <div className="flex flex-col shrink-0">
                 <div
-                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2 rounded-xl border text-[10px] shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
-                  style={{
-                    backgroundColor: 'var(--bg-surface)',
-                    borderColor: 'var(--border-card)',
-                  }}
+                  className="w-16 md:w-20 flex-1 flex flex-col justify-between items-end font-mono text-[10px] select-none py-0.5"
+                  style={{ color: 'var(--text-dim)' }}
                 >
-                  <div className="font-semibold font-mono" style={{ color: 'var(--text-main)' }}>
-                    {h.time ? `${String(h.time.hour).padStart(2, '0')}:00` : 'Hour'}
-                  </div>
-                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(h.rx, unitPreference)}</div>
-                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(h.tx, unitPreference)}</div>
-                  <div
-                    className="font-bold border-t mt-0.5 pt-0.5"
-                    style={{
-                      borderColor: 'var(--border-subtle)',
-                      color: 'var(--text-main)',
-                    }}
-                  >
-                    Total: {formatBytes(hTotal, unitPreference)}
-                  </div>
+                  <span>{formatBytes(max24, unitPreference)}</span>
+                  <span>{formatBytes(max24 * 0.75, unitPreference)}</span>
+                  <span>{formatBytes(max24 * 0.5, unitPreference)}</span>
+                  <span>{formatBytes(max24 * 0.25, unitPreference)}</span>
+                  <span>0 B</span>
                 </div>
-
-                <div
-                  className="w-full rounded-md overflow-hidden flex flex-col justify-end transition-all group-hover:brightness-125"
-                  style={{ height: `${heightPercent}%` }}
-                >
-                  <div
-                    className="w-full"
-                    style={{
-                      height: `${(1 - rxRatio) * 100}%`,
-                      backgroundColor: 'var(--accent-tx)',
-                    }}
-                  />
-                  <div
-                    className="w-full"
-                    style={{
-                      height: `${rxRatio * 100}%`,
-                      backgroundColor: 'var(--accent-rx)',
-                    }}
-                  />
-                </div>
-
-                <span className="text-[9px] font-mono mt-1" style={{ color: 'var(--text-dim)' }}>
-                  {h.time ? h.time.hour : idx}
-                </span>
+                <div className="h-5" />
               </div>
-            );
-          })}
-        </div>
+
+              {/* Scrollable Bars Canvas */}
+              <div className="relative flex-1 h-full min-w-0 overflow-x-auto pb-1">
+                <div className="min-w-[540px] h-full flex flex-col">
+                  <div className="relative flex-1 w-full">
+                    {/* Horizontal grid lines */}
+                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-15">
+                      <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
+                      <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                      <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                      <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                      <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
+                    </div>
+
+                    {/* Side-by-side bars */}
+                    <div className="h-full flex items-end gap-1.5 relative z-10 px-1">
+                      {last24.map((h: IntervalEntry, idx: number) => {
+                        const hTotal = h.rx + h.tx;
+                        const rxPercent = max24 > 0 ? (h.rx / max24) * 100 : 0;
+                        const txPercent = max24 > 0 ? (h.tx / max24) * 100 : 0;
+
+                        return (
+                          <div
+                            key={idx}
+                            className="flex-1 flex flex-col justify-end items-center h-full group relative min-w-[16px]"
+                          >
+                            {/* Tooltip on hover */}
+                            <div
+                              className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2 rounded-xl border text-[10px] shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                              style={{
+                                backgroundColor: 'var(--bg-surface)',
+                                borderColor: 'var(--border-card)',
+                              }}
+                            >
+                              <div className="font-semibold font-mono" style={{ color: 'var(--text-main)' }}>
+                                {h.time ? `${String(h.time.hour).padStart(2, '0')}:00` : 'Hour'}
+                              </div>
+                              <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(h.rx, unitPreference)}</div>
+                              <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(h.tx, unitPreference)}</div>
+                              <div
+                                className="font-bold border-t mt-0.5 pt-0.5"
+                                style={{
+                                  borderColor: 'var(--border-subtle)',
+                                  color: 'var(--text-main)',
+                                }}
+                              >
+                                Total: {formatBytes(hTotal, unitPreference)}
+                              </div>
+                            </div>
+
+                            {/* RX & TX side-by-side pillars */}
+                            <div className="w-full h-full flex items-end justify-center gap-0.5 sm:gap-1">
+                              <div
+                                className="w-1.5 sm:w-2 rounded-t transition-all group-hover:brightness-125"
+                                style={{
+                                  height: `${h.rx > 0 ? Math.max(4, rxPercent) : 0}%`,
+                                  backgroundColor: 'var(--accent-rx)',
+                                }}
+                              />
+                              <div
+                                className="w-1.5 sm:w-2 rounded-t transition-all group-hover:brightness-125"
+                                style={{
+                                  height: `${h.tx > 0 ? Math.max(4, txPercent) : 0}%`,
+                                  backgroundColor: 'var(--accent-tx)',
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* X-axis hour labels */}
+                  <div className="h-5 flex items-center gap-1.5 px-1 pt-1">
+                    {last24.map((h: IntervalEntry, idx: number) => (
+                      <div key={idx} className="flex-1 min-w-[16px] text-center">
+                        <span className="text-[9px] font-mono select-none block truncate" style={{ color: 'var(--text-dim)' }}>
+                          {h.time ? h.time.hour : idx}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         <div className="flex justify-between text-[11px] pt-1 border-t" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }}>
           <span>24 Hours Ago</span>

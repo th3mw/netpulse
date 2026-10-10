@@ -1,19 +1,33 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Clock } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
 import { HelpTooltip } from '../components/ui/HelpTooltip';
+import { Pagination } from '../components/ui/Pagination';
 import { formatBytes, formatDate, formatTime, formatRate } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
-
 
 export const FiveMinuteView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
   const slots: IntervalEntry[] = iface?.traffic.fiveminute || [];
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  const last36Slots = useMemo(() => slots.slice(-36), [slots]);
+  const maxSlotTraffic = Math.max(
+    ...last36Slots.map((s: IntervalEntry) => Math.max(s.rx, s.tx)),
+    1024
+  );
   const maxSlot = Math.max(...slots.map((s: IntervalEntry) => s.rx + s.tx), 1);
   const totalInPeriod = slots.reduce((acc: number, s: IntervalEntry) => acc + s.rx + s.tx, 0);
+
+  const reversedSlots = useMemo(() => [...slots].reverse(), [slots]);
+  const paginatedSlots = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return reversedSlots.slice(start, start + pageSize);
+  }, [reversedSlots, currentPage, pageSize]);
 
   return (
     <div className="space-y-6">
@@ -90,69 +104,120 @@ export const FiveMinuteView: React.FC = () => {
             </h4>
             <HelpTooltip
               title="Slot Stack Composition"
-              content="Vertical bars represent individual 300-second slots. Emerald segment indicates download (RX); purple segment indicates upload (TX)."
+              content="Side-by-side bars represent individual 300-second slots. Emerald bar indicates download (RX); purple bar indicates upload (TX)."
             />
+          </div>
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <span className="flex items-center gap-1" style={{ color: 'var(--accent-rx)' }}>
+              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX (Download)
+            </span>
+            <span className="flex items-center gap-1" style={{ color: 'var(--accent-tx)' }}>
+              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX (Upload)
+            </span>
           </div>
         </div>
 
-        <div className="h-28 flex items-end gap-1 pt-2">
-          {slots.slice(-36).map((slot: IntervalEntry, idx: number) => {
-            const slotTotal = slot.rx + slot.tx;
-            const heightPercent = Math.max(6, (slotTotal / maxSlot) * 100);
-            const rxRatio = slotTotal > 0 ? slot.rx / slotTotal : 0.5;
+        {/* Side-by-Side Bar Chart with Left Estimate & Scrollable Overflow */}
+        <div className="flex gap-3 h-44 w-full">
+          {/* Y-Axis Estimate Benchmark Column */}
+          <div className="flex flex-col shrink-0">
+            <div
+              className="w-16 md:w-20 flex-1 flex flex-col justify-between items-end font-mono text-[10px] select-none py-0.5"
+              style={{ color: 'var(--text-dim)' }}
+            >
+              <span>{formatBytes(maxSlotTraffic, unitPreference)}</span>
+              <span>{formatBytes(maxSlotTraffic * 0.75, unitPreference)}</span>
+              <span>{formatBytes(maxSlotTraffic * 0.5, unitPreference)}</span>
+              <span>{formatBytes(maxSlotTraffic * 0.25, unitPreference)}</span>
+              <span>0 B</span>
+            </div>
+            <div className="h-5" />
+          </div>
 
-            return (
-              <div
-                key={idx}
-                className="flex-1 h-full flex flex-col justify-end items-center group relative"
-              >
-                {/* Tooltip */}
-                <div
-                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2 rounded-xl border text-[10px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
-                  style={{
-                    backgroundColor: 'var(--bg-surface)',
-                    borderColor: 'var(--border-card)',
-                    color: 'var(--text-main)',
-                  }}
-                >
-                  <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
-                    {formatDate(slot.date)} {formatTime(slot.time)}
-                  </div>
-                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(slot.rx, unitPreference)}</div>
-                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(slot.tx, unitPreference)}</div>
-                  <div className="border-t mt-0.5 pt-0.5 font-bold" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }}>
-                    Avg Rate: {formatRate(slotTotal / 300, unitPreference)}
-                  </div>
+          {/* Scrollable Bars Canvas */}
+          <div className="relative flex-1 h-full min-w-0 overflow-x-auto pb-1">
+            <div className="min-w-[620px] h-full flex flex-col">
+              <div className="relative flex-1 w-full">
+                {/* Horizontal grid lines */}
+                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-15">
+                  <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
                 </div>
 
-                <div
-                  className="w-full rounded-sm overflow-hidden flex flex-col justify-end transition-all group-hover:brightness-125"
-                  style={{ height: `${heightPercent}%` }}
-                >
-                  <div
-                    className="w-full"
-                    style={{ height: `${(1 - rxRatio) * 100}%`, backgroundColor: 'var(--accent-tx)' }}
-                  />
-                  <div
-                    className="w-full"
-                    style={{ height: `${rxRatio * 100}%`, backgroundColor: 'var(--accent-rx)' }}
-                  />
+                {/* Side-by-side bars */}
+                <div className="h-full flex items-end gap-1 relative z-10 px-1">
+                  {last36Slots.map((slot: IntervalEntry, idx: number) => {
+                    const slotTotal = slot.rx + slot.tx;
+                    const rxPercent = maxSlotTraffic > 0 ? (slot.rx / maxSlotTraffic) * 100 : 0;
+                    const txPercent = maxSlotTraffic > 0 ? (slot.tx / maxSlotTraffic) * 100 : 0;
+
+                    return (
+                      <div
+                        key={idx}
+                        className="flex-1 h-full flex flex-col justify-end items-center group relative min-w-[14px]"
+                      >
+                        {/* Tooltip */}
+                        <div
+                          className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2 rounded-xl border text-[10px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                          style={{
+                            backgroundColor: 'var(--bg-surface)',
+                            borderColor: 'var(--border-card)',
+                            color: 'var(--text-main)',
+                          }}
+                        >
+                          <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
+                            {formatDate(slot.date)} {formatTime(slot.time)}
+                          </div>
+                          <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(slot.rx, unitPreference)}</div>
+                          <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(slot.tx, unitPreference)}</div>
+                          <div className="border-t mt-0.5 pt-0.5 font-bold" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }}>
+                            Avg Rate: {formatRate(slotTotal / 300, unitPreference)}
+                          </div>
+                        </div>
+
+                        {/* RX & TX side-by-side pillars */}
+                        <div className="w-full h-full flex items-end justify-center gap-0.5">
+                          <div
+                            className="w-1.5 rounded-t transition-all group-hover:brightness-125"
+                            style={{
+                              height: `${slot.rx > 0 ? Math.max(4, rxPercent) : 0}%`,
+                              backgroundColor: 'var(--accent-rx)',
+                            }}
+                          />
+                          <div
+                            className="w-1.5 rounded-t transition-all group-hover:brightness-125"
+                            style={{
+                              height: `${slot.tx > 0 ? Math.max(4, txPercent) : 0}%`,
+                              backgroundColor: 'var(--accent-tx)',
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-            );
-          })}
+
+              {/* X-axis time labels */}
+              <div className="h-5 flex items-center gap-1 px-1 pt-1">
+                {last36Slots.map((slot: IntervalEntry, idx: number) => (
+                  <div key={idx} className="flex-1 min-w-[14px] text-center">
+                    <span className="text-[8px] font-mono select-none block truncate" style={{ color: 'var(--text-dim)' }}>
+                      {slot.time ? `${String(slot.time.hour).padStart(2, '0')}:${String(slot.time.minute).padStart(2, '0')}` : idx}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-between text-[11px] text-slate-400 font-mono pt-1 border-t border-white/5">
           <span>Older 5-Min Intervals</span>
-          <span className="flex items-center gap-2">
-            <span className="flex items-center gap-1" style={{ color: 'var(--accent-rx)' }}>
-              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
-            </span>
-            <span className="flex items-center gap-1" style={{ color: 'var(--accent-tx)' }}>
-              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
-            </span>
-          </span>
+          <span>Showing Recent 36 Slots (3 Hours)</span>
           <span>Latest Slot</span>
         </div>
       </GlassCard>
@@ -185,7 +250,7 @@ export const FiveMinuteView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
-              {[...slots].reverse().map((slot: IntervalEntry, idx: number) => {
+              {paginatedSlots.map((slot: IntervalEntry, idx: number) => {
                 const slotTotal = slot.rx + slot.tx;
                 const avgRate = slotTotal / 300;
                 return (
@@ -212,6 +277,15 @@ export const FiveMinuteView: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        <Pagination
+          currentPage={currentPage}
+          totalItems={slots.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+          pageSizeOptions={[20, 50, 100]}
+        />
       </GlassCard>
     </div>
   );

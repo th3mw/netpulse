@@ -1,24 +1,37 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { BarChart3, Clock, Zap } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
 import { HelpTooltip } from '../components/ui/HelpTooltip';
+import { Pagination } from '../components/ui/Pagination';
 import { formatBytes, formatDate, formatRate } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
-
 
 export const HourlyView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference, percentileReport } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
   const hours: IntervalEntry[] = iface?.traffic.hour || [];
 
-  const maxHour = Math.max(...hours.map((h: IntervalEntry) => h.rx + h.tx), 1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
+
+  const last24Hours = useMemo(() => hours.slice(-24), [hours]);
+  const maxHourTraffic = Math.max(
+    ...last24Hours.map((h: IntervalEntry) => Math.max(h.rx, h.tx)),
+    1024
+  );
   const total24h = hours.reduce((acc: number, h: IntervalEntry) => acc + h.rx + h.tx, 0);
 
   const peakHour = hours.reduce(
     (max: IntervalEntry, h: IntervalEntry) => (h.rx + h.tx > max.rx + max.tx ? h : max),
     hours[0] || ({ rx: 0, tx: 0 } as IntervalEntry)
   );
+
+  const reversedHours = useMemo(() => [...hours].reverse(), [hours]);
+  const paginatedHours = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return reversedHours.slice(start, start + pageSize);
+  }, [reversedHours, currentPage, pageSize]);
 
   return (
     <div className="space-y-6">
@@ -110,73 +123,121 @@ export const HourlyView: React.FC = () => {
             <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Hourly Bandwidth Profile (Past 24 Hours)</h3>
             <HelpTooltip
               title="24-Hour Hourly Timeline"
-              content="Bars display each elapsed hour of the day. Emerald is incoming download; purple is outgoing upload. Amber outline flags the peak hour."
+              content="Bars display each elapsed hour of the day. Side-by-side bars show incoming download (RX) and outgoing upload (TX). Amber outline flags the peak hour."
             />
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">
             <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-rx)' }}>
-              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX (Download)
             </span>
             <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-tx)' }}>
-              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX (Upload)
             </span>
           </div>
         </div>
 
-        <div className="h-44 flex items-end gap-2 pt-4">
-          {hours.slice(-24).map((h: IntervalEntry, idx: number) => {
-            const hTotal = h.rx + h.tx;
-            const heightPercent = Math.max(8, (hTotal / maxHour) * 100);
-            const rxRatio = hTotal > 0 ? h.rx / hTotal : 0.5;
-            const isPeak = h === peakHour && hTotal > 0;
+        {/* Side-by-Side Bar Chart with Left Estimate & Scrollable Overflow */}
+        <div className="flex gap-3 h-48 w-full">
+          {/* Y-Axis Estimate Benchmark Column */}
+          <div className="flex flex-col shrink-0">
+            <div
+              className="w-16 md:w-20 flex-1 flex flex-col justify-between items-end font-mono text-[10px] select-none py-0.5"
+              style={{ color: 'var(--text-dim)' }}
+            >
+              <span>{formatBytes(maxHourTraffic, unitPreference)}</span>
+              <span>{formatBytes(maxHourTraffic * 0.75, unitPreference)}</span>
+              <span>{formatBytes(maxHourTraffic * 0.5, unitPreference)}</span>
+              <span>{formatBytes(maxHourTraffic * 0.25, unitPreference)}</span>
+              <span>0 B</span>
+            </div>
+            <div className="h-5" />
+          </div>
 
-            return (
-              <div
-                key={idx}
-                className="flex-1 h-full flex flex-col justify-end items-center group relative"
-              >
-                {/* Tooltip */}
-                <div
-                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl border text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
-                  style={{
-                    backgroundColor: 'var(--bg-surface)',
-                    borderColor: 'var(--border-card)',
-                    color: 'var(--text-main)',
-                  }}
-                >
-                  <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
-                    {formatDate(h.date)} {h.time ? `${String(h.time.hour).padStart(2, '0')}:00` : ''}
-                    {isPeak && <span className="ml-1.5 font-bold" style={{ color: 'var(--accent-primary)' }}>[PEAK]</span>}
-                  </div>
-                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(h.rx, unitPreference)}</div>
-                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(h.tx, unitPreference)}</div>
-                  <div className="font-bold border-t mt-1 pt-1" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-main)' }}>
-                    Total: {formatBytes(hTotal, unitPreference)} ({total24h > 0 ? ((hTotal / total24h) * 100).toFixed(1) : 0}%)
-                  </div>
+          {/* Scrollable Bars Canvas */}
+          <div className="relative flex-1 h-full min-w-0 overflow-x-auto pb-1">
+            <div className="min-w-[560px] h-full flex flex-col">
+              <div className="relative flex-1 w-full">
+                {/* Horizontal grid lines */}
+                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-15">
+                  <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
                 </div>
 
-                <div
-                  className={`w-full rounded-md overflow-hidden flex flex-col justify-end transition-all group-hover:brightness-125 ${
-                    isPeak ? 'ring-2 ring-amber-400/80 shadow-lg shadow-amber-400/20' : ''
-                  }`}
-                  style={{ height: `${heightPercent}%` }}
-                >
-                  <div
-                    className="w-full"
-                    style={{ height: `${(1 - rxRatio) * 100}%`, backgroundColor: 'var(--accent-tx)' }}
-                  />
-                  <div
-                    className="w-full"
-                    style={{ height: `${rxRatio * 100}%`, backgroundColor: 'var(--accent-rx)' }}
-                  />
-                </div>
+                {/* Side-by-side bars */}
+                <div className="h-full flex items-end gap-2 relative z-10 px-1">
+                  {last24Hours.map((h: IntervalEntry, idx: number) => {
+                    const hTotal = h.rx + h.tx;
+                    const rxPercent = maxHourTraffic > 0 ? (h.rx / maxHourTraffic) * 100 : 0;
+                    const txPercent = maxHourTraffic > 0 ? (h.tx / maxHourTraffic) * 100 : 0;
+                    const isPeak = h === peakHour && hTotal > 0;
 
-                <span className="text-[10px] font-mono mt-1.5" style={{ color: 'var(--text-dim)' }}>
-                  {h.time ? h.time.hour : idx}h
-                </span>
+                    return (
+                      <div
+                        key={idx}
+                        className="flex-1 h-full flex flex-col justify-end items-center group relative min-w-[18px]"
+                      >
+                        {/* Tooltip */}
+                        <div
+                          className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl border text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                          style={{
+                            backgroundColor: 'var(--bg-surface)',
+                            borderColor: 'var(--border-card)',
+                            color: 'var(--text-main)',
+                          }}
+                        >
+                          <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
+                            {formatDate(h.date)} {h.time ? `${String(h.time.hour).padStart(2, '0')}:00` : ''}
+                            {isPeak && <span className="ml-1.5 font-bold" style={{ color: 'var(--accent-primary)' }}>[PEAK]</span>}
+                          </div>
+                          <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(h.rx, unitPreference)}</div>
+                          <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(h.tx, unitPreference)}</div>
+                          <div className="font-bold border-t mt-1 pt-1" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-main)' }}>
+                            Total: {formatBytes(hTotal, unitPreference)} ({total24h > 0 ? ((hTotal / total24h) * 100).toFixed(1) : 0}%)
+                          </div>
+                        </div>
+
+                        {/* RX & TX side-by-side pillars */}
+                        <div className="w-full h-full flex items-end justify-center gap-1">
+                          <div
+                            className={`w-2 md:w-2.5 rounded-t transition-all group-hover:brightness-125 ${
+                              isPeak ? 'ring-1 ring-amber-400' : ''
+                            }`}
+                            style={{
+                              height: `${h.rx > 0 ? Math.max(4, rxPercent) : 0}%`,
+                              backgroundColor: 'var(--accent-rx)',
+                            }}
+                          />
+                          <div
+                            className={`w-2 md:w-2.5 rounded-t transition-all group-hover:brightness-125 ${
+                              isPeak ? 'ring-1 ring-amber-400' : ''
+                            }`}
+                            style={{
+                              height: `${h.tx > 0 ? Math.max(4, txPercent) : 0}%`,
+                              backgroundColor: 'var(--accent-tx)',
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            );
-          })}
+
+              {/* X-axis hour labels */}
+              <div className="h-5 flex items-center gap-2 px-1 pt-1">
+                {last24Hours.map((h: IntervalEntry, idx: number) => (
+                  <div key={idx} className="flex-1 min-w-[18px] text-center">
+                    <span className="text-[10px] font-mono select-none block truncate" style={{ color: 'var(--text-dim)' }}>
+                      {h.time ? h.time.hour : idx}h
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </GlassCard>
 
@@ -209,7 +270,7 @@ export const HourlyView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
-              {[...hours].reverse().map((h: IntervalEntry, idx: number) => {
+              {paginatedHours.map((h: IntervalEntry, idx: number) => {
                 const hTotal = h.rx + h.tx;
                 const avgRate = hTotal / 3600;
                 const pct = total24h > 0 ? (hTotal / total24h) * 100 : 0;
@@ -239,6 +300,15 @@ export const HourlyView: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        <Pagination
+          currentPage={currentPage}
+          totalItems={hours.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+          pageSizeOptions={[12, 24, 48]}
+        />
       </GlassCard>
     </div>
   );

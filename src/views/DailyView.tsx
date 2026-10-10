@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Calendar, CalendarDays } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
 import { HelpTooltip } from '../components/ui/HelpTooltip';
+import { Pagination } from '../components/ui/Pagination';
 import { formatBytes, formatDate, formatRate } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
-
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -14,9 +14,22 @@ export const DailyView: React.FC = () => {
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
   const days: IntervalEntry[] = iface?.traffic.day || [];
 
-  const maxDay = Math.max(...days.map((d: IntervalEntry) => d.rx + d.tx), 1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
+
+  const last30Days = useMemo(() => days.slice(-30), [days]);
+  const maxDayTraffic = Math.max(
+    ...last30Days.map((d: IntervalEntry) => Math.max(d.rx, d.tx)),
+    1024
+  );
   const totalDaysTraffic = days.reduce((acc: number, d: IntervalEntry) => acc + d.rx + d.tx, 0);
   const avgDayTraffic = days.length > 0 ? totalDaysTraffic / days.length : 0;
+
+  const reversedDays = useMemo(() => [...days].reverse(), [days]);
+  const paginatedDays = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return reversedDays.slice(start, start + pageSize);
+  }, [reversedDays, currentPage, pageSize]);
 
   // Calculate weekday vs weekend averages
   let weekdayTotal = 0;
@@ -128,70 +141,116 @@ export const DailyView: React.FC = () => {
             <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Daily History Profile</h3>
             <HelpTooltip
               title="Daily Volume Bars"
-              content="Bars display each recorded calendar day. Stacked emerald (RX) and purple (TX) show download vs upload volume."
+              content="Bars display each recorded calendar day. Side-by-side bars show download (RX) vs upload (TX) volume."
             />
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">
             <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-rx)' }}>
-              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX (Download)
             </span>
             <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-tx)' }}>
-              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX (Upload)
             </span>
           </div>
         </div>
 
-        <div className="h-44 flex items-end gap-1.5 pt-4">
-          {days.slice(-30).map((d: IntervalEntry, idx: number) => {
-            const dTotal = d.rx + d.tx;
-            const heightPercent = Math.max(8, (dTotal / maxDay) * 100);
-            const rxRatio = dTotal > 0 ? d.rx / dTotal : 0.5;
-            const dayOfWeekName = dayNames[new Date(d.timestamp * 1000).getDay()];
+        {/* Side-by-Side Bar Chart with Left Estimate & Scrollable Overflow */}
+        <div className="flex gap-3 h-48 w-full">
+          {/* Y-Axis Estimate Benchmark Column */}
+          <div className="flex flex-col shrink-0">
+            <div
+              className="w-16 md:w-20 flex-1 flex flex-col justify-between items-end font-mono text-[10px] select-none py-0.5"
+              style={{ color: 'var(--text-dim)' }}
+            >
+              <span>{formatBytes(maxDayTraffic, unitPreference)}</span>
+              <span>{formatBytes(maxDayTraffic * 0.75, unitPreference)}</span>
+              <span>{formatBytes(maxDayTraffic * 0.5, unitPreference)}</span>
+              <span>{formatBytes(maxDayTraffic * 0.25, unitPreference)}</span>
+              <span>0 B</span>
+            </div>
+            <div className="h-5" />
+          </div>
 
-            return (
-              <div
-                key={idx}
-                className="flex-1 h-full flex flex-col justify-end items-center group relative"
-              >
-                {/* Tooltip */}
-                <div
-                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl border text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
-                  style={{
-                    backgroundColor: 'var(--bg-surface)',
-                    borderColor: 'var(--border-card)',
-                    color: 'var(--text-main)',
-                  }}
-                >
-                  <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
-                    {formatDate(d.date)} ({dayOfWeekName})
-                  </div>
-                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(d.rx, unitPreference)}</div>
-                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(d.tx, unitPreference)}</div>
-                  <div className="font-bold border-t mt-1 pt-1" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-main)' }}>
-                    Total: {formatBytes(dTotal, unitPreference)}
-                  </div>
+          {/* Scrollable Bars Canvas */}
+          <div className="relative flex-1 h-full min-w-0 overflow-x-auto pb-1">
+            <div className="min-w-[620px] h-full flex flex-col">
+              <div className="relative flex-1 w-full">
+                {/* Horizontal grid lines */}
+                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-15">
+                  <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b border-dashed" style={{ borderColor: 'var(--border-subtle)' }} />
+                  <div className="w-full border-b" style={{ borderColor: 'var(--border-subtle)' }} />
                 </div>
 
-                <div
-                  className="w-full rounded-md overflow-hidden flex flex-col justify-end transition-all group-hover:brightness-125"
-                  style={{ height: `${heightPercent}%` }}
-                >
-                  <div
-                    className="w-full"
-                    style={{ height: `${(1 - rxRatio) * 100}%`, backgroundColor: 'var(--accent-tx)' }}
-                  />
-                  <div
-                    className="w-full"
-                    style={{ height: `${rxRatio * 100}%`, backgroundColor: 'var(--accent-rx)' }}
-                  />
-                </div>
+                {/* Side-by-side bars */}
+                <div className="h-full flex items-end gap-1.5 relative z-10 px-1">
+                  {last30Days.map((d: IntervalEntry, idx: number) => {
+                    const dTotal = d.rx + d.tx;
+                    const rxPercent = maxDayTraffic > 0 ? (d.rx / maxDayTraffic) * 100 : 0;
+                    const txPercent = maxDayTraffic > 0 ? (d.tx / maxDayTraffic) * 100 : 0;
+                    const dayOfWeekName = dayNames[new Date(d.timestamp * 1000).getDay()];
 
-                <span className="text-[9px] text-slate-400 font-mono mt-1.5 truncate">
-                  {d.date.day}
-                </span>
+                    return (
+                      <div
+                        key={idx}
+                        className="flex-1 h-full flex flex-col justify-end items-center group relative min-w-[16px]"
+                      >
+                        {/* Tooltip */}
+                        <div
+                          className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl border text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                          style={{
+                            backgroundColor: 'var(--bg-surface)',
+                            borderColor: 'var(--border-card)',
+                            color: 'var(--text-main)',
+                          }}
+                        >
+                          <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
+                            {formatDate(d.date)} ({dayOfWeekName})
+                          </div>
+                          <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(d.rx, unitPreference)}</div>
+                          <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(d.tx, unitPreference)}</div>
+                          <div className="font-bold border-t mt-1 pt-1" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-main)' }}>
+                            Total: {formatBytes(dTotal, unitPreference)}
+                          </div>
+                        </div>
+
+                        {/* RX & TX side-by-side pillars */}
+                        <div className="w-full h-full flex items-end justify-center gap-0.5 sm:gap-1">
+                          <div
+                            className="w-1.5 sm:w-2 rounded-t transition-all group-hover:brightness-125"
+                            style={{
+                              height: `${d.rx > 0 ? Math.max(4, rxPercent) : 0}%`,
+                              backgroundColor: 'var(--accent-rx)',
+                            }}
+                          />
+                          <div
+                            className="w-1.5 sm:w-2 rounded-t transition-all group-hover:brightness-125"
+                            style={{
+                              height: `${d.tx > 0 ? Math.max(4, txPercent) : 0}%`,
+                              backgroundColor: 'var(--accent-tx)',
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            );
-          })}
+
+              {/* X-axis day labels */}
+              <div className="h-5 flex items-center gap-1.5 px-1 pt-1">
+                {last30Days.map((d: IntervalEntry, idx: number) => (
+                  <div key={idx} className="flex-1 min-w-[16px] text-center">
+                    <span className="text-[9px] font-mono select-none block truncate" style={{ color: 'var(--text-dim)' }}>
+                      {d.date.day}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div
@@ -233,7 +292,7 @@ export const DailyView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
-              {[...days].reverse().map((d: IntervalEntry, idx: number) => {
+              {paginatedDays.map((d: IntervalEntry, idx: number) => {
                 const dTotal = d.rx + d.tx;
                 const dayOfWeek = dayNames[new Date(d.timestamp * 1000).getDay()];
                 const isWeekend = dayOfWeek === 'Sun' || dayOfWeek === 'Sat';
@@ -271,6 +330,15 @@ export const DailyView: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        <Pagination
+          currentPage={currentPage}
+          totalItems={days.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+          pageSizeOptions={[15, 30, 60]}
+        />
       </GlassCard>
     </div>
   );
