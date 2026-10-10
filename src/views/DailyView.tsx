@@ -1,0 +1,207 @@
+import React from 'react';
+import { Calendar, TrendingUp, CalendarDays } from 'lucide-react';
+import { useNetworkStore } from '../../store/useNetworkStore';
+import { GlassCard } from '../ui/GlassCard';
+import { formatBytes, formatDate, formatRate } from '../../lib/formatters';
+
+const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+export const DailyView: React.FC = () => {
+  const { selectedInterface, vnstatData, unitPreference } = useNetworkStore();
+  const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
+  const days = iface?.traffic.day || [];
+
+  const maxDay = Math.max(...days.map((d) => d.rx + d.tx), 1);
+  const totalDaysTraffic = days.reduce((acc, d) => acc + d.rx + d.tx, 0);
+  const avgDayTraffic = days.length > 0 ? totalDaysTraffic / days.length : 0;
+
+  // Calculate weekday vs weekend averages
+  let weekdayTotal = 0;
+  let weekdayCount = 0;
+  let weekendTotal = 0;
+  let weekendCount = 0;
+
+  days.forEach((d) => {
+    const date = new Date(d.timestamp * 1000);
+    const dayOfWeek = date.getDay();
+    const sum = d.rx + d.tx;
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      weekendTotal += sum;
+      weekendCount++;
+    } else {
+      weekdayTotal += sum;
+      weekdayCount++;
+    }
+  });
+
+  const avgWeekday = weekdayCount > 0 ? weekdayTotal / weekdayCount : 0;
+  const avgWeekend = weekendCount > 0 ? weekendTotal / weekendCount : 0;
+
+  return (
+    <div className="space-y-6">
+      {/* Metric Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <GlassCard className="p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+            <Calendar className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 uppercase font-semibold">Average Daily Volume</span>
+            <div className="text-xl font-bold text-white font-mono mt-0.5">
+              {formatBytes(avgDayTraffic, unitPreference)}/day
+            </div>
+          </div>
+        </GlassCard>
+
+        <GlassCard className="p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+            <CalendarDays className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 uppercase font-semibold">Weekday Avg (Mon-Fri)</span>
+            <div className="text-xl font-bold text-blue-300 font-mono mt-0.5">
+              {formatBytes(avgWeekday, unitPreference)}/day
+            </div>
+          </div>
+        </GlassCard>
+
+        <GlassCard className="p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+            <CalendarDays className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 uppercase font-semibold">Weekend Avg (Sat-Sun)</span>
+            <div className="text-xl font-bold text-purple-300 font-mono mt-0.5">
+              {formatBytes(avgWeekend, unitPreference)}/day
+            </div>
+          </div>
+        </GlassCard>
+      </div>
+
+      {/* Visual Daily Column Chart */}
+      <GlassCard className="p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-white">Daily History Profile</h3>
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <span className="flex items-center gap-1.5 text-emerald-400">
+              <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> RX
+            </span>
+            <span className="flex items-center gap-1.5 text-purple-400">
+              <span className="w-2.5 h-2.5 rounded-sm bg-purple-500" /> TX
+            </span>
+          </div>
+        </div>
+
+        <div className="h-44 flex items-end gap-1.5 pt-4">
+          {days.slice(-30).map((d, idx) => {
+            const dTotal = d.rx + d.tx;
+            const heightPercent = Math.max(8, (dTotal / maxDay) * 100);
+            const rxRatio = dTotal > 0 ? d.rx / dTotal : 0.5;
+            const dayOfWeekName = dayNames[new Date(d.timestamp * 1000).getDay()];
+
+            return (
+              <div
+                key={idx}
+                className="flex-1 h-full flex flex-col justify-end items-center group relative"
+              >
+                {/* Tooltip */}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl bg-slate-900 border border-white/15 text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap">
+                  <div className="font-semibold text-white">
+                    {formatDate(d.date)} ({dayOfWeekName})
+                  </div>
+                  <div className="text-emerald-400">RX: {formatBytes(d.rx, unitPreference)}</div>
+                  <div className="text-purple-400">TX: {formatBytes(d.tx, unitPreference)}</div>
+                  <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
+                    Total: {formatBytes(dTotal, unitPreference)}
+                  </div>
+                </div>
+
+                <div
+                  className="w-full rounded-md overflow-hidden flex flex-col justify-end transition-all group-hover:brightness-125"
+                  style={{ height: `${heightPercent}%` }}
+                >
+                  <div
+                    className="w-full bg-purple-500/85"
+                    style={{ height: `${(1 - rxRatio) * 100}%` }}
+                  />
+                  <div className="w-full bg-emerald-500" style={{ height: `${rxRatio * 100}%` }} />
+                </div>
+
+                <span className="text-[9px] text-slate-400 font-mono mt-1.5 truncate">
+                  {d.date.day}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex justify-between text-[11px] text-slate-400 font-mono pt-1 border-t border-white/5">
+          <span>Older Recorded Days</span>
+          <span>Showing Last 30 Recorded Days</span>
+          <span>Today</span>
+        </div>
+      </GlassCard>
+
+      {/* Daily Records Table */}
+      <GlassCard className="p-0 overflow-hidden">
+        <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
+          <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            Daily Log Table
+          </h4>
+          <span className="text-xs text-slate-400 font-mono">{days.length} Recorded Days</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="bg-white/5 text-slate-400 font-medium border-b border-white/5">
+                <th className="px-5 py-3">Date</th>
+                <th className="px-5 py-3">Day of Week</th>
+                <th className="px-5 py-3">Download (RX)</th>
+                <th className="px-5 py-3">Upload (TX)</th>
+                <th className="px-5 py-3">Total Volume</th>
+                <th className="px-5 py-3 text-right">Avg Rate (86400s)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5 font-mono">
+              {[...days].reverse().map((d, idx) => {
+                const dTotal = d.rx + d.tx;
+                const dayOfWeek = dayNames[new Date(d.timestamp * 1000).getDay()];
+                const isWeekend = dayOfWeek === 'Sun' || dayOfWeek === 'Sat';
+                const avgRate = dTotal / 86400;
+                return (
+                  <tr key={idx} className="hover:bg-white/5 transition-colors">
+                    <td className="px-5 py-3 text-slate-300 font-medium">{formatDate(d.date)}</td>
+                    <td className="px-5 py-3">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                          isWeekend
+                            ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
+                            : 'bg-white/5 text-slate-300'
+                        }`}
+                      >
+                        {dayOfWeek}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 text-emerald-400 font-medium">
+                      {formatBytes(d.rx, unitPreference)}
+                    </td>
+                    <td className="px-5 py-3 text-purple-400 font-medium">
+                      {formatBytes(d.tx, unitPreference)}
+                    </td>
+                    <td className="px-5 py-3 text-white font-semibold">
+                      {formatBytes(dTotal, unitPreference)}
+                    </td>
+                    <td className="px-5 py-3 text-right text-cyan-400">
+                      {formatRate(avgRate, unitPreference)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </GlassCard>
+    </div>
+  );
+};
