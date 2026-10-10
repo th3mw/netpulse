@@ -143,7 +143,9 @@ export const Sidebar: React.FC = () => {
                 <div className="text-xs font-semibold truncate flex items-center gap-1.5" style={{ color: 'var(--text-main)' }}>
                   <span>{selectedInterface}</span>
                   {selectedInterface === defaultInterface && (
-                    <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" title="Default Interface" />
+                    <span title="Default Interface" className="inline-flex items-center">
+                      <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
+                    </span>
                   )}
                 </div>
                 {alias && <div className="text-[10px] truncate" style={{ color: 'var(--text-dim)' }}>{alias}</div>}
@@ -190,7 +192,9 @@ export const Sidebar: React.FC = () => {
                   <div className="flex items-center gap-1.5 font-mono">
                     <span>{iface.name}</span>
                     {iface.name === defaultInterface && (
-                      <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" title="Default Interface" />
+                      <span title="Default Interface" className="inline-flex items-center">
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
+                      </span>
                     )}
                   </div>
                   {iface.in_database && (
