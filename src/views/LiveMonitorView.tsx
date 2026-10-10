@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes, formatPackets, formatRate } from '../lib/formatters';
 
 export const LiveMonitorView: React.FC = () => {
@@ -65,9 +66,16 @@ export const LiveMonitorView: React.FC = () => {
                 <ArrowDown className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Download Throughput
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Download Throughput
+                  </span>
+                  <HelpTooltip
+                    title="Real-Time Download Rate (RX)"
+                    content="Instantaneous bytes received per second by the kernel on this interface, updated every 1000ms."
+                    formula="(rx_bytes_now - rx_bytes_prev) / elapsed_seconds"
+                  />
+                </div>
                 <div className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                   Receiving Live
@@ -103,9 +111,16 @@ export const LiveMonitorView: React.FC = () => {
                 <ArrowUp className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Upload Throughput
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Upload Throughput
+                  </span>
+                  <HelpTooltip
+                    title="Real-Time Upload Rate (TX)"
+                    content="Instantaneous bytes transmitted per second by the kernel on this interface, updated every 1000ms."
+                    formula="(tx_bytes_now - tx_bytes_prev) / elapsed_seconds"
+                  />
+                </div>
                 <div className="text-[11px] text-purple-400 font-medium flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
                   Transmitting Live
@@ -140,9 +155,15 @@ export const LiveMonitorView: React.FC = () => {
               <Radio className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-white">
-                Rolling 60-Second Bandwidth Stream
-              </h3>
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-sm font-semibold text-white">
+                  Rolling 60-Second Bandwidth Stream
+                </h3>
+                <HelpTooltip
+                  title="60-Second Stream Chart"
+                  content="Streaming SVG area graph of bandwidth over the past 60 seconds. Scrub your pointer horizontally across the graph to inspect exact throughput at any second."
+                />
+              </div>
               <p className="text-xs text-slate-400">
                 Real-time 1000ms polling from /proc/net/dev on {selectedInterface}
               </p>
@@ -258,7 +279,13 @@ export const LiveMonitorView: React.FC = () => {
             <Zap className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Session Downloaded</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Session Downloaded</span>
+              <HelpTooltip
+                title="Session Downloaded"
+                content="Total download volume recorded in memory since launching the app."
+              />
+            </div>
             <div className="text-base font-bold text-white font-mono">
               {formatBytes(sessionRxTotal, unitPreference)}
             </div>
@@ -270,7 +297,13 @@ export const LiveMonitorView: React.FC = () => {
             <Zap className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Session Uploaded</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Session Uploaded</span>
+              <HelpTooltip
+                title="Session Uploaded"
+                content="Total upload volume recorded in memory since launching the app."
+              />
+            </div>
             <div className="text-base font-bold text-white font-mono">
               {formatBytes(sessionTxTotal, unitPreference)}
             </div>
@@ -282,7 +315,13 @@ export const LiveMonitorView: React.FC = () => {
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Monitor Status</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Monitor Status</span>
+              <HelpTooltip
+                title="Kernel Streaming Engine"
+                content="Rust background task polls Linux /proc/net/dev every 1000ms with non-blocking async timers."
+              />
+            </div>
             <div className="text-base font-bold text-emerald-400 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Active Streaming

@@ -1,5 +1,6 @@
 import React from 'react';
 import { GlassCard } from './GlassCard';
+import { HelpTooltip } from './HelpTooltip';
 
 interface MetricCardProps {
   title: string;
@@ -13,6 +14,9 @@ interface MetricCardProps {
   accentColor?: 'cyan' | 'purple' | 'emerald' | 'amber' | 'rose' | 'blue';
   className?: string;
   badge?: string;
+  helpTitle?: string;
+  helpContent?: React.ReactNode;
+  helpFormula?: string;
 }
 
 export const MetricCard: React.FC<MetricCardProps> = ({
@@ -24,6 +28,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   accentColor = 'cyan',
   className = '',
   badge,
+  helpTitle,
+  helpContent,
+  helpFormula,
 }) => {
   const accentClasses = {
     cyan: 'from-cyan-500/20 to-transparent border-cyan-500/30 text-cyan-400',
@@ -42,7 +49,16 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       />
 
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{title}</span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{title}</span>
+          {helpContent && (
+            <HelpTooltip
+              title={helpTitle || title}
+              content={helpContent}
+              formula={helpFormula}
+            />
+          )}
+        </div>
         <div className="flex items-center gap-1.5">
           {badge && (
             <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-white/10 text-slate-300 border border-white/5">

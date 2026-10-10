@@ -2,9 +2,9 @@ import React from 'react';
 import { Trophy, Medal, Award, Flame, Calendar } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes, formatDate } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
-
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -24,9 +24,16 @@ export const TopDaysView: React.FC = () => {
         {topDays[0] && (
           <GlassCard className="p-5 relative overflow-hidden border-amber-500/30 bg-gradient-to-b from-amber-500/10 to-transparent">
             <div className="flex items-center justify-between mb-3">
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold font-mono">
-                <Trophy className="w-3.5 h-3.5 text-amber-400" /> #1 ALL-TIME RECORD
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold font-mono">
+                  <Trophy className="w-3.5 h-3.5 text-amber-400" /> #1 ALL-TIME RECORD
+                </span>
+                <HelpTooltip
+                  title="All-Time Record Day"
+                  content="The single 24-hour day with the highest total combined bandwidth (RX + TX) recorded in the database."
+                  formula="max(day.rx + day.tx) across all history"
+                />
+              </div>
               <Flame className="w-4 h-4 text-amber-400 animate-bounce" />
             </div>
 
@@ -115,9 +122,15 @@ export const TopDaysView: React.FC = () => {
       {/* Leaderboard Table */}
       <GlassCard className="p-0 overflow-hidden">
         <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
-          <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-            All-Time Top Days Leaderboard
-          </h4>
+          <div className="flex items-center gap-1.5">
+            <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              All-Time Top Days Leaderboard
+            </h4>
+            <HelpTooltip
+              title="Top Days Table"
+              content="Lists up to 25 peak record traffic days sorted in descending order of total throughput. Progress bars indicate relative percentage compared to record day #1."
+            />
+          </div>
           <span className="text-xs text-slate-400 font-mono">Top {topDays.length} Records</span>
         </div>
 

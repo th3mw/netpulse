@@ -2,10 +2,10 @@ import React from 'react';
 import { Grid, Flame } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { calculateActivityHeatmap } from '../lib/calculations';
 import { formatBytes } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
-
 
 const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -42,7 +42,14 @@ export const HeatmapView: React.FC = () => {
             <Grid className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-white">7×24 Activity Heatmap Matrix</h3>
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-base font-semibold text-white">7×24 Activity Heatmap Matrix</h3>
+              <HelpTooltip
+                title="Activity Heatmap Matrix"
+                content="Aggregates hourly traffic across the 7 days of the week. Cells with bright cyan colors indicate peak recurring transfer periods (e.g. daily backups, streaming, torrenting)."
+                formula="Cell_Intensity = Slot_Bytes / Max_Recorded_Bytes"
+              />
+            </div>
             <p className="text-xs text-slate-400">
               Aggregated network density distribution across days of week and hours of day
             </p>

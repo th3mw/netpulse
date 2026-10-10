@@ -13,13 +13,10 @@ import {
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
 import { MetricCard } from '../components/ui/MetricCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes, formatDateTime } from '../lib/formatters';
-
 import { calculateMonthProjection, calculateRxTxBalance } from '../lib/calculations';
 import type { IntervalEntry } from '../types/vnstat';
-
-
-
 
 export const OverviewView: React.FC = () => {
   const {
@@ -81,6 +78,9 @@ export const OverviewView: React.FC = () => {
           icon={<Calendar className="w-4 h-4 text-cyan-400" />}
           accentColor="cyan"
           badge="24h"
+          helpTitle="Today's Traffic"
+          helpContent="Cumulative bandwidth transferred across this network interface since 00:00 local time today."
+          helpFormula="RX_today + TX_today"
         />
 
         <MetricCard
@@ -90,6 +90,9 @@ export const OverviewView: React.FC = () => {
           icon={<Activity className="w-4 h-4 text-purple-400" />}
           accentColor="purple"
           badge="Forecast"
+          helpTitle="Month Run-Rate Forecast"
+          helpContent="Estimated total volume by the end of the billing cycle based on your current daily consumption rate."
+          helpFormula="used_bytes + (daily_burn * days_remaining)"
         />
 
         <MetricCard
@@ -99,6 +102,9 @@ export const OverviewView: React.FC = () => {
           icon={<Gauge className="w-4 h-4 text-amber-400" />}
           accentColor="amber"
           badge="ISP Billing"
+          helpTitle="95th Percentile Bandwidth"
+          helpContent="Burstable billing rate used by transit providers: top 5% peak spikes are discarded, leaving the 95th percentile sustained rate."
+          helpFormula="Ranked_Samples[ceil(0.95 * N)]"
         />
 
         <MetricCard
@@ -108,6 +114,9 @@ export const OverviewView: React.FC = () => {
           icon={<HardDrive className="w-4 h-4 text-emerald-400" />}
           accentColor="emerald"
           badge="Cumulative"
+          helpTitle="All-Time Lifetime Traffic"
+          helpContent="Grand total of all bytes transferred through this network card since vnstat began logging."
+          helpFormula="Total_RX + Total_TX"
         />
       </div>
 
@@ -116,12 +125,21 @@ export const OverviewView: React.FC = () => {
         {/* Monthly Quota Meter */}
         <GlassCard className="p-5 lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-semibold text-white">Monthly Quota & Burn Rate</h3>
-              <p className="text-xs text-slate-400">
-                Cycle day {projection.daysElapsed} of {projection.daysTotal} (Resets on day{' '}
-                {billingConfig.cycleStartDay})
-              </p>
+            <div className="flex items-center gap-2">
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <h3 className="text-sm font-semibold text-white">Monthly Quota & Burn Rate</h3>
+                  <HelpTooltip
+                    title="Quota & Burn Rate"
+                    content="Tracks your data cap usage against your billing renewal day. Warns before overage charges and suggests maximum daily burn allowance."
+                    formula="(monthly_used / quota_cap) * 100%"
+                  />
+                </div>
+                <p className="text-xs text-slate-400">
+                  Cycle day {projection.daysElapsed} of {projection.daysTotal} (Resets on day{' '}
+                  {billingConfig.cycleStartDay})
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
               <Clock className="w-3.5 h-3.5 text-cyan-400" />
@@ -207,7 +225,14 @@ export const OverviewView: React.FC = () => {
         {/* Traffic Balance (RX vs TX) */}
         <GlassCard className="p-5 flex flex-col justify-between space-y-4">
           <div>
-            <h3 className="text-sm font-semibold text-white">Traffic Symmetry</h3>
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-sm font-semibold text-white">Traffic Symmetry</h3>
+              <HelpTooltip
+                title="Traffic Symmetry (RX vs TX)"
+                content="Compares inbound download volume (RX) to outbound upload volume (TX). Most home connections are heavily download-skewed (3:1 to 10:1)."
+                formula="Ratio = RX / TX"
+              />
+            </div>
             <p className="text-xs text-slate-400">Download vs Upload distribution ratio</p>
           </div>
 
@@ -266,7 +291,13 @@ export const OverviewView: React.FC = () => {
       <GlassCard className="p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-white">Past 24 Hours Activity</h3>
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-sm font-semibold text-white">Past 24 Hours Activity</h3>
+              <HelpTooltip
+                title="24-Hour Timeline"
+                content="Hourly breakdown of network throughput for the last 24 hours. Hover any column to see exact RX, TX, and percentage of daily traffic."
+              />
+            </div>
             <p className="text-xs text-slate-400">Hourly throughput distribution across the day</p>
           </div>
           <div className="flex items-center gap-4 text-xs">
