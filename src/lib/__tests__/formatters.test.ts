@@ -25,8 +25,8 @@ describe('formatters', () => {
   });
 
   it('formats dates and times', () => {
-    expect(formatDate({ year: 2026, month: 10, day: 10 })).toBe('2026-10-10');
-    expect(formatDate({ year: 2026, month: 8 })).toBe('2026-08');
+    expect(formatDate({ year: 2026, month: 10, day: 10 })).toBe('10/10/2026');
+    expect(formatDate({ year: 2026, month: 8 })).toBe('08/2026');
     expect(formatTime({ hour: 9, minute: 5 })).toBe('09:05');
   });
 });

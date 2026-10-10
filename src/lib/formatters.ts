@@ -73,8 +73,8 @@ export function formatDate(d?: DateObj): string {
   const m = d.month !== undefined ? String(d.month).padStart(2, '0') : '';
   const day = d.day !== undefined ? String(d.day).padStart(2, '0') : '';
 
-  if (m && day) return `${y}-${m}-${day}`;
-  if (m) return `${y}-${m}`;
+  if (m && day) return `${day}/${m}/${y}`;
+  if (m) return `${m}/${y}`;
   return `${y}`;
 }
 
