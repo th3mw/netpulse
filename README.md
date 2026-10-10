@@ -26,6 +26,14 @@ Built with **Tauri v2 (Rust)**, **React 19**, **TypeScript**, **Bun**, **Tailwin
 - **Data Export Center**: Export telemetry to CSV or raw JSON files, or copy structure to clipboard.
 
 ### 🎨 Apple & Emil Kowalski Design Language
+- **6 Calibrated Appearance Themes**:
+  - **Cyber Neon (Default)**: Electric cyan and violet accents over midnight navy glass surfaces.
+  - **Graphite (macOS Pro)**: Pure neutral charcoal obsidian with Apple System Blue, Apple Green RX, Apple Orange TX, and zero blue glare.
+  - **Solar (Warm Night Shift)**: Espresso dark background with golden amber and terracotta copper accents; 100% blue-light-free for evening sessions.
+  - **Emerald (Terminal Obsidian)**: Deep forest-tinted obsidian with jade green RX and lime TX; sysadmin terminal vibe.
+  - **Nordic (Arctic Slate)**: Cold Scandinavian slate with muted sea blue and frosted white accents.
+  - **macOS Light Mode**: Daytime platinum glass with dark charcoal typography, royal blue primary accents, and refined contrast.
+- **Instant Theme Switching**: 1-click header palette quick-picker popover and full visual swatch gallery in Settings.
 - **Translucent Glass Materials**: Frosted acrylic cards with `backdrop-filter: blur(24px)` and specular border highlights.
 - **Micro-Interaction Physics**: Responsive Emil Kowalski scale feedback (`transform: scale(0.97)` on `:active` with 160ms cubic-bezier transition).
 - **Fluid Spring Motion**: Critically damped springs (`bounce: 0`, `duration: 0.25-0.35s`) for non-distracting navigation transitions.

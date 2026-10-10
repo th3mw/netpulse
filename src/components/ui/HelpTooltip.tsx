@@ -65,7 +65,7 @@ export const HelpTooltip: React.FC<HelpTooltipProps> = ({
           setIsOpen(!isOpen);
         }}
         aria-label="Component help"
-        className="p-1 rounded-md text-slate-400 hover:text-cyan-300 hover:bg-white/10 apple-press transition-colors focus:outline-none"
+        className="p-1 rounded-md text-current opacity-60 hover:opacity-100 hover:bg-white/10 apple-press transition-all focus:outline-none"
       >
         <HelpCircle className="w-3.5 h-3.5" />
       </button>
@@ -82,35 +82,46 @@ export const HelpTooltip: React.FC<HelpTooltipProps> = ({
               duration: 0.2,
             }}
             className={`
-              absolute z-50 w-64 p-3 rounded-xl
-              bg-slate-900/95 border border-white/15
-              shadow-2xl shadow-black/80 backdrop-blur-2xl
-              text-left font-sans
+              absolute z-50 w-64 p-3 rounded-xl border
+              shadow-2xl backdrop-blur-2xl text-left font-sans
               ${positionClasses}
             `}
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              borderColor: 'var(--border-card)',
+              color: 'var(--text-main)',
+            }}
           >
             <div className="flex items-start justify-between gap-2 mb-1">
               {title && (
-                <h5 className="text-xs font-semibold text-white tracking-tight leading-snug">
+                <h5 className="text-xs font-semibold tracking-tight leading-snug" style={{ color: 'var(--text-main)' }}>
                   {title}
                 </h5>
               )}
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-white p-0.5 rounded transition-colors -mr-1 -mt-0.5"
+                className="opacity-60 hover:opacity-100 p-0.5 rounded transition-opacity -mr-1 -mt-0.5"
+                style={{ color: 'var(--text-dim)' }}
               >
                 <X className="w-3 h-3" />
               </button>
             </div>
 
-            <div className="text-[11px] text-slate-300 leading-relaxed font-normal">
+            <div className="text-[11px] leading-relaxed font-normal" style={{ color: 'var(--text-muted)' }}>
               {content}
             </div>
 
             {formula && (
-              <div className="mt-2 pt-1.5 border-t border-white/10 font-mono text-[10px] text-cyan-300 bg-white/5 px-2 py-1 rounded-md">
-                <span className="text-slate-400 select-none">Math: </span>
+              <div
+                className="mt-2 pt-1.5 border-t font-mono text-[10px] px-2 py-1 rounded-md"
+                style={{
+                  borderColor: 'var(--border-subtle)',
+                  backgroundColor: 'var(--bg-input)',
+                  color: 'var(--accent-primary)',
+                }}
+              >
+                <span className="select-none" style={{ color: 'var(--text-dim)' }}>Math: </span>
                 {formula}
               </div>
             )}

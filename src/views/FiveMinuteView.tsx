@@ -110,10 +110,13 @@ export const FiveMinuteView: React.FC = () => {
                   style={{ height: `${heightPercent}%` }}
                 >
                   <div
-                    className="w-full bg-purple-500/80"
-                    style={{ height: `${(1 - rxRatio) * 100}%` }}
+                    className="w-full"
+                    style={{ height: `${(1 - rxRatio) * 100}%`, backgroundColor: 'var(--accent-tx)' }}
                   />
-                  <div className="w-full bg-emerald-500" style={{ height: `${rxRatio * 100}%` }} />
+                  <div
+                    className="w-full"
+                    style={{ height: `${rxRatio * 100}%`, backgroundColor: 'var(--accent-rx)' }}
+                  />
                 </div>
               </div>
             );
@@ -122,7 +125,14 @@ export const FiveMinuteView: React.FC = () => {
 
         <div className="flex justify-between text-[11px] text-slate-400 font-mono pt-1 border-t border-white/5">
           <span>Older 5-Min Intervals</span>
-          <span>Dual Color: Green = RX, Purple = TX</span>
+          <span className="flex items-center gap-2">
+            <span className="flex items-center gap-1" style={{ color: 'var(--accent-rx)' }}>
+              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
+            </span>
+            <span className="flex items-center gap-1" style={{ color: 'var(--accent-tx)' }}>
+              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
+            </span>
+          </span>
           <span>Latest Slot</span>
         </div>
       </GlassCard>
@@ -157,16 +167,16 @@ export const FiveMinuteView: React.FC = () => {
                       {formatDate(slot.date)}{' '}
                       <span className="text-slate-400">{formatTime(slot.time)}</span>
                     </td>
-                    <td className="px-5 py-3 text-emerald-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-rx)' }}>
                       {formatBytes(slot.rx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-purple-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-tx)' }}>
                       {formatBytes(slot.tx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-white font-semibold">
+                    <td className="px-5 py-3 font-semibold" style={{ color: 'var(--text-main)' }}>
                       {formatBytes(slotTotal, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-right text-cyan-400 font-medium">
+                    <td className="px-5 py-3 text-right font-medium" style={{ color: 'var(--accent-primary)' }}>
                       {formatRate(avgRate, unitPreference)}
                     </td>
                   </tr>

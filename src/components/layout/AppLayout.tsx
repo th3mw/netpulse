@@ -8,12 +8,27 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
-    <div className="flex w-screen h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Background ambient lighting */}
+    <div
+      className="flex w-screen h-screen overflow-hidden font-sans transition-colors duration-300 select-none"
+      style={{
+        backgroundColor: 'var(--bg-app)',
+        color: 'var(--text-main)',
+      }}
+    >
+      {/* Background ambient lighting orbs */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -right-40 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 left-1/3 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
+        <div
+          className="absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl transition-all duration-700 ease-out"
+          style={{ backgroundColor: 'var(--orb-1)' }}
+        />
+        <div
+          className="absolute top-1/3 -right-40 w-96 h-96 rounded-full blur-3xl transition-all duration-700 ease-out"
+          style={{ backgroundColor: 'var(--orb-2)' }}
+        />
+        <div
+          className="absolute -bottom-40 left-1/3 w-96 h-96 rounded-full blur-3xl transition-all duration-700 ease-out"
+          style={{ backgroundColor: 'var(--orb-3)' }}
+        />
       </div>
 
       <Sidebar />

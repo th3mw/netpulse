@@ -25,12 +25,19 @@ export const HeatmapView: React.FC = () => {
     intensity: number;
   } | null>(null);
 
-  const getCellColor = (intensity: number) => {
-    if (intensity === 0) return 'bg-white/5 border border-white/5';
-    if (intensity < 0.2) return 'bg-cyan-950/60 text-cyan-400 border border-cyan-800/40';
-    if (intensity < 0.4) return 'bg-cyan-800/70 text-cyan-300 border border-cyan-600/50';
-    if (intensity < 0.7) return 'bg-cyan-600 text-slate-950 border border-cyan-400 shadow-sm';
-    return 'bg-cyan-400 text-slate-950 border border-cyan-200 shadow-md shadow-cyan-400/40 font-bold';
+  const getCellStyle = (intensity: number): React.CSSProperties => {
+    if (intensity === 0) {
+      return {
+        backgroundColor: 'var(--bg-input)',
+        borderColor: 'var(--border-subtle)',
+      };
+    }
+    const pct = Math.max(15, Math.min(100, Math.round(intensity * 85 + 15)));
+    return {
+      backgroundColor: `color-mix(in srgb, var(--accent-primary) ${pct}%, var(--bg-surface))`,
+      borderColor: 'var(--accent-primary-border)',
+      boxShadow: intensity > 0.6 ? '0 0 10px -2px var(--accent-primary-border)' : undefined,
+    };
   };
 
   return (
@@ -38,33 +45,69 @@ export const HeatmapView: React.FC = () => {
       {/* Header Info Card */}
       <GlassCard className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'var(--accent-primary-subtle)',
+              borderColor: 'var(--accent-primary-border)',
+              color: 'var(--accent-primary)',
+            }}
+          >
             <Grid className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="text-base font-semibold text-white">7×24 Activity Heatmap Matrix</h3>
+              <h3 className="text-base font-semibold" style={{ color: 'var(--text-main)' }}>
+                7×24 Activity Heatmap Matrix
+              </h3>
               <HelpTooltip
                 title="Activity Heatmap Matrix"
-                content="Aggregates hourly traffic across the 7 days of the week. Cells with bright cyan colors indicate peak recurring transfer periods (e.g. daily backups, streaming, torrenting)."
+                content="Aggregates hourly traffic across the 7 days of the week. Cells with bright colors indicate peak recurring transfer periods (e.g. daily backups, streaming, torrenting)."
                 formula="Cell_Intensity = Slot_Bytes / Max_Recorded_Bytes"
               />
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
               Aggregated network density distribution across days of week and hours of day
             </p>
           </div>
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
+        <div className="flex items-center gap-2 text-xs font-mono" style={{ color: 'var(--text-dim)' }}>
           <span>Less</span>
           <div className="flex items-center gap-1">
-            <span className="w-3.5 h-3.5 rounded-sm bg-white/5 border border-white/5" />
-            <span className="w-3.5 h-3.5 rounded-sm bg-cyan-950/60 border border-cyan-800/40" />
-            <span className="w-3.5 h-3.5 rounded-sm bg-cyan-800/70 border border-cyan-600/50" />
-            <span className="w-3.5 h-3.5 rounded-sm bg-cyan-600" />
-            <span className="w-3.5 h-3.5 rounded-sm bg-cyan-400 shadow-sm" />
+            <span
+              className="w-3.5 h-3.5 rounded-sm border"
+              style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-subtle)' }}
+            />
+            <span
+              className="w-3.5 h-3.5 rounded-sm border"
+              style={{
+                backgroundColor: 'color-mix(in srgb, var(--accent-primary) 25%, var(--bg-surface))',
+                borderColor: 'var(--border-subtle)',
+              }}
+            />
+            <span
+              className="w-3.5 h-3.5 rounded-sm border"
+              style={{
+                backgroundColor: 'color-mix(in srgb, var(--accent-primary) 50%, var(--bg-surface))',
+                borderColor: 'var(--accent-primary-border)',
+              }}
+            />
+            <span
+              className="w-3.5 h-3.5 rounded-sm border"
+              style={{
+                backgroundColor: 'color-mix(in srgb, var(--accent-primary) 75%, var(--bg-surface))',
+                borderColor: 'var(--accent-primary-border)',
+              }}
+            />
+            <span
+              className="w-3.5 h-3.5 rounded-sm border"
+              style={{
+                backgroundColor: 'var(--accent-primary)',
+                borderColor: 'var(--accent-primary-border)',
+              }}
+            />
           </div>
           <span>Peak ({formatBytes(maxBytes, unitPreference)})</span>
         </div>
@@ -104,21 +147,25 @@ export const HeatmapView: React.FC = () => {
                         setHoveredCell({ day: dIdx, hour: hIdx, intensity })
                       }
                       onMouseLeave={() => setHoveredCell(null)}
-                      className={`
-                        h-8 rounded-lg cursor-pointer transition-all duration-150 relative group
-                        hover:scale-110 hover:z-20
-                        ${getCellColor(intensity)}
-                      `}
+                      style={getCellStyle(intensity)}
+                      className="h-8 rounded-lg cursor-pointer transition-all duration-150 relative group hover:scale-110 hover:z-20 border"
                     >
                       {/* Tooltip */}
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-2 rounded-xl bg-slate-900 border border-white/20 text-[10px] font-mono shadow-2xl backdrop-blur-2xl z-50 whitespace-nowrap">
-                        <div className="font-semibold text-white">
+                      <div
+                        className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-2 rounded-xl border text-[10px] font-mono shadow-2xl backdrop-blur-2xl z-50 whitespace-nowrap"
+                        style={{
+                          backgroundColor: 'var(--bg-surface)',
+                          borderColor: 'var(--border-card)',
+                          color: 'var(--text-main)',
+                        }}
+                      >
+                        <div className="font-semibold">
                           {dayName} at {String(hIdx).padStart(2, '0')}:00
                         </div>
-                        <div className="text-cyan-400">
+                        <div style={{ color: 'var(--accent-primary)' }}>
                           Volume: {formatBytes(bytes, unitPreference)}
                         </div>
-                        <div className="text-slate-400">
+                        <div style={{ color: 'var(--text-dim)' }}>
                           Intensity: {(intensity * 100).toFixed(0)}%
                         </div>
                       </div>

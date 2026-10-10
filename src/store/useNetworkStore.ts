@@ -9,6 +9,7 @@ import type {
   PercentileReport,
   UnitPreference,
   VnstatResponse,
+  AppTheme,
 } from '../types/vnstat';
 
 interface NetworkState {
@@ -22,6 +23,7 @@ interface NetworkState {
   peakLiveRx: number;
   peakLiveTx: number;
   unitPreference: UnitPreference;
+  theme: AppTheme;
   billingConfig: BillingConfig;
   isLoading: boolean;
   error: string | null;
@@ -31,6 +33,7 @@ interface NetworkState {
   setSelectedInterface: (iface: string) => void;
   setActiveTab: (tab: NavigationTab) => void;
   setUnitPreference: (pref: UnitPreference) => void;
+  setTheme: (theme: AppTheme) => void;
   setBillingConfig: (config: Partial<BillingConfig>) => void;
   resetConfig: () => void;
   fetchInterfaces: () => Promise<void>;
@@ -99,6 +102,32 @@ const mockVnstatData: VnstatResponse = {
   ],
 };
 
+const getInitialTheme = (): AppTheme => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('vnstat_theme') as AppTheme | null;
+    if (saved && ['cyber-neon', 'graphite', 'solar', 'emerald', 'nordic', 'light'].includes(saved)) {
+      return saved;
+    }
+  }
+  return 'cyber-neon';
+};
+
+export const applyThemeToDom = (theme: AppTheme) => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    }
+  }
+};
+
+const initialTheme = getInitialTheme();
+applyThemeToDom(initialTheme);
+
 export const useNetworkStore = create<NetworkState>((set, get) => ({
   interfaces: [
     { name: 'wlan0', is_up: true, in_database: true, rx_bytes: 12212811191, tx_bytes: 3296136584 },
@@ -114,6 +143,7 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
   peakLiveRx: 0,
   peakLiveTx: 0,
   unitPreference: 'SI',
+  theme: initialTheme,
   billingConfig: {
     monthlyQuotaBytes: 500 * 1000 * 1000 * 1000, // 500 GB default
     cycleStartDay: 1,
@@ -133,6 +163,14 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
   setActiveTab: (tab) => set({ activeTab: tab }),
 
   setUnitPreference: (pref) => set({ unitPreference: pref }),
+
+  setTheme: (theme) => {
+    applyThemeToDom(theme);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('vnstat_theme', theme);
+    }
+    set({ theme });
+  },
 
   setBillingConfig: (config) =>
     set((state) => ({ billingConfig: { ...state.billingConfig, ...config } })),
@@ -288,8 +326,13 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
   },
 
   resetConfig: () => {
+    applyThemeToDom('cyber-neon');
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('vnstat_theme', 'cyber-neon');
+    }
     set({
       unitPreference: 'SI',
+      theme: 'cyber-neon',
       billingConfig: {
         monthlyQuotaBytes: 500 * 1000 * 1000 * 1000,
         cycleStartDay: 1,

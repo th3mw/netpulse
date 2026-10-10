@@ -26,7 +26,7 @@ import { SegmentedControl } from '../ui/SegmentedControl';
 interface NavItem {
   id: NavigationTab;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
 }
 
 const navSections: { title: string; items: NavItem[] }[] = [
@@ -79,23 +79,50 @@ export const Sidebar: React.FC = () => {
 
 
   return (
-    <aside className="w-64 h-full flex flex-col bg-slate-950/80 border-r border-white/8 backdrop-blur-2xl select-none relative z-20">
+    <aside
+      className="w-64 h-full flex flex-col border-r backdrop-blur-2xl select-none relative z-20 transition-colors duration-300"
+      style={{
+        backgroundColor: 'var(--bg-sidebar)',
+        borderColor: 'var(--border-subtle)',
+      }}
+    >
       {/* App Header & Interface Switcher */}
-      <div className="p-4 border-b border-white/8">
+      <div
+        className="p-4 border-b transition-colors duration-300"
+        style={{ borderColor: 'var(--border-subtle)' }}
+      >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-              <Network className="w-4 h-4 text-white" />
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center shadow-md transition-colors duration-300"
+              style={{
+                backgroundColor: 'var(--accent-primary)',
+                color: 'var(--accent-primary-fg)',
+              }}
+            >
+              <Network className="w-4 h-4" />
             </div>
             <div>
-              <h1 className="text-sm font-semibold tracking-tight text-white leading-tight">
+              <h1 className="text-sm font-semibold tracking-tight leading-tight" style={{ color: 'var(--text-main)' }}>
                 VNstat
               </h1>
-              <span className="text-[10px] text-slate-400 font-mono">v2.13 macOS Edition</span>
+              <span className="text-[10px] font-mono" style={{ color: 'var(--text-dim)' }}>
+                v2.13 macOS Edition
+              </span>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div
+            className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium border"
+            style={{
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              borderColor: 'rgba(16, 185, 129, 0.25)',
+              color: 'var(--accent-rx)',
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ backgroundColor: 'var(--accent-rx)' }}
+            />
             LIVE
           </div>
         </div>
@@ -105,26 +132,37 @@ export const Sidebar: React.FC = () => {
           <button
             type="button"
             onClick={() => setIfaceDropdownOpen(!ifaceDropdownOpen)}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/8 transition-all apple-press text-left"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl border transition-all apple-press text-left"
+            style={{
+              backgroundColor: 'var(--bg-input)',
+              borderColor: 'var(--border-subtle)',
+            }}
           >
             <div className="flex items-center gap-2 truncate">
-              <Wifi className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
+              <Wifi className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--accent-primary)' }} />
               <div className="truncate">
-                <div className="text-xs font-semibold text-slate-200 truncate">
+                <div className="text-xs font-semibold truncate" style={{ color: 'var(--text-main)' }}>
                   {selectedInterface}
                 </div>
-                {alias && <div className="text-[10px] text-slate-400 truncate">{alias}</div>}
+                {alias && <div className="text-[10px] truncate" style={{ color: 'var(--text-dim)' }}>{alias}</div>}
               </div>
             </div>
             <ChevronDown
-              className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+              className={`w-3.5 h-3.5 transition-transform duration-200 ${
                 ifaceDropdownOpen ? 'rotate-180' : ''
               }`}
+              style={{ color: 'var(--text-dim)' }}
             />
           </button>
 
           {ifaceDropdownOpen && (
-            <div className="absolute top-full left-0 right-0 mt-1.5 p-1 rounded-xl bg-slate-900/95 border border-white/15 shadow-2xl backdrop-blur-2xl z-50">
+            <div
+              className="absolute top-full left-0 right-0 mt-1.5 p-1 rounded-xl border shadow-2xl backdrop-blur-2xl z-50"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                borderColor: 'var(--border-card)',
+              }}
+            >
               {interfaces.map((iface) => (
                 <button
                   key={iface.name}
@@ -135,13 +173,28 @@ export const Sidebar: React.FC = () => {
                   }}
                   className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors apple-press ${
                     iface.name === selectedInterface
-                      ? 'bg-cyan-500/20 text-cyan-300 font-semibold'
-                      : 'text-slate-300 hover:bg-white/10'
+                      ? 'font-semibold'
+                      : 'hover:bg-white/10'
                   }`}
+                  style={
+                    iface.name === selectedInterface
+                      ? {
+                          backgroundColor: 'var(--accent-primary-subtle)',
+                          color: 'var(--accent-primary)',
+                        }
+                      : { color: 'var(--text-main)' }
+                  }
                 >
                   <span className="font-mono">{iface.name}</span>
                   {iface.in_database && (
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-slate-400">
+                    <span
+                      className="text-[9px] px-1.5 py-0.5 rounded border"
+                      style={{
+                        backgroundColor: 'var(--bg-input)',
+                        borderColor: 'var(--border-subtle)',
+                        color: 'var(--text-dim)',
+                      }}
+                    >
                       db
                     </span>
                   )}
@@ -156,7 +209,10 @@ export const Sidebar: React.FC = () => {
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-4">
         {navSections.map((section) => (
           <div key={section.title}>
-            <div className="px-2 mb-1 text-[10px] font-semibold tracking-wider uppercase text-slate-400">
+            <div
+              className="px-2 mb-1 text-[10px] font-semibold tracking-wider uppercase"
+              style={{ color: 'var(--text-dim)' }}
+            >
               {section.title}
             </div>
             <div className="space-y-0.5">
@@ -170,14 +226,26 @@ export const Sidebar: React.FC = () => {
                     onClick={() => setActiveTab(item.id)}
                     className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all apple-press ${
                       isActive
-                        ? 'bg-white/15 text-white shadow-sm border border-white/10 font-semibold'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                        ? 'shadow-sm border font-semibold'
+                        : 'hover:bg-white/5'
                     }`}
+                    style={
+                      isActive
+                        ? {
+                            backgroundColor: 'var(--accent-primary-subtle)',
+                            borderColor: 'var(--accent-primary-border)',
+                            color: 'var(--text-main)',
+                          }
+                        : {
+                            color: 'var(--text-muted)',
+                          }
+                    }
                   >
                     <Icon
-                      className={`w-4 h-4 transition-colors ${
-                        isActive ? 'text-cyan-400' : 'text-slate-400'
-                      }`}
+                      className="w-4 h-4 transition-colors"
+                      style={{
+                        color: isActive ? 'var(--accent-primary)' : 'var(--text-dim)',
+                      }}
                     />
                     <span>{item.label}</span>
                   </button>
@@ -189,28 +257,52 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Live Mini Readout & Unit Toggle Footer */}
-      <div className="p-3 border-t border-white/8 bg-slate-950/40 space-y-2.5">
+      <div
+        className="p-3 border-t space-y-2.5 transition-colors duration-300"
+        style={{
+          borderColor: 'var(--border-subtle)',
+          backgroundColor: 'var(--bg-input)',
+        }}
+      >
         <div className="grid grid-cols-2 gap-2 text-[11px]">
-          <div className="p-2 rounded-xl bg-white/5 border border-white/5 flex flex-col">
-            <span className="text-[10px] text-slate-400 flex items-center gap-1">
-              <ArrowDown className="w-2.5 h-2.5 text-emerald-400" /> RX
+          <div
+            className="p-2 rounded-xl border flex flex-col"
+            style={{
+              backgroundColor: 'var(--bg-surface-subtle)',
+              borderColor: 'var(--border-subtle)',
+            }}
+          >
+            <span className="text-[10px] flex items-center gap-1" style={{ color: 'var(--text-dim)' }}>
+              <ArrowDown className="w-2.5 h-2.5" style={{ color: 'var(--accent-rx)' }} /> RX
             </span>
-            <span className="font-mono font-medium text-emerald-400 truncate tabular-nums">
+            <span
+              className="font-mono font-medium truncate tabular-nums"
+              style={{ color: 'var(--accent-rx)' }}
+            >
               {formatRate(currentLive?.rx_bytes_per_sec || 0, unitPreference)}
             </span>
           </div>
-          <div className="p-2 rounded-xl bg-white/5 border border-white/5 flex flex-col">
-            <span className="text-[10px] text-slate-400 flex items-center gap-1">
-              <ArrowUp className="w-2.5 h-2.5 text-purple-400" /> TX
+          <div
+            className="p-2 rounded-xl border flex flex-col"
+            style={{
+              backgroundColor: 'var(--bg-surface-subtle)',
+              borderColor: 'var(--border-subtle)',
+            }}
+          >
+            <span className="text-[10px] flex items-center gap-1" style={{ color: 'var(--text-dim)' }}>
+              <ArrowUp className="w-2.5 h-2.5" style={{ color: 'var(--accent-tx)' }} /> TX
             </span>
-            <span className="font-mono font-medium text-purple-400 truncate tabular-nums">
+            <span
+              className="font-mono font-medium truncate tabular-nums"
+              style={{ color: 'var(--accent-tx)' }}
+            >
               {formatRate(currentLive?.tx_bytes_per_sec || 0, unitPreference)}
             </span>
           </div>
         </div>
 
         <div className="flex items-center justify-between pt-1">
-          <span className="text-[10px] text-slate-400 font-medium">Unit:</span>
+          <span className="text-[10px] font-medium" style={{ color: 'var(--text-dim)' }}>Unit:</span>
           <SegmentedControl<UnitPreference>
             id="unit-pref-selector"
             options={[

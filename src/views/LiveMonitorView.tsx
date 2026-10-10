@@ -58,16 +58,26 @@ export const LiveMonitorView: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Download Speedometer */}
         <GlassCard className="p-6 relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-emerald-500/20 to-transparent blur-3xl opacity-50 pointer-events-none" />
+          <div
+            className="absolute top-0 right-0 w-48 h-48 blur-3xl opacity-30 pointer-events-none rounded-full"
+            style={{ backgroundColor: 'var(--accent-rx)' }}
+          />
 
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+              <div
+                className="p-2 rounded-xl border"
+                style={{
+                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                  borderColor: 'rgba(16, 185, 129, 0.25)',
+                  color: 'var(--accent-rx)',
+                }}
+              >
                 <ArrowDown className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                     Download Throughput
                   </span>
                   <HelpTooltip
@@ -76,26 +86,39 @@ export const LiveMonitorView: React.FC = () => {
                     formula="(rx_bytes_now - rx_bytes_prev) / elapsed_seconds"
                   />
                 </div>
-                <div className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <div className="text-[11px] font-medium flex items-center gap-1" style={{ color: 'var(--accent-rx)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: 'var(--accent-rx)' }} />
                   Receiving Live
                 </div>
               </div>
             </div>
-            <span className="text-xs font-mono text-slate-400 bg-white/5 border border-white/5 px-2.5 py-1 rounded-full">
+            <span
+              className="text-xs font-mono border px-2.5 py-1 rounded-full"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                borderColor: 'var(--border-subtle)',
+                color: 'var(--text-dim)',
+              }}
+            >
               {formatPackets(currentLive?.rx_packets_per_sec || 0)}
             </span>
           </div>
 
           <div className="py-2">
-            <div className="text-4xl md:text-5xl font-bold text-white tracking-tight tabular-nums font-mono">
+            <div className="text-4xl md:text-5xl font-bold tracking-tight tabular-nums font-mono" style={{ color: 'var(--text-main)' }}>
               {formatRate(currentLive?.rx_bytes_per_sec || 0, unitPreference)}
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 mt-2 border-t border-white/5 text-xs text-slate-400">
+          <div
+            className="flex items-center justify-between pt-4 mt-2 border-t text-xs"
+            style={{
+              borderColor: 'var(--border-subtle)',
+              color: 'var(--text-muted)',
+            }}
+          >
             <span>Session Peak:</span>
-            <span className="font-mono font-semibold text-emerald-400">
+            <span className="font-mono font-semibold" style={{ color: 'var(--accent-rx)' }}>
               {formatRate(peakLiveRx, unitPreference)}
             </span>
           </div>
@@ -103,16 +126,26 @@ export const LiveMonitorView: React.FC = () => {
 
         {/* Upload Speedometer */}
         <GlassCard className="p-6 relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-purple-500/20 to-transparent blur-3xl opacity-50 pointer-events-none" />
+          <div
+            className="absolute top-0 right-0 w-48 h-48 blur-3xl opacity-30 pointer-events-none rounded-full"
+            style={{ backgroundColor: 'var(--accent-tx)' }}
+          />
 
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+              <div
+                className="p-2 rounded-xl border"
+                style={{
+                  backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                  borderColor: 'rgba(168, 85, 247, 0.25)',
+                  color: 'var(--accent-tx)',
+                }}
+              >
                 <ArrowUp className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                     Upload Throughput
                   </span>
                   <HelpTooltip
@@ -121,26 +154,39 @@ export const LiveMonitorView: React.FC = () => {
                     formula="(tx_bytes_now - tx_bytes_prev) / elapsed_seconds"
                   />
                 </div>
-                <div className="text-[11px] text-purple-400 font-medium flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+                <div className="text-[11px] font-medium flex items-center gap-1" style={{ color: 'var(--accent-tx)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: 'var(--accent-tx)' }} />
                   Transmitting Live
                 </div>
               </div>
             </div>
-            <span className="text-xs font-mono text-slate-400 bg-white/5 border border-white/5 px-2.5 py-1 rounded-full">
+            <span
+              className="text-xs font-mono border px-2.5 py-1 rounded-full"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                borderColor: 'var(--border-subtle)',
+                color: 'var(--text-dim)',
+              }}
+            >
               {formatPackets(currentLive?.tx_packets_per_sec || 0)}
             </span>
           </div>
 
           <div className="py-2">
-            <div className="text-4xl md:text-5xl font-bold text-white tracking-tight tabular-nums font-mono">
+            <div className="text-4xl md:text-5xl font-bold tracking-tight tabular-nums font-mono" style={{ color: 'var(--text-main)' }}>
               {formatRate(currentLive?.tx_bytes_per_sec || 0, unitPreference)}
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 mt-2 border-t border-white/5 text-xs text-slate-400">
+          <div
+            className="flex items-center justify-between pt-4 mt-2 border-t text-xs"
+            style={{
+              borderColor: 'var(--border-subtle)',
+              color: 'var(--text-muted)',
+            }}
+          >
             <span>Session Peak:</span>
-            <span className="font-mono font-semibold text-purple-400">
+            <span className="font-mono font-semibold" style={{ color: 'var(--accent-tx)' }}>
               {formatRate(peakLiveTx, unitPreference)}
             </span>
           </div>
@@ -151,12 +197,19 @@ export const LiveMonitorView: React.FC = () => {
       <GlassCard className="p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+            <div
+              className="p-2 rounded-xl border"
+              style={{
+                backgroundColor: 'var(--accent-primary-subtle)',
+                borderColor: 'var(--accent-primary-border)',
+                color: 'var(--accent-primary)',
+              }}
+            >
               <Radio className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h3 className="text-sm font-semibold text-white">
+                <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>
                   Rolling 60-Second Bandwidth Stream
                 </h3>
                 <HelpTooltip
@@ -164,35 +217,41 @@ export const LiveMonitorView: React.FC = () => {
                   content="Streaming SVG area graph of bandwidth over the past 60 seconds. Scrub your pointer horizontally across the graph to inspect exact throughput at any second."
                 />
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 Real-time 1000ms polling from /proc/net/dev on {selectedInterface}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-4 text-xs font-mono">
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <span className="flex items-center gap-1.5 font-medium" style={{ color: 'var(--accent-rx)' }}>
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--accent-rx)' }} />
               RX: {formatRate(hoveredSample ? hoveredSample.rx_bytes_per_sec : currentLive?.rx_bytes_per_sec || 0, unitPreference)}
             </span>
-            <span className="flex items-center gap-1.5 text-purple-400">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+            <span className="flex items-center gap-1.5 font-medium" style={{ color: 'var(--accent-tx)' }}>
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--accent-tx)' }} />
               TX: {formatRate(hoveredSample ? hoveredSample.tx_bytes_per_sec : currentLive?.tx_bytes_per_sec || 0, unitPreference)}
             </span>
           </div>
         </div>
 
         {/* SVG Chart Container */}
-        <div className="relative h-64 w-full bg-slate-950/60 rounded-2xl border border-white/5 overflow-hidden p-2">
+        <div
+          className="relative h-64 w-full rounded-2xl border overflow-hidden p-2"
+          style={{
+            backgroundColor: 'var(--bg-input)',
+            borderColor: 'var(--border-subtle)',
+          }}
+        >
           {/* Background grid lines */}
           <div className="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none opacity-20">
-            <div className="border-b border-white text-[10px] text-slate-400 font-mono">
+            <div className="border-b text-[10px] font-mono" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-dim)' }}>
               {formatRate(maxLiveRate, unitPreference)}
             </div>
-            <div className="border-b border-white text-[10px] text-slate-400 font-mono">
+            <div className="border-b text-[10px] font-mono" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-dim)' }}>
               {formatRate(maxLiveRate * 0.5, unitPreference)}
             </div>
-            <div className="border-b border-white text-[10px] text-slate-400 font-mono">
+            <div className="border-b text-[10px] font-mono" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-dim)' }}>
               0 B/s
             </div>
           </div>
@@ -204,12 +263,12 @@ export const LiveMonitorView: React.FC = () => {
           >
             <defs>
               <linearGradient id="rxGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                <stop offset="0%" stopColor="var(--accent-rx)" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="var(--accent-rx)" stopOpacity="0.0" />
               </linearGradient>
               <linearGradient id="txGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#a855f7" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#a855f7" stopOpacity="0.0" />
+                <stop offset="0%" stopColor="var(--accent-tx)" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="var(--accent-tx)" stopOpacity="0.0" />
               </linearGradient>
             </defs>
 
@@ -223,7 +282,7 @@ export const LiveMonitorView: React.FC = () => {
                 <polyline
                   points={rxPoints}
                   fill="none"
-                  stroke="#10b981"
+                  stroke="var(--accent-rx)"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -241,7 +300,7 @@ export const LiveMonitorView: React.FC = () => {
                 <polyline
                   points={txPoints}
                   fill="none"
-                  stroke="#a855f7"
+                  stroke="var(--accent-tx)"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"

@@ -238,49 +238,79 @@ export const OverviewView: React.FC = () => {
 
           <div className="space-y-3">
             {/* Split bar */}
-            <div className="h-4 w-full rounded-xl overflow-hidden flex border border-white/10 p-0.5 bg-slate-900/80">
+            <div
+              className="h-4 w-full rounded-xl overflow-hidden flex border p-0.5"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                borderColor: 'var(--border-subtle)',
+              }}
+            >
               <div
-                className="bg-emerald-500 rounded-l-lg transition-all duration-300"
-                style={{ width: `${balance.rxPercent}%` }}
+                className="rounded-l-lg transition-all duration-300"
+                style={{
+                  width: `${balance.rxPercent}%`,
+                  backgroundColor: 'var(--accent-rx)',
+                }}
                 title={`Download: ${balance.rxPercent.toFixed(1)}%`}
               />
               <div
-                className="bg-purple-500 rounded-r-lg transition-all duration-300"
-                style={{ width: `${balance.txPercent}%` }}
+                className="rounded-r-lg transition-all duration-300"
+                style={{
+                  width: `${balance.txPercent}%`,
+                  backgroundColor: 'var(--accent-tx)',
+                }}
                 title={`Upload: ${balance.txPercent.toFixed(1)}%`}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                <div className="flex items-center gap-1 text-emerald-400 font-medium">
+              <div
+                className="p-2.5 rounded-xl border"
+                style={{
+                  backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                  borderColor: 'rgba(16, 185, 129, 0.2)',
+                }}
+              >
+                <div className="flex items-center gap-1 font-medium" style={{ color: 'var(--accent-rx)' }}>
                   <ArrowDown className="w-3 h-3" /> Download (RX)
                 </div>
-                <div className="text-lg font-bold text-white font-mono mt-1">
+                <div className="text-lg font-bold font-mono mt-1" style={{ color: 'var(--text-main)' }}>
                   {balance.rxPercent.toFixed(1)}%
                 </div>
-                <div className="text-[11px] text-slate-400 font-mono truncate">
+                <div className="text-[11px] font-mono truncate" style={{ color: 'var(--text-dim)' }}>
                   {formatBytes(total.rx, unitPreference)}
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20">
-                <div className="flex items-center gap-1 text-purple-400 font-medium">
+              <div
+                className="p-2.5 rounded-xl border"
+                style={{
+                  backgroundColor: 'rgba(168, 85, 247, 0.08)',
+                  borderColor: 'rgba(168, 85, 247, 0.2)',
+                }}
+              >
+                <div className="flex items-center gap-1 font-medium" style={{ color: 'var(--accent-tx)' }}>
                   <ArrowUp className="w-3 h-3" /> Upload (TX)
                 </div>
-                <div className="text-lg font-bold text-white font-mono mt-1">
+                <div className="text-lg font-bold font-mono mt-1" style={{ color: 'var(--text-main)' }}>
                   {balance.txPercent.toFixed(1)}%
                 </div>
-                <div className="text-[11px] text-slate-400 font-mono truncate">
+                <div className="text-[11px] font-mono truncate" style={{ color: 'var(--text-dim)' }}>
                   {formatBytes(total.tx, unitPreference)}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="text-xs text-slate-400 pt-2 border-t border-white/5 flex justify-between items-center">
+          <div
+            className="text-xs pt-2 border-t flex justify-between items-center"
+            style={{
+              borderColor: 'var(--border-subtle)',
+              color: 'var(--text-muted)',
+            }}
+          >
             <span>Transfer Asymmetry:</span>
-            <span className="font-mono text-cyan-400 font-semibold">
+            <span className="font-mono font-semibold" style={{ color: 'var(--accent-primary)' }}>
               {balance.ratio.toFixed(2)}:1 (RX:TX)
             </span>
           </div>
@@ -292,20 +322,20 @@ export const OverviewView: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="text-sm font-semibold text-white">Past 24 Hours Activity</h3>
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Past 24 Hours Activity</h3>
               <HelpTooltip
                 title="24-Hour Timeline"
                 content="Hourly breakdown of network throughput for the last 24 hours. Hover any column to see exact RX, TX, and percentage of daily traffic."
               />
             </div>
-            <p className="text-xs text-slate-400">Hourly throughput distribution across the day</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Hourly throughput distribution across the day</p>
           </div>
-          <div className="flex items-center gap-4 text-xs">
-            <span className="flex items-center gap-1.5 text-slate-400">
-              <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> RX
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-rx)' }}>
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
             </span>
-            <span className="flex items-center gap-1.5 text-slate-400">
-              <span className="w-2.5 h-2.5 rounded-sm bg-purple-500" /> TX
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-tx)' }}>
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
             </span>
           </div>
         </div>
@@ -327,13 +357,25 @@ export const OverviewView: React.FC = () => {
                 className="flex-1 flex flex-col justify-end items-center h-full group relative"
               >
                 {/* Tooltip on hover */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2 rounded-xl bg-slate-900 border border-white/15 text-[10px] shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap">
-                  <div className="font-semibold text-white font-mono">
+                <div
+                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2 rounded-xl border text-[10px] shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                  style={{
+                    backgroundColor: 'var(--bg-surface)',
+                    borderColor: 'var(--border-card)',
+                  }}
+                >
+                  <div className="font-semibold font-mono" style={{ color: 'var(--text-main)' }}>
                     {h.time ? `${String(h.time.hour).padStart(2, '0')}:00` : 'Hour'}
                   </div>
-                  <div className="text-emerald-400">RX: {formatBytes(h.rx, unitPreference)}</div>
-                  <div className="text-purple-400">TX: {formatBytes(h.tx, unitPreference)}</div>
-                  <div className="text-slate-300 font-bold border-t border-white/10 mt-0.5 pt-0.5">
+                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(h.rx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(h.tx, unitPreference)}</div>
+                  <div
+                    className="font-bold border-t mt-0.5 pt-0.5"
+                    style={{
+                      borderColor: 'var(--border-subtle)',
+                      color: 'var(--text-main)',
+                    }}
+                  >
                     Total: {formatBytes(hTotal, unitPreference)}
                   </div>
                 </div>
@@ -343,13 +385,22 @@ export const OverviewView: React.FC = () => {
                   style={{ height: `${heightPercent}%` }}
                 >
                   <div
-                    className="w-full bg-purple-500/80"
-                    style={{ height: `${(1 - rxRatio) * 100}%` }}
+                    className="w-full"
+                    style={{
+                      height: `${(1 - rxRatio) * 100}%`,
+                      backgroundColor: 'var(--accent-tx)',
+                    }}
                   />
-                  <div className="w-full bg-emerald-500" style={{ height: `${rxRatio * 100}%` }} />
+                  <div
+                    className="w-full"
+                    style={{
+                      height: `${rxRatio * 100}%`,
+                      backgroundColor: 'var(--accent-rx)',
+                    }}
+                  />
                 </div>
 
-                <span className="text-[9px] text-slate-400 font-mono mt-1">
+                <span className="text-[9px] font-mono mt-1" style={{ color: 'var(--text-dim)' }}>
                   {h.time ? h.time.hour : idx}
                 </span>
               </div>

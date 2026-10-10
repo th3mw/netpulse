@@ -25,9 +25,13 @@ export function SegmentedControl<T extends string>({
   return (
     <div
       className={`
-        inline-flex p-1 rounded-xl bg-slate-950/60 border border-white/8 backdrop-blur-md relative
+        inline-flex p-1 rounded-xl border backdrop-blur-md relative transition-colors duration-300
         ${className}
       `}
+      style={{
+        backgroundColor: 'var(--bg-input)',
+        borderColor: 'var(--border-subtle)',
+      }}
     >
       {options.map((opt) => {
         const isActive = opt.value === value;
@@ -36,17 +40,21 @@ export function SegmentedControl<T extends string>({
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`
-              relative px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150
-              flex items-center gap-1.5 z-10 apple-press
-              ${isActive ? 'text-white font-semibold' : 'text-slate-400 hover:text-slate-200'}
-            `}
+            className="relative px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150 flex items-center gap-1.5 z-10 apple-press"
+            style={{
+              color: isActive ? 'var(--text-main)' : 'var(--text-muted)',
+              fontWeight: isActive ? 600 : 500,
+            }}
           >
             {isActive && (
               <motion.div
                 layoutId={id}
                 transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
-                className="absolute inset-0 bg-white/15 rounded-lg border border-white/10 shadow-sm z-[-1]"
+                className="absolute inset-0 rounded-lg border shadow-sm z-[-1]"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  borderColor: 'var(--border-card)',
+                }}
               />
             )}
             {opt.icon && <span className="opacity-80">{opt.icon}</span>}

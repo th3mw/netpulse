@@ -1,5 +1,27 @@
 export type UnitPreference = 'SI' | 'IEC' | 'BITS';
 
+export type AppTheme =
+  | 'cyber-neon'
+  | 'graphite'
+  | 'solar'
+  | 'emerald'
+  | 'nordic'
+  | 'light';
+
+export interface ThemeMeta {
+  id: AppTheme;
+  name: string;
+  description: string;
+  category: 'dark' | 'light';
+  previewColors: {
+    bg: string;
+    surface: string;
+    accent: string;
+    rx: string;
+    tx: string;
+  };
+}
+
 export type NavigationTab =
   | 'overview'
   | 'live'

@@ -13,12 +13,14 @@ import {
   Sliders,
   AlertTriangle,
   RotateCcw,
+  Palette,
 } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
 import { AppleButton } from '../components/ui/AppleButton';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { HelpTooltip } from '../components/ui/HelpTooltip';
+import { APP_THEMES } from '../lib/themes';
 import type { UnitPreference, VnstatInterface, InterfaceSummary } from '../types/vnstat';
 import { formatBytes } from '../lib/formatters';
 
@@ -37,6 +39,8 @@ export const SettingsView: React.FC = () => {
     removeInterfaceFromDb,
     updateDatabase,
     resetConfig,
+    theme,
+    setTheme,
   } = useNetworkStore();
 
   const activeIface = vnstatData?.interfaces.find((i: VnstatInterface) => i.name === selectedInterface);
@@ -456,6 +460,150 @@ export const SettingsView: React.FC = () => {
               );
             })}
           </div>
+        </div>
+      </GlassCard>
+
+      {/* Appearance Themes Gallery */}
+      <GlassCard className="p-6 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div
+              className="p-2.5 rounded-xl border transition-colors duration-300"
+              style={{
+                backgroundColor: 'var(--accent-primary-subtle)',
+                borderColor: 'var(--accent-primary-border)',
+                color: 'var(--accent-primary)',
+              }}
+            >
+              <Palette className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>
+                  Appearance & Desktop Themes
+                </h3>
+                <HelpTooltip
+                  title="Calibrated Color Themes"
+                  content="Select from 6 desktop appearance themes. Designed for users with different light sensitivities or aesthetic preferences. Graphite Pro provides neutral macOS dark without blue glare; Solar Amber eliminates blue light fatigue; Studio Light provides classic macOS daytime clarity."
+                />
+              </div>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                Customize app personality, contrast, and night-shift comfort (6 calibrated themes)
+              </p>
+            </div>
+          </div>
+
+          <span
+            className="text-xs font-mono px-2.5 py-1 rounded-full border capitalize self-start sm:self-auto"
+            style={{
+              backgroundColor: 'var(--accent-primary-subtle)',
+              borderColor: 'var(--accent-primary-border)',
+              color: 'var(--accent-primary)',
+            }}
+          >
+            Active: {theme.replace('-', ' ')}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+          {APP_THEMES.map((t) => {
+            const isSelected = t.id === theme;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  setTheme(t.id);
+                  setExportNotice(`Switched theme to ${t.name}`);
+                  setTimeout(() => setExportNotice(null), 3000);
+                }}
+                className={`p-3.5 rounded-2xl border text-left transition-all apple-press relative flex flex-col justify-between group ${
+                  isSelected ? 'shadow-lg' : 'hover:border-white/20'
+                }`}
+                style={{
+                  backgroundColor: isSelected ? 'var(--bg-surface)' : 'var(--bg-input)',
+                  borderColor: isSelected ? 'var(--accent-primary)' : 'var(--border-subtle)',
+                }}
+              >
+                <div>
+                  {/* Top Bar: Name + Badge */}
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold" style={{ color: 'var(--text-main)' }}>
+                      {t.name}
+                    </span>
+                    <span
+                      className="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded border"
+                      style={{
+                        backgroundColor: 'var(--bg-input)',
+                        borderColor: 'var(--border-subtle)',
+                        color: 'var(--text-dim)',
+                      }}
+                    >
+                      {t.category}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-[11px] leading-relaxed line-clamp-2 mb-3" style={{ color: 'var(--text-muted)' }}>
+                    {t.description}
+                  </p>
+                </div>
+
+                {/* Color Palette Swatches Preview */}
+                <div
+                  className="pt-2.5 border-t flex items-center justify-between"
+                  style={{ borderColor: 'var(--border-subtle)' }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className="w-3.5 h-3.5 rounded-full border shadow-sm"
+                      style={{ backgroundColor: t.previewColors.bg, borderColor: 'rgba(255,255,255,0.2)' }}
+                      title="Background"
+                    />
+                    <span
+                      className="w-3.5 h-3.5 rounded-full border shadow-sm"
+                      style={{ backgroundColor: t.previewColors.surface, borderColor: 'rgba(255,255,255,0.2)' }}
+                      title="Glass Surface"
+                    />
+                    <span
+                      className="w-3.5 h-3.5 rounded-full border shadow-sm"
+                      style={{ backgroundColor: t.previewColors.accent, borderColor: 'rgba(255,255,255,0.2)' }}
+                      title="Primary Accent"
+                    />
+                    <span
+                      className="w-3.5 h-3.5 rounded-full border shadow-sm"
+                      style={{ backgroundColor: t.previewColors.rx, borderColor: 'rgba(255,255,255,0.2)' }}
+                      title="RX Download"
+                    />
+                    <span
+                      className="w-3.5 h-3.5 rounded-full border shadow-sm"
+                      style={{ backgroundColor: t.previewColors.tx, borderColor: 'rgba(255,255,255,0.2)' }}
+                      title="TX Upload"
+                    />
+                  </div>
+
+                  <span
+                    className="text-[10px] font-medium px-2 py-0.5 rounded-lg border transition-colors"
+                    style={
+                      isSelected
+                        ? {
+                            backgroundColor: 'var(--accent-primary)',
+                            color: 'var(--accent-primary-fg)',
+                            borderColor: 'transparent',
+                          }
+                        : {
+                            backgroundColor: 'transparent',
+                            color: 'var(--text-dim)',
+                            borderColor: 'var(--border-subtle)',
+                          }
+                    }
+                  >
+                    {isSelected ? 'Active' : 'Apply'}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </GlassCard>
 

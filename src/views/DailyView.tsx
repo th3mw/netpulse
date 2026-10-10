@@ -111,11 +111,11 @@ export const DailyView: React.FC = () => {
             />
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> RX
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-rx)' }}>
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
             </span>
-            <span className="flex items-center gap-1.5 text-purple-400">
-              <span className="w-2.5 h-2.5 rounded-sm bg-purple-500" /> TX
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-tx)' }}>
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
             </span>
           </div>
         </div>
@@ -137,8 +137,8 @@ export const DailyView: React.FC = () => {
                   <div className="font-semibold text-white">
                     {formatDate(d.date)} ({dayOfWeekName})
                   </div>
-                  <div className="text-emerald-400">RX: {formatBytes(d.rx, unitPreference)}</div>
-                  <div className="text-purple-400">TX: {formatBytes(d.tx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(d.rx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(d.tx, unitPreference)}</div>
                   <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
                     Total: {formatBytes(dTotal, unitPreference)}
                   </div>
@@ -149,10 +149,13 @@ export const DailyView: React.FC = () => {
                   style={{ height: `${heightPercent}%` }}
                 >
                   <div
-                    className="w-full bg-purple-500/85"
-                    style={{ height: `${(1 - rxRatio) * 100}%` }}
+                    className="w-full"
+                    style={{ height: `${(1 - rxRatio) * 100}%`, backgroundColor: 'var(--accent-tx)' }}
                   />
-                  <div className="w-full bg-emerald-500" style={{ height: `${rxRatio * 100}%` }} />
+                  <div
+                    className="w-full"
+                    style={{ height: `${rxRatio * 100}%`, backgroundColor: 'var(--accent-rx)' }}
+                  />
                 </div>
 
                 <span className="text-[9px] text-slate-400 font-mono mt-1.5 truncate">
@@ -199,28 +202,29 @@ export const DailyView: React.FC = () => {
                 const avgRate = dTotal / 86400;
                 return (
                   <tr key={idx} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 text-slate-300 font-medium">{formatDate(d.date)}</td>
+                    <td className="px-5 py-3" style={{ color: 'var(--text-muted)' }}>{formatDate(d.date)}</td>
                     <td className="px-5 py-3">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                          isWeekend
-                            ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
-                            : 'bg-white/5 text-slate-300'
-                        }`}
+                        className="px-2 py-0.5 rounded text-[10px] font-semibold"
+                        style={{
+                          backgroundColor: isWeekend ? 'color-mix(in srgb, var(--accent-tx) 12%, transparent)' : 'var(--bg-input)',
+                          color: isWeekend ? 'var(--accent-tx)' : 'var(--text-muted)',
+                          borderColor: isWeekend ? 'color-mix(in srgb, var(--accent-tx) 25%, transparent)' : undefined,
+                        }}
                       >
                         {dayOfWeek}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-emerald-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-rx)' }}>
                       {formatBytes(d.rx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-purple-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-tx)' }}>
                       {formatBytes(d.tx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-white font-semibold">
+                    <td className="px-5 py-3 font-semibold" style={{ color: 'var(--text-main)' }}>
                       {formatBytes(dTotal, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-right text-cyan-400">
+                    <td className="px-5 py-3 text-right font-medium" style={{ color: 'var(--accent-primary)' }}>
                       {formatRate(avgRate, unitPreference)}
                     </td>
                   </tr>

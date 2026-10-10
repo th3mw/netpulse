@@ -93,11 +93,11 @@ export const HourlyView: React.FC = () => {
             />
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> RX
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-rx)' }}>
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
             </span>
-            <span className="flex items-center gap-1.5 text-purple-400">
-              <span className="w-2.5 h-2.5 rounded-sm bg-purple-500" /> TX
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-tx)' }}>
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
             </span>
           </div>
         </div>
@@ -120,8 +120,8 @@ export const HourlyView: React.FC = () => {
                     {formatDate(h.date)} {h.time ? `${String(h.time.hour).padStart(2, '0')}:00` : ''}
                     {isPeak && <span className="text-amber-400 ml-1.5 font-bold">[PEAK]</span>}
                   </div>
-                  <div className="text-emerald-400">RX: {formatBytes(h.rx, unitPreference)}</div>
-                  <div className="text-purple-400">TX: {formatBytes(h.tx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(h.rx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(h.tx, unitPreference)}</div>
                   <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
                     Total: {formatBytes(hTotal, unitPreference)} ({total24h > 0 ? ((hTotal / total24h) * 100).toFixed(1) : 0}%)
                   </div>
@@ -134,10 +134,13 @@ export const HourlyView: React.FC = () => {
                   style={{ height: `${heightPercent}%` }}
                 >
                   <div
-                    className="w-full bg-purple-500/85"
-                    style={{ height: `${(1 - rxRatio) * 100}%` }}
+                    className="w-full"
+                    style={{ height: `${(1 - rxRatio) * 100}%`, backgroundColor: 'var(--accent-tx)' }}
                   />
-                  <div className="w-full bg-emerald-500" style={{ height: `${rxRatio * 100}%` }} />
+                  <div
+                    className="w-full"
+                    style={{ height: `${rxRatio * 100}%`, backgroundColor: 'var(--accent-rx)' }}
+                  />
                 </div>
 
                 <span className="text-[10px] text-slate-400 font-mono mt-1.5">
@@ -177,22 +180,22 @@ export const HourlyView: React.FC = () => {
                 const pct = total24h > 0 ? (hTotal / total24h) * 100 : 0;
                 return (
                   <tr key={idx} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 text-slate-300">
+                    <td className="px-5 py-3" style={{ color: 'var(--text-muted)' }}>
                       {formatDate(h.date)} {h.time ? `${String(h.time.hour).padStart(2, '0')}:00` : ''}
                     </td>
-                    <td className="px-5 py-3 text-emerald-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-rx)' }}>
                       {formatBytes(h.rx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-purple-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-tx)' }}>
                       {formatBytes(h.tx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-white font-semibold">
+                    <td className="px-5 py-3 font-semibold" style={{ color: 'var(--text-main)' }}>
                       {formatBytes(hTotal, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-right text-cyan-400">
+                    <td className="px-5 py-3 text-right font-medium" style={{ color: 'var(--accent-primary)' }}>
                       {formatRate(avgRate, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-right text-slate-400">
+                    <td className="px-5 py-3 text-right" style={{ color: 'var(--text-muted)' }}>
                       {pct.toFixed(1)}%
                     </td>
                   </tr>

@@ -35,11 +35,11 @@ export const MonthlyView: React.FC = () => {
             <p className="text-xs text-slate-400">Month-over-month cumulative transfer records</p>
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> RX
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-rx)' }}>
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-rx)' }} /> RX
             </span>
-            <span className="flex items-center gap-1.5 text-purple-400">
-              <span className="w-2.5 h-2.5 rounded-sm bg-purple-500" /> TX
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-tx)' }}>
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'var(--accent-tx)' }} /> TX
             </span>
           </div>
         </div>
@@ -61,8 +61,8 @@ export const MonthlyView: React.FC = () => {
                   <div className="font-semibold text-white">
                     {m.date.year} {monthLabel}
                   </div>
-                  <div className="text-emerald-400">RX: {formatBytes(m.rx, unitPreference)}</div>
-                  <div className="text-purple-400">TX: {formatBytes(m.tx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(m.rx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(m.tx, unitPreference)}</div>
                   <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
                     Total: {formatBytes(mTotal, unitPreference)}
                   </div>
@@ -73,10 +73,13 @@ export const MonthlyView: React.FC = () => {
                   style={{ height: `${heightPercent}%` }}
                 >
                   <div
-                    className="w-full bg-purple-500/85"
-                    style={{ height: `${(1 - rxRatio) * 100}%` }}
+                    className="w-full"
+                    style={{ height: `${(1 - rxRatio) * 100}%`, backgroundColor: 'var(--accent-tx)' }}
                   />
-                  <div className="w-full bg-emerald-500" style={{ height: `${rxRatio * 100}%` }} />
+                  <div
+                    className="w-full"
+                    style={{ height: `${rxRatio * 100}%`, backgroundColor: 'var(--accent-rx)' }}
+                  />
                 </div>
 
                 <div className="text-center mt-2 font-mono">
@@ -124,19 +127,19 @@ export const MonthlyView: React.FC = () => {
 
                 return (
                   <tr key={idx} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 text-slate-200 font-semibold">
+                    <td className="px-5 py-3 font-semibold" style={{ color: 'var(--text-main)' }}>
                       {m.date.year} {monthLabel}
                     </td>
-                    <td className="px-5 py-3 text-emerald-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-rx)' }}>
                       {formatBytes(m.rx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-purple-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-tx)' }}>
                       {formatBytes(m.tx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-white font-bold">
+                    <td className="px-5 py-3 font-bold" style={{ color: 'var(--text-main)' }}>
                       {formatBytes(mTotal, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-slate-400">
+                    <td className="px-5 py-3" style={{ color: 'var(--text-muted)' }}>
                       ~{formatBytes(estDaily, unitPreference)}/day
                     </td>
                     <td className="px-5 py-3 text-right">

@@ -75,8 +75,8 @@ export const YearlyView: React.FC = () => {
                 {/* Tooltip */}
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl bg-slate-900 border border-white/15 text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap">
                   <div className="font-semibold text-white">Year {y.date.year}</div>
-                  <div className="text-emerald-400">RX: {formatBytes(y.rx, unitPreference)}</div>
-                  <div className="text-purple-400">TX: {formatBytes(y.tx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(y.rx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(y.tx, unitPreference)}</div>
                   <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
                     Total: {formatBytes(yTotal, unitPreference)}
                   </div>
@@ -87,10 +87,13 @@ export const YearlyView: React.FC = () => {
                   style={{ height: `${heightPercent}%` }}
                 >
                   <div
-                    className="w-full bg-purple-500/85"
-                    style={{ height: `${(1 - rxRatio) * 100}%` }}
+                    className="w-full"
+                    style={{ height: `${(1 - rxRatio) * 100}%`, backgroundColor: 'var(--accent-tx)' }}
                   />
-                  <div className="w-full bg-emerald-500" style={{ height: `${rxRatio * 100}%` }} />
+                  <div
+                    className="w-full"
+                    style={{ height: `${rxRatio * 100}%`, backgroundColor: 'var(--accent-rx)' }}
+                  />
                 </div>
 
                 <span className="text-sm font-bold text-slate-200 font-mono mt-2">
@@ -127,17 +130,17 @@ export const YearlyView: React.FC = () => {
                 const estMonthly = yTotal / 12;
                 return (
                   <tr key={idx} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 text-slate-200 font-bold text-sm">{y.date.year}</td>
-                    <td className="px-5 py-3 text-emerald-400 font-medium">
+                    <td className="px-5 py-3 font-bold text-sm" style={{ color: 'var(--text-main)' }}>{y.date.year}</td>
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-rx)' }}>
                       {formatBytes(y.rx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-purple-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-tx)' }}>
                       {formatBytes(y.tx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-white font-bold">
+                    <td className="px-5 py-3 font-bold" style={{ color: 'var(--text-main)' }}>
                       {formatBytes(yTotal, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-right text-cyan-400">
+                    <td className="px-5 py-3 text-right font-medium" style={{ color: 'var(--accent-primary)' }}>
                       ~{formatBytes(estMonthly, unitPreference)}/mo
                     </td>
                   </tr>

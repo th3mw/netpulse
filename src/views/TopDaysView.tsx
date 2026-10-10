@@ -47,12 +47,12 @@ export const TopDaysView: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-amber-500/20 text-[11px] font-mono">
               <div>
-                <span className="text-slate-400">RX:</span>{' '}
-                <span className="text-emerald-400">{formatBytes(topDays[0].rx, unitPreference)}</span>
+                <span className="opacity-60">RX:</span>{' '}
+                <span style={{ color: 'var(--accent-rx)' }}>{formatBytes(topDays[0].rx, unitPreference)}</span>
               </div>
               <div>
-                <span className="text-slate-400">TX:</span>{' '}
-                <span className="text-purple-400">{formatBytes(topDays[0].tx, unitPreference)}</span>
+                <span className="opacity-60">TX:</span>{' '}
+                <span style={{ color: 'var(--accent-tx)' }}>{formatBytes(topDays[0].tx, unitPreference)}</span>
               </div>
             </div>
           </GlassCard>
@@ -77,12 +77,12 @@ export const TopDaysView: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/10 text-[11px] font-mono">
               <div>
-                <span className="text-slate-400">RX:</span>{' '}
-                <span className="text-emerald-400">{formatBytes(topDays[1].rx, unitPreference)}</span>
+                <span className="opacity-60">RX:</span>{' '}
+                <span style={{ color: 'var(--accent-rx)' }}>{formatBytes(topDays[1].rx, unitPreference)}</span>
               </div>
               <div>
-                <span className="text-slate-400">TX:</span>{' '}
-                <span className="text-purple-400">{formatBytes(topDays[1].tx, unitPreference)}</span>
+                <span className="opacity-60">TX:</span>{' '}
+                <span style={{ color: 'var(--accent-tx)' }}>{formatBytes(topDays[1].tx, unitPreference)}</span>
               </div>
             </div>
           </GlassCard>
@@ -107,12 +107,12 @@ export const TopDaysView: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/10 text-[11px] font-mono">
               <div>
-                <span className="text-slate-400">RX:</span>{' '}
-                <span className="text-emerald-400">{formatBytes(topDays[2].rx, unitPreference)}</span>
+                <span className="opacity-60">RX:</span>{' '}
+                <span style={{ color: 'var(--accent-rx)' }}>{formatBytes(topDays[2].rx, unitPreference)}</span>
               </div>
               <div>
-                <span className="text-slate-400">TX:</span>{' '}
-                <span className="text-purple-400">{formatBytes(topDays[2].tx, unitPreference)}</span>
+                <span className="opacity-60">TX:</span>{' '}
+                <span style={{ color: 'var(--accent-tx)' }}>{formatBytes(topDays[2].tx, unitPreference)}</span>
               </div>
             </div>
           </GlassCard>
@@ -172,26 +172,29 @@ export const TopDaysView: React.FC = () => {
                         <span className="text-slate-400 font-semibold px-2">#{idx + 1}</span>
                       )}
                     </td>
-                    <td className="px-5 py-3 text-slate-200 font-semibold">{formatDate(d.date)}</td>
-                    <td className="px-5 py-3 text-slate-400">{dayOfWeek}</td>
-                    <td className="px-5 py-3 text-emerald-400 font-medium">
+                    <td className="px-5 py-3 font-semibold" style={{ color: 'var(--text-main)' }}>{formatDate(d.date)}</td>
+                    <td className="px-5 py-3" style={{ color: 'var(--text-muted)' }}>{dayOfWeek}</td>
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-rx)' }}>
                       {formatBytes(d.rx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-purple-400 font-medium">
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-tx)' }}>
                       {formatBytes(d.tx, unitPreference)}
                     </td>
-                    <td className="px-5 py-3 text-white font-bold">
+                    <td className="px-5 py-3 font-bold" style={{ color: 'var(--text-main)' }}>
                       {formatBytes(dTotal, unitPreference)}
                     </td>
                     <td className="px-5 py-3 text-right">
                       <div className="inline-flex items-center gap-2">
-                        <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div
+                          className="w-16 h-1.5 rounded-full overflow-hidden"
+                          style={{ backgroundColor: 'var(--bg-input)' }}
+                        >
                           <div
-                            className="h-full bg-cyan-400 rounded-full"
-                            style={{ width: `${pct}%` }}
+                            className="h-full rounded-full transition-all duration-300"
+                            style={{ width: `${pct}%`, backgroundColor: 'var(--accent-primary)' }}
                           />
                         </div>
-                        <span className="text-slate-300 font-semibold w-12 text-right">
+                        <span className="font-semibold w-12 text-right" style={{ color: 'var(--text-muted)' }}>
                           {pct.toFixed(1)}%
                         </span>
                       </div>

@@ -52,15 +52,31 @@ export const CompareView: React.FC = () => {
               {formatBytes(totalSysTraffic, unitPreference)}
             </div>
           </div>
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-right">
-            <span className="text-[10px] text-emerald-400 uppercase">System Total RX</span>
-            <div className="text-sm font-bold text-emerald-400 mt-0.5">
+          <div
+            className="p-2.5 rounded-xl text-right"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-rx) 12%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--accent-rx) 25%, transparent)',
+            }}
+          >
+            <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--accent-rx)' }}>
+              System Total RX
+            </span>
+            <div className="text-sm font-bold mt-0.5" style={{ color: 'var(--accent-rx)' }}>
               {formatBytes(totalSysRx, unitPreference)}
             </div>
           </div>
-          <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-right">
-            <span className="text-[10px] text-purple-400 uppercase">System Total TX</span>
-            <div className="text-sm font-bold text-purple-400 mt-0.5">
+          <div
+            className="p-2.5 rounded-xl text-right"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-tx) 12%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--accent-tx) 25%, transparent)',
+            }}
+          >
+            <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--accent-tx)' }}>
+              System Total TX
+            </span>
+            <div className="text-sm font-bold mt-0.5" style={{ color: 'var(--accent-tx)' }}>
               {formatBytes(totalSysTx, unitPreference)}
             </div>
           </div>
@@ -143,23 +159,32 @@ export const CompareView: React.FC = () => {
           return (
             <GlassCard
               key={iface.name}
-              className={`p-5 flex flex-col justify-between space-y-4 transition-all ${
-                isSelected ? 'ring-2 ring-cyan-500/80 bg-slate-900/90' : ''
-              }`}
+              className="p-5 flex flex-col justify-between space-y-4 transition-all"
+              style={{
+                borderColor: isSelected ? 'var(--accent-primary)' : undefined,
+                boxShadow: isSelected ? '0 0 0 1.5px var(--accent-primary)' : undefined,
+              }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-white/5 border border-white/5 text-cyan-400">
+                  <div
+                    className="p-2 rounded-xl"
+                    style={{
+                      backgroundColor: 'color-mix(in srgb, var(--accent-primary) 10%, transparent)',
+                      border: '1px solid color-mix(in srgb, var(--accent-primary) 20%, transparent)',
+                      color: 'var(--accent-primary)',
+                    }}
+                  >
                     {iface.name.includes('wlan') ? (
                       <Wifi className="w-4 h-4" />
                     ) : iface.name.includes('WARP') ? (
-                      <Shield className="w-4 h-4 text-purple-400" />
+                      <Shield className="w-4 h-4" />
                     ) : (
                       <Network className="w-4 h-4" />
                     )}
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white font-mono">{iface.name}</h4>
+                    <h4 className="text-sm font-bold font-mono" style={{ color: 'var(--text-main)' }}>{iface.name}</h4>
                     <span className="text-[10px] text-slate-400">
                       {iface.in_database ? 'Tracked in vnStat DB' : 'System Device Only'}
                     </span>
@@ -167,7 +192,14 @@ export const CompareView: React.FC = () => {
                 </div>
 
                 {isSelected ? (
-                  <span className="flex items-center gap-1 text-[10px] font-semibold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-full">
+                  <span
+                    className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                    style={{
+                      backgroundColor: 'color-mix(in srgb, var(--accent-primary) 15%, transparent)',
+                      color: 'var(--accent-primary)',
+                      border: '1px solid color-mix(in srgb, var(--accent-primary) 30%, transparent)',
+                    }}
+                  >
                     <CheckCircle className="w-3 h-3" /> Active
                   </span>
                 ) : (
@@ -176,24 +208,36 @@ export const CompareView: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <div className="text-2xl font-bold text-white font-mono">
+                <div className="text-2xl font-bold font-mono" style={{ color: 'var(--text-main)' }}>
                   {formatBytes(ifaceTotal, unitPreference)}
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <span className="text-[10px] text-emerald-400 flex items-center gap-0.5">
+                  <div
+                    className="p-2 rounded-lg"
+                    style={{
+                      backgroundColor: 'color-mix(in srgb, var(--accent-rx) 12%, transparent)',
+                      border: '1px solid color-mix(in srgb, var(--accent-rx) 22%, transparent)',
+                    }}
+                  >
+                    <span className="text-[10px] flex items-center gap-0.5" style={{ color: 'var(--accent-rx)' }}>
                       <ArrowDown className="w-2.5 h-2.5" /> RX
                     </span>
-                    <span className="text-emerald-300 font-medium truncate block mt-0.5">
+                    <span className="font-medium truncate block mt-0.5" style={{ color: 'var(--accent-rx)' }}>
                       {formatBytes(iface.rx_bytes, unitPreference)}
                     </span>
                   </div>
-                  <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                    <span className="text-[10px] text-purple-400 flex items-center gap-0.5">
+                  <div
+                    className="p-2 rounded-lg"
+                    style={{
+                      backgroundColor: 'color-mix(in srgb, var(--accent-tx) 12%, transparent)',
+                      border: '1px solid color-mix(in srgb, var(--accent-tx) 22%, transparent)',
+                    }}
+                  >
+                    <span className="text-[10px] flex items-center gap-0.5" style={{ color: 'var(--accent-tx)' }}>
                       <ArrowUp className="w-2.5 h-2.5" /> TX
                     </span>
-                    <span className="text-purple-300 font-medium truncate block mt-0.5">
+                    <span className="font-medium truncate block mt-0.5" style={{ color: 'var(--accent-tx)' }}>
                       {formatBytes(iface.tx_bytes, unitPreference)}
                     </span>
                   </div>

@@ -11,7 +11,7 @@ interface MetricCardProps {
     label: string;
     positive?: boolean;
   };
-  accentColor?: 'cyan' | 'purple' | 'emerald' | 'amber' | 'rose' | 'blue';
+  accentColor?: 'cyan' | 'purple' | 'emerald' | 'amber' | 'rose' | 'blue' | 'primary' | 'rx' | 'tx';
   className?: string;
   badge?: string;
   helpTitle?: string;
@@ -25,7 +25,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   subValue,
   icon,
   trend,
-  accentColor = 'cyan',
+  accentColor = 'primary',
   className = '',
   badge,
   helpTitle,
@@ -39,6 +39,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     amber: 'from-amber-500/20 to-transparent border-amber-500/30 text-amber-400',
     rose: 'from-rose-500/20 to-transparent border-rose-500/30 text-rose-400',
     blue: 'from-blue-500/20 to-transparent border-blue-500/30 text-blue-400',
+    primary: 'from-[var(--accent-primary)]/20 to-transparent border-[var(--accent-primary)]/30 text-[var(--accent-primary)]',
+    rx: 'from-[var(--accent-rx)]/20 to-transparent border-[var(--accent-rx)]/30 text-[var(--accent-rx)]',
+    tx: 'from-[var(--accent-tx)]/20 to-transparent border-[var(--accent-tx)]/30 text-[var(--accent-tx)]',
   }[accentColor];
 
   return (
@@ -50,7 +53,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({
 
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{title}</span>
+          <span className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+            {title}
+          </span>
           {helpContent && (
             <HelpTooltip
               title={helpTitle || title}
@@ -61,12 +66,26 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         </div>
         <div className="flex items-center gap-1.5">
           {badge && (
-            <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-white/10 text-slate-300 border border-white/5">
+            <span
+              className="px-2 py-0.5 text-[10px] font-semibold rounded-full border"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                borderColor: 'var(--border-subtle)',
+                color: 'var(--text-muted)',
+              }}
+            >
               {badge}
             </span>
           )}
           {icon && (
-            <div className={`p-1.5 rounded-lg bg-white/5 border border-white/5 text-slate-300`}>
+            <div
+              className="p-1.5 rounded-lg border"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                borderColor: 'var(--border-subtle)',
+                color: 'var(--text-muted)',
+              }}
+            >
               {icon}
             </div>
           )}
@@ -74,16 +93,20 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       </div>
 
       <div className="mt-1">
-        <div className="text-2xl font-semibold tracking-tight text-white tabular-nums font-mono">
+        <div
+          className="text-2xl font-semibold tracking-tight tabular-nums font-mono"
+          style={{ color: 'var(--text-main)' }}
+        >
           {value}
         </div>
         {(subValue || trend) && (
-          <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-400">
+          <div className="flex items-center gap-2 mt-1.5 text-xs" style={{ color: 'var(--text-dim)' }}>
             {trend && (
               <span
-                className={`font-medium ${
-                  trend.positive ? 'text-emerald-400' : 'text-slate-400'
-                }`}
+                className="font-medium"
+                style={{
+                  color: trend.positive ? 'var(--accent-rx)' : 'var(--text-dim)',
+                }}
               >
                 {trend.label}
               </span>
