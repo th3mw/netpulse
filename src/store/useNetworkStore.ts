@@ -24,6 +24,7 @@ interface NetworkState {
   peakLiveTx: number;
   unitPreference: UnitPreference;
   theme: AppTheme;
+  defaultInterface: string | null;
   billingConfig: BillingConfig;
   isLoading: boolean;
   error: string | null;
@@ -31,6 +32,7 @@ interface NetworkState {
 
   // Actions
   setSelectedInterface: (iface: string) => void;
+  setDefaultInterface: (iface: string | null) => void;
   setActiveTab: (tab: NavigationTab) => void;
   setUnitPreference: (pref: UnitPreference) => void;
   setTheme: (theme: AppTheme) => void;
@@ -128,13 +130,22 @@ export const applyThemeToDom = (theme: AppTheme) => {
 const initialTheme = getInitialTheme();
 applyThemeToDom(initialTheme);
 
+const getInitialDefaultInterface = (): string | null => {
+  if (typeof localStorage !== 'undefined') {
+    return localStorage.getItem('netpulse_default_interface') || localStorage.getItem('vnstat_default_interface') || null;
+  }
+  return null;
+};
+const initialDefaultIface = getInitialDefaultInterface();
+
 export const useNetworkStore = create<NetworkState>((set, get) => ({
   interfaces: [
     { name: 'wlan0', is_up: true, in_database: true, rx_bytes: 12212811191, tx_bytes: 3296136584 },
     { name: 'enp0s31f6', is_up: false, in_database: true, rx_bytes: 0, tx_bytes: 0 },
     { name: 'CloudflareWARP', is_up: true, in_database: true, rx_bytes: 192919151, tx_bytes: 445416507 },
   ],
-  selectedInterface: 'wlan0',
+  selectedInterface: initialDefaultIface || 'wlan0',
+  defaultInterface: initialDefaultIface,
   activeTab: 'overview',
   vnstatData: null,
   percentileReport: null,
@@ -160,6 +171,17 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
     get().fetchPercentileReport();
   },
 
+  setDefaultInterface: (iface) => {
+    if (typeof localStorage !== 'undefined') {
+      if (iface) {
+        localStorage.setItem('netpulse_default_interface', iface);
+      } else {
+        localStorage.removeItem('netpulse_default_interface');
+      }
+    }
+    set({ defaultInterface: iface });
+  },
+
   setActiveTab: (tab) => set({ activeTab: tab }),
 
   setUnitPreference: (pref) => set({ unitPreference: pref }),
@@ -180,9 +202,11 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
       const result = await invoke<InterfaceSummary[]>('get_interfaces');
       if (result && result.length > 0) {
         set({ interfaces: result });
+        const defaultIface = get().defaultInterface;
         const currentSelected = get().selectedInterface;
-        const exists = result.some((i) => i.name === currentSelected);
-        if (!exists) {
+        if (defaultIface && result.some((i) => i.name === defaultIface)) {
+          set({ selectedInterface: defaultIface });
+        } else if (!result.some((i) => i.name === currentSelected)) {
           const firstDb = result.find((i) => i.in_database) || result[0];
           set({ selectedInterface: firstDb.name });
         }

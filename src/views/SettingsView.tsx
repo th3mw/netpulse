@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   RotateCcw,
   Palette,
+  Star,
 } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
@@ -31,6 +32,8 @@ export const SettingsView: React.FC = () => {
     unitPreference,
     setUnitPreference,
     selectedInterface,
+    defaultInterface,
+    setDefaultInterface,
     interfaces,
     vnstatData,
     setAlias,
@@ -445,6 +448,7 @@ export const SettingsView: React.FC = () => {
           >
             {interfaces.map((iface: InterfaceSummary) => {
               const isSelected = iface.name === selectedInterface;
+              const isDefault = iface.name === defaultInterface;
               const isBusy = actionInProgress === iface.name;
 
               return (
@@ -460,6 +464,18 @@ export const SettingsView: React.FC = () => {
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-sm" style={{ color: 'var(--text-main)' }}>{iface.name}</span>
+                        {isDefault && (
+                          <span
+                            className="px-1.5 py-0.5 rounded text-[10px] font-sans border flex items-center gap-1 font-semibold"
+                            style={{
+                              backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                              borderColor: 'rgba(245, 158, 11, 0.35)',
+                              color: '#f59e0b',
+                            }}
+                          >
+                            <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" /> Default
+                          </span>
+                        )}
                         {isSelected && (
                           <span
                             className="px-1.5 py-0.5 rounded text-[10px] font-sans border"
@@ -488,10 +504,28 @@ export const SettingsView: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
+                    <AppleButton
+                      variant={isDefault ? 'secondary' : 'glass'}
+                      size="sm"
+                      onClick={() => {
+                        setDefaultInterface(isDefault ? null : iface.name);
+                        setExportNotice(
+                          isDefault
+                            ? `Cleared default interface`
+                            : `Set '${iface.name}' as default startup interface`
+                        );
+                        setTimeout(() => setExportNotice(null), 3000);
+                      }}
+                      icon={<Star className={`w-3.5 h-3.5 ${isDefault ? 'fill-amber-400 text-amber-400' : ''}`} />}
+                      title={isDefault ? 'Default interface (click to clear)' : 'Set as default startup interface'}
+                    >
+                      {isDefault ? 'Default' : 'Set Default'}
+                    </AppleButton>
+
                     {iface.in_database ? (
                       <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[11px] border border-emerald-500/20 font-sans flex items-center gap-1.5">
-                        <Check className="w-3 h-3" /> Tracked in DB
+                        <Check className="w-3 h-3" /> Tracked
                       </span>
                     ) : (
                       <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 text-[11px] border border-amber-500/20 font-sans flex items-center gap-1.5">
@@ -518,7 +552,7 @@ export const SettingsView: React.FC = () => {
                         disabled={isBusy}
                         icon={<PlusCircle className="w-3.5 h-3.5" style={{ color: 'var(--accent-primary)' }} />}
                       >
-                        {isBusy ? 'Adding...' : 'Track Interface'}
+                        {isBusy ? 'Adding...' : 'Track'}
                       </AppleButton>
                     )}
                   </div>

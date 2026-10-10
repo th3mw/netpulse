@@ -16,6 +16,7 @@ import {
   ArrowUp,
   ChevronDown,
   HelpCircle,
+  Star,
 } from 'lucide-react';
 import { useNetworkStore } from '../../store/useNetworkStore';
 import type { NavigationTab, UnitPreference } from '../../types/vnstat';
@@ -64,6 +65,7 @@ export const Sidebar: React.FC = () => {
   const {
     interfaces,
     selectedInterface,
+    defaultInterface,
     setSelectedInterface,
     activeTab,
     setActiveTab,
@@ -138,8 +140,11 @@ export const Sidebar: React.FC = () => {
             <div className="flex items-center gap-2 truncate">
               <Wifi className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--accent-primary)' }} />
               <div className="truncate">
-                <div className="text-xs font-semibold truncate" style={{ color: 'var(--text-main)' }}>
-                  {selectedInterface}
+                <div className="text-xs font-semibold truncate flex items-center gap-1.5" style={{ color: 'var(--text-main)' }}>
+                  <span>{selectedInterface}</span>
+                  {selectedInterface === defaultInterface && (
+                    <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" title="Default Interface" />
+                  )}
                 </div>
                 {alias && <div className="text-[10px] truncate" style={{ color: 'var(--text-dim)' }}>{alias}</div>}
               </div>
@@ -182,7 +187,12 @@ export const Sidebar: React.FC = () => {
                       : { color: 'var(--text-main)' }
                   }
                 >
-                  <span className="font-mono">{iface.name}</span>
+                  <div className="flex items-center gap-1.5 font-mono">
+                    <span>{iface.name}</span>
+                    {iface.name === defaultInterface && (
+                      <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" title="Default Interface" />
+                    )}
+                  </div>
                   {iface.in_database && (
                     <span
                       className="text-[9px] px-1.5 py-0.5 rounded border"
