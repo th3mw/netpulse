@@ -87,8 +87,8 @@ export const OverviewView: React.FC = () => {
           title="Month Run-Rate"
           value={formatBytes(projection.projectedBytes, unitPreference)}
           subValue={`Actual MTD: ${formatBytes(currentMonthTotal, unitPreference)}`}
-          icon={<Activity className="w-4 h-4 text-purple-400" />}
-          accentColor="purple"
+          icon={<Activity className="w-4 h-4" />}
+          accentColor="primary"
           badge="Forecast"
           helpTitle="Month Run-Rate Forecast"
           helpContent="Estimated total volume by the end of the billing cycle based on your current daily consumption rate."
@@ -99,8 +99,8 @@ export const OverviewView: React.FC = () => {
           title="95th Percentile Burst"
           value={percentileReport?.total_95th_str || 'Calculating...'}
           subValue={`RX: ${percentileReport?.rx_95th_str || '-'} • TX: ${percentileReport?.tx_95th_str || '-'}`}
-          icon={<Gauge className="w-4 h-4 text-amber-400" />}
-          accentColor="amber"
+          icon={<Gauge className="w-4 h-4" />}
+          accentColor="tx"
           badge="ISP Billing"
           helpTitle="95th Percentile Bandwidth"
           helpContent="Burstable billing rate used by transit providers: top 5% peak spikes are discarded, leaving the 95th percentile sustained rate."
@@ -111,8 +111,8 @@ export const OverviewView: React.FC = () => {
           title="All-Time Total"
           value={formatBytes(total.rx + total.tx, unitPreference)}
           subValue={`RX: ${formatBytes(total.rx, unitPreference)} • TX: ${formatBytes(total.tx, unitPreference)}`}
-          icon={<HardDrive className="w-4 h-4 text-emerald-400" />}
-          accentColor="emerald"
+          icon={<HardDrive className="w-4 h-4" />}
+          accentColor="rx"
           badge="Cumulative"
           helpTitle="All-Time Lifetime Traffic"
           helpContent="Grand total of all bytes transferred through this network card since vnstat began logging."
@@ -128,92 +128,107 @@ export const OverviewView: React.FC = () => {
             <div className="flex items-center gap-2">
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="text-sm font-semibold text-white">Monthly Quota & Burn Rate</h3>
+                  <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Monthly Quota & Burn Rate</h3>
                   <HelpTooltip
                     title="Quota & Burn Rate"
                     content="Tracks your data cap usage against your billing renewal day. Warns before overage charges and suggests maximum daily burn allowance."
                     formula="(monthly_used / quota_cap) * 100%"
                   />
                 </div>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                   Cycle day {projection.daysElapsed} of {projection.daysTotal} (Resets on day{' '}
                   {billingConfig.cycleStartDay})
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
-              <Clock className="w-3.5 h-3.5 text-cyan-400" />
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-mono"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                borderColor: 'var(--border-subtle)',
+                color: 'var(--text-muted)',
+              }}
+            >
+              <Clock className="w-3.5 h-3.5" style={{ color: 'var(--accent-primary)' }} />
               <span>{projection.daysTotal - projection.daysElapsed} days remaining</span>
             </div>
           </div>
 
           {/* Progress Bar */}
           <div className="space-y-1.5">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">
+            <div className="flex justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
+              <span>
                 Used:{' '}
-                <strong className="text-white font-mono">
+                <strong className="font-mono" style={{ color: 'var(--text-main)' }}>
                   {formatBytes(currentMonthTotal, unitPreference)}
                 </strong>
               </span>
-              <span className="text-slate-400">
+              <span>
                 Limit:{' '}
-                <strong className="text-white font-mono">
+                <strong className="font-mono" style={{ color: 'var(--text-main)' }}>
                   {formatBytes(billingConfig.monthlyQuotaBytes, unitPreference)}
                 </strong>
               </span>
             </div>
 
-            <div className="h-3 w-full bg-slate-900/90 rounded-full overflow-hidden p-0.5 border border-white/10 relative">
+            <div
+              className="h-3 w-full rounded-full overflow-hidden p-0.5 border relative"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                borderColor: 'var(--border-subtle)',
+              }}
+            >
               <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  (projection.quotaPercent || 0) > 90
-                    ? 'bg-rose-500'
-                    : (projection.quotaPercent || 0) > 75
-                    ? 'bg-amber-400'
-                    : 'bg-gradient-to-r from-cyan-500 to-blue-500'
-                }`}
-                style={{ width: `${Math.min(100, projection.quotaPercent || 0)}%` }}
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${Math.min(100, projection.quotaPercent || 0)}%`,
+                  backgroundColor:
+                    (projection.quotaPercent || 0) > 90
+                      ? 'var(--accent-tx)'
+                      : (projection.quotaPercent || 0) > 75
+                      ? 'color-mix(in srgb, var(--accent-primary) 50%, var(--accent-tx))'
+                      : 'var(--accent-primary)',
+                }}
               />
             </div>
 
             <div className="flex justify-between items-center text-xs pt-1">
-              <div className="flex items-center gap-1.5 text-slate-300">
+              <div className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
                 {(projection.quotaPercent || 0) > 85 ? (
-                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                  <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--accent-tx)' }} />
                 ) : (
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <CheckCircle className="w-3.5 h-3.5" style={{ color: 'var(--accent-rx)' }} />
                 )}
                 <span>
-                  Quota used: <strong>{(projection.quotaPercent || 0).toFixed(1)}%</strong>
+                  Quota used: <strong style={{ color: 'var(--text-main)' }}>{(projection.quotaPercent || 0).toFixed(1)}%</strong>
                 </span>
               </div>
-              <div className="text-slate-400">
+              <div style={{ color: 'var(--text-muted)' }}>
                 Daily Budget Remaining:{' '}
-                <strong className="text-cyan-400 font-mono">
+                <strong className="font-mono" style={{ color: 'var(--accent-primary)' }}>
                   {formatBytes(projection.recommendedDailyAllowance || 0, unitPreference)}/day
                 </strong>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 pt-2 border-t border-white/5">
-            <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-              <span className="text-[10px] text-slate-400 uppercase font-medium">Daily Burn Rate</span>
-              <div className="text-sm font-semibold text-white font-mono mt-0.5">
+          <div className="grid grid-cols-3 gap-3 pt-2 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
+            <div className="p-3 rounded-xl border" style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-subtle)' }}>
+              <span className="text-[10px] uppercase font-medium" style={{ color: 'var(--text-dim)' }}>Daily Burn Rate</span>
+              <div className="text-sm font-semibold font-mono mt-0.5" style={{ color: 'var(--text-main)' }}>
                 {formatBytes(projection.burnRatePerDay, unitPreference)}/day
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-              <span className="text-[10px] text-slate-400 uppercase font-medium">Busiest Hour</span>
-              <div className="text-sm font-semibold text-white font-mono mt-0.5">
+            <div className="p-3 rounded-xl border" style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-subtle)' }}>
+              <span className="text-[10px] uppercase font-medium" style={{ color: 'var(--text-dim)' }}>Busiest Hour</span>
+              <div className="text-sm font-semibold font-mono mt-0.5" style={{ color: 'var(--text-main)' }}>
                 {peakHour?.time ? `${peakHour.time.hour}:00` : '-'} (
                 {formatBytes((peakHour?.rx || 0) + (peakHour?.tx || 0), unitPreference)})
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-              <span className="text-[10px] text-slate-400 uppercase font-medium">All-Time Peak Day</span>
-              <div className="text-sm font-semibold text-white font-mono mt-0.5 truncate">
+            <div className="p-3 rounded-xl border" style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-subtle)' }}>
+              <span className="text-[10px] uppercase font-medium" style={{ color: 'var(--text-dim)' }}>All-Time Peak Day</span>
+              <div className="text-sm font-semibold font-mono mt-0.5 truncate" style={{ color: 'var(--text-main)' }}>
                 {topDays[0]
                   ? `${topDays[0].date.year}-${topDays[0].date.month}-${topDays[0].date.day}`
                   : '-'}
@@ -226,14 +241,14 @@ export const OverviewView: React.FC = () => {
         <GlassCard className="p-5 flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="text-sm font-semibold text-white">Traffic Symmetry</h3>
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Traffic Symmetry</h3>
               <HelpTooltip
                 title="Traffic Symmetry (RX vs TX)"
                 content="Compares inbound download volume (RX) to outbound upload volume (TX). Most home connections are heavily download-skewed (3:1 to 10:1)."
                 formula="Ratio = RX / TX"
               />
             </div>
-            <p className="text-xs text-slate-400">Download vs Upload distribution ratio</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Download vs Upload distribution ratio</p>
           </div>
 
           <div className="space-y-3">
@@ -267,8 +282,8 @@ export const OverviewView: React.FC = () => {
               <div
                 className="p-2.5 rounded-xl border"
                 style={{
-                  backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                  borderColor: 'rgba(16, 185, 129, 0.2)',
+                  backgroundColor: 'color-mix(in srgb, var(--accent-rx) 10%, transparent)',
+                  borderColor: 'color-mix(in srgb, var(--accent-rx) 22%, transparent)',
                 }}
               >
                 <div className="flex items-center gap-1 font-medium" style={{ color: 'var(--accent-rx)' }}>
@@ -285,8 +300,8 @@ export const OverviewView: React.FC = () => {
               <div
                 className="p-2.5 rounded-xl border"
                 style={{
-                  backgroundColor: 'rgba(168, 85, 247, 0.08)',
-                  borderColor: 'rgba(168, 85, 247, 0.2)',
+                  backgroundColor: 'color-mix(in srgb, var(--accent-tx) 10%, transparent)',
+                  borderColor: 'color-mix(in srgb, var(--accent-tx) 22%, transparent)',
                 }}
               >
                 <div className="flex items-center gap-1 font-medium" style={{ color: 'var(--accent-tx)' }}>
@@ -408,7 +423,7 @@ export const OverviewView: React.FC = () => {
           })}
         </div>
 
-        <div className="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-white/5">
+        <div className="flex justify-between text-[11px] pt-1 border-t" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }}>
           <span>24 Hours Ago</span>
           <span>Last Updated: {iface?.updated ? formatDateTime(iface.updated.date, iface.updated.time) : '-'}</span>
           <span>Now</span>

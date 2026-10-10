@@ -35,17 +35,17 @@ const helpItems: HelpSection[] = [
     icon: Radio,
     summary: 'The fundamental direction of network packet flow tracked by the Linux kernel.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <p>
-          <strong className="text-emerald-400">RX (Receive)</strong> represents all incoming data
+          <strong style={{ color: 'var(--accent-rx)' }}>RX (Receive)</strong> represents all incoming data
           downloaded to your computer from external networks, the internet, or local LAN devices.
         </p>
         <p>
-          <strong className="text-purple-400">TX (Transmit)</strong> represents all outgoing data
+          <strong style={{ color: 'var(--accent-tx)' }}>TX (Transmit)</strong> represents all outgoing data
           uploaded from your computer (e.g. cloud backups, outgoing requests, video streaming upload).
         </p>
         <p>
-          vnStat queries these counters directly from the kernel (<code className="text-cyan-300">/proc/net/dev</code>),
+          vnStat queries these counters directly from the kernel (<code style={{ color: 'var(--accent-primary)' }}>/proc/net/dev</code>),
           meaning it does <strong>not</strong> sniff packet contents or consume CPU for deep inspection.
         </p>
       </div>
@@ -59,7 +59,7 @@ const helpItems: HelpSection[] = [
     icon: Radio,
     summary: 'High-frequency 1000ms real-time throughput gauges and area streaming graph.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <p>
           The Live Cockpit polls Linux kernel interface byte counters every 1,000 milliseconds via an
           asynchronous Tokio worker in the Rust backend.
@@ -83,7 +83,7 @@ const helpItems: HelpSection[] = [
     icon: Gauge,
     summary: 'Burstable rate billing calculation used by Internet transit providers and data centers.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <p>
           Standard 95th percentile billing allows a network connection to occasionally burst above its
           nominal commitment rate without incurring financial penalties.
@@ -108,13 +108,13 @@ const helpItems: HelpSection[] = [
     icon: HardDrive,
     summary: 'Predicts your month-end volume and suggests safe daily bandwidth allowances.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <p>
           The forecast engine calculates your average consumption per day elapsed in your billing cycle,
           then multiplies by the remaining days to predict your month-end total.
         </p>
         <p>
-          <strong>Recommended Daily Allowance:</strong> Divides your remaining data budget by the days
+          <strong style={{ color: 'var(--text-main)' }}>Recommended Daily Allowance:</strong> Divides your remaining data budget by the days
           left until your cycle reset date. If you stay under this number each day, you will never
           exceed your monthly cap.
         </p>
@@ -129,7 +129,7 @@ const helpItems: HelpSection[] = [
     icon: Clock,
     summary: 'High-resolution 300-second historical entries recorded by the vnStat daemon.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <p>
           vnStat maintains a rotating buffer of 5-minute slots in SQLite (typically 48 hours or more).
         </p>
@@ -148,13 +148,13 @@ const helpItems: HelpSection[] = [
     icon: Calendar,
     summary: '24-hour distribution profile and long-term day-by-day logs.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <p>
-          <strong>Hourly View:</strong> Visualizes consumption across the 24 hours of the day,
+          <strong style={{ color: 'var(--text-main)' }}>Hourly View:</strong> Visualizes consumption across the 24 hours of the day,
           automatically tagging the peak throughput hour and quietest hours.
         </p>
         <p>
-          <strong>Daily View:</strong> Lists every day with weekday vs weekend aggregate averages,
+          <strong style={{ color: 'var(--text-main)' }}>Daily View:</strong> Lists every day with weekday vs weekend aggregate averages,
           revealing whether your bandwidth is predominantly used during business days or weekends.
         </p>
       </div>
@@ -168,7 +168,7 @@ const helpItems: HelpSection[] = [
     icon: Grid,
     summary: 'Recurring density matrix profiling network usage by day of week and hour of day.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <p>
           Organizes all recorded hourly data into a 7-row (Sunday - Saturday) by 24-column (0h - 23h)
           grid inspired by the GitHub contributions graph.
@@ -187,19 +187,19 @@ const helpItems: HelpSection[] = [
     icon: Scale,
     summary: 'The differences between 1000-base, 1024-base, and bit-based rate representations.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <p>
-          <strong className="text-white">SI (Decimal / Base 1000):</strong> Standard defined by the
+          <strong style={{ color: 'var(--text-main)' }}>SI (Decimal / Base 1000):</strong> Standard defined by the
           International System of Units. 1 KB = 1,000 Bytes, 1 MB = 1,000,000 Bytes, 1 GB = 10⁹ Bytes.
           Used by Apple macOS, drive manufacturers, and telecommunications standards.
         </p>
         <p>
-          <strong className="text-white">IEC (Binary / Base 1024):</strong> Standard defined by the
+          <strong style={{ color: 'var(--text-main)' }}>IEC (Binary / Base 1024):</strong> Standard defined by the
           International Electrotechnical Commission. 1 KiB = 1,024 Bytes, 1 MiB = 1,048,576 Bytes, 1 GiB = 2³⁰ Bytes.
           Traditional Linux/UNIX reporting.
         </p>
         <p>
-          <strong className="text-white">Bits (Base 1000, x8 multiplier):</strong> Network transmission
+          <strong style={{ color: 'var(--text-main)' }}>Bits (Base 1000, x8 multiplier):</strong> Network transmission
           standard. 1 Byte = 8 bits. Used by Internet Service Providers (e.g. &quot;100 Mbps connection&quot;
           downloads at ~12.5 MB/s).
         </p>
@@ -213,15 +213,15 @@ const helpItems: HelpSection[] = [
     icon: Terminal,
     summary: 'Essential terminal commands for managing the underlying vnstat service and database.',
     details: (
-      <div className="space-y-2 text-xs text-slate-300">
-        <p>vnStat runs as a systemd background service writing to SQLite at <code className="text-cyan-300">/var/lib/vnstat/vnstat.db</code>.</p>
-        <ul className="list-disc pl-4 space-y-1 text-slate-400">
-          <li><code className="text-white">systemctl status vnstat</code> - Check daemon state</li>
-          <li><code className="text-white">vnstat --iflist</code> - List available kernel interfaces</li>
-          <li><code className="text-white">vnstat --add -i eth0</code> - Track a new interface in DB</li>
-          <li><code className="text-white">vnstat --remove -i eth0</code> - Stop tracking an interface</li>
-          <li><code className="text-white">vnstat --setalias &quot;Fiber&quot; -i wlan0</code> - Rename interface alias</li>
-          <li><code className="text-white">vnstat --json</code> - Dump full telemetry structure as JSON</li>
+      <div className="space-y-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+        <p>vnStat runs as a systemd background service writing to SQLite at <code style={{ color: 'var(--accent-primary)' }}>/var/lib/vnstat/vnstat.db</code>.</p>
+        <ul className="list-disc pl-4 space-y-1" style={{ color: 'var(--text-dim)' }}>
+          <li><code style={{ color: 'var(--text-main)' }}>systemctl status vnstat</code> - Check daemon state</li>
+          <li><code style={{ color: 'var(--text-main)' }}>vnstat --iflist</code> - List available kernel interfaces</li>
+          <li><code style={{ color: 'var(--text-main)' }}>vnstat --add -i eth0</code> - Track a new interface in DB</li>
+          <li><code style={{ color: 'var(--text-main)' }}>vnstat --remove -i eth0</code> - Stop tracking an interface</li>
+          <li><code style={{ color: 'var(--text-main)' }}>vnstat --setalias &quot;Fiber&quot; -i wlan0</code> - Rename interface alias</li>
+          <li><code style={{ color: 'var(--text-main)' }}>vnstat --json</code> - Dump full telemetry structure as JSON</li>
         </ul>
       </div>
     ),
@@ -253,14 +253,21 @@ export const HelpView: React.FC = () => {
       {/* Header Banner */}
       <GlassCard className="p-6 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <div
+            className="p-3 rounded-2xl border"
+            style={{
+              backgroundColor: 'var(--accent-primary-subtle)',
+              borderColor: 'var(--accent-primary-border)',
+              color: 'var(--accent-primary)',
+            }}
+          >
             <BookOpen className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white tracking-tight">
+            <h3 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text-main)' }}>
               VNstat Knowledge & Documentation Guide
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
               Comprehensive reference for network metrics, formulas, unit systems, and daemon controls
             </p>
           </div>
@@ -270,48 +277,74 @@ export const HelpView: React.FC = () => {
           href="https://linux.die.net/man/1/vnstat"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-slate-300 transition-colors apple-press"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors apple-press"
+          style={{
+            backgroundColor: 'var(--bg-input)',
+            borderColor: 'var(--border-subtle)',
+            color: 'var(--text-muted)',
+          }}
         >
           <span>vnstat(1) Manpage</span>
-          <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+          <ExternalLink className="w-3.5 h-3.5" style={{ color: 'var(--text-dim)' }} />
         </a>
       </GlassCard>
 
       {/* Filter & Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Category Pills */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950/60 border border-white/8 backdrop-blur-md">
+        <div
+          className="flex items-center gap-1.5 p-1 rounded-xl border backdrop-blur-md"
+          style={{
+            backgroundColor: 'var(--bg-surface-subtle)',
+            borderColor: 'var(--border-subtle)',
+          }}
+        >
           {[
             { id: 'all', label: 'All Topics' },
             { id: 'basics', label: 'Basics' },
             { id: 'metrics', label: 'Metrics' },
             { id: 'units', label: 'Unit Systems' },
             { id: 'cli', label: 'CLI & Cheatsheet' },
-          ].map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3 py-1.5 text-xs rounded-lg transition-colors apple-press font-medium ${
-                selectedCategory === cat.id
-                  ? 'bg-white/15 text-white font-semibold'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
+          ].map((cat) => {
+            const isSelected = selectedCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className="px-3 py-1.5 text-xs rounded-lg transition-colors apple-press font-medium"
+                style={
+                  isSelected
+                    ? {
+                        backgroundColor: 'var(--accent-primary)',
+                        color: 'var(--accent-primary-fg)',
+                        fontWeight: 600,
+                      }
+                    : {
+                        color: 'var(--text-muted)',
+                      }
+                }
+              >
+                {cat.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Search Input */}
         <div className="relative w-full sm:w-64">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-3" style={{ color: 'var(--text-dim)' }} />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search documentation..."
-            className="w-full pl-9 pr-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 transition-colors"
+            className="w-full pl-9 pr-3.5 py-1.5 rounded-xl border text-xs focus:outline-none transition-colors"
+            style={{
+              backgroundColor: 'var(--bg-input)',
+              borderColor: 'var(--border-subtle)',
+              color: 'var(--text-main)',
+            }}
           />
         </div>
       </div>
@@ -324,34 +357,68 @@ export const HelpView: React.FC = () => {
             <GlassCard key={item.id} className="p-5 flex flex-col justify-between space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-white/5 border border-white/5 text-cyan-400">
+                  <div
+                    className="p-2 rounded-xl border"
+                    style={{
+                      backgroundColor: 'var(--accent-primary-subtle)',
+                      borderColor: 'var(--accent-primary-border)',
+                      color: 'var(--accent-primary)',
+                    }}
+                  >
                     <Icon className="w-4 h-4" />
                   </div>
-                  <h4 className="text-sm font-semibold text-white tracking-tight">{item.title}</h4>
+                  <h4 className="text-sm font-semibold tracking-tight" style={{ color: 'var(--text-main)' }}>
+                    {item.title}
+                  </h4>
                 </div>
 
-                <p className="text-xs text-slate-400 leading-relaxed">{item.summary}</p>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                  {item.summary}
+                </p>
 
-                <div className="p-3.5 rounded-xl bg-slate-950/40 border border-white/5">
+                <div
+                  className="p-3.5 rounded-xl border"
+                  style={{
+                    backgroundColor: 'var(--bg-surface-subtle)',
+                    borderColor: 'var(--border-subtle)',
+                  }}
+                >
                   {item.details}
                 </div>
               </div>
 
-              <div className="space-y-2 pt-2 border-t border-white/5">
+              <div className="space-y-2 pt-2 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
                 {item.formula && (
-                  <div className="p-2 rounded-lg bg-cyan-500/5 border border-cyan-500/15 text-[11px] font-mono text-cyan-300 flex items-center justify-between">
-                    <span className="text-[10px] text-slate-400 uppercase select-none">Formula</span>
+                  <div
+                    className="p-2 rounded-lg border text-[11px] font-mono flex items-center justify-between"
+                    style={{
+                      backgroundColor: 'var(--accent-primary-subtle)',
+                      borderColor: 'var(--accent-primary-border)',
+                      color: 'var(--accent-primary)',
+                    }}
+                  >
+                    <span className="text-[10px] uppercase select-none" style={{ color: 'var(--text-dim)' }}>
+                      Formula
+                    </span>
                     <span className="truncate">{item.formula}</span>
                   </div>
                 )}
 
                 {item.cliCommand && (
-                  <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-[11px] font-mono text-slate-200 flex items-center justify-between">
-                    <code className="text-cyan-300">{item.cliCommand}</code>
+                  <div
+                    className="p-2 rounded-lg border text-[11px] font-mono flex items-center justify-between"
+                    style={{
+                      backgroundColor: 'var(--bg-input)',
+                      borderColor: 'var(--border-subtle)',
+                      color: 'var(--text-main)',
+                    }}
+                  >
+                    <code style={{ color: 'var(--accent-primary)' }}>{item.cliCommand}</code>
                     <button
                       type="button"
                       onClick={() => handleCopy(item.cliCommand!)}
-                      className="text-slate-400 hover:text-white p-1 rounded transition-colors apple-press"
+                      className="p-1 rounded transition-colors apple-press"
+                      style={{ color: 'var(--text-muted)' }}
                       title="Copy command"
                     >
                       {copiedCmd === item.cliCommand ? (

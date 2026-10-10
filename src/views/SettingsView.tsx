@@ -169,8 +169,15 @@ export const SettingsView: React.FC = () => {
   return (
     <div className="space-y-6 max-w-4xl pb-10">
       {exportNotice && (
-        <div className="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-medium flex items-center gap-2 animate-fade-in">
-          <Check className="w-4 h-4 text-cyan-400 shrink-0" />
+        <div
+          className="p-3.5 rounded-xl border text-xs font-medium flex items-center gap-2 animate-fade-in"
+          style={{
+            backgroundColor: 'var(--accent-primary-subtle)',
+            borderColor: 'var(--accent-primary-border)',
+            color: 'var(--accent-primary)',
+          }}
+        >
+          <Check className="w-4 h-4 shrink-0" style={{ color: 'var(--accent-primary)' }} />
           <span>{exportNotice}</span>
         </div>
       )}
@@ -179,19 +186,28 @@ export const SettingsView: React.FC = () => {
       <GlassCard className="p-6 space-y-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+            <div
+              className="p-2.5 rounded-xl border"
+              style={{
+                backgroundColor: 'var(--accent-primary-subtle)',
+                borderColor: 'var(--accent-primary-border)',
+                color: 'var(--accent-primary)',
+              }}
+            >
               <HardDrive className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-white">Monthly Quota & Billing Cycle</h3>
+                <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>
+                  Monthly Quota & Billing Cycle
+                </h3>
                 <HelpTooltip
                   title="Monthly Quota & Billing Cycle"
                   content="Configures ISP monthly traffic budget and billing rollover day. When enabled, Overview displays gauge percentage, consumed bytes, and remaining allowance."
                   formula="Used % = (Current Month Total / Quota Cap) * 100"
                 />
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 Configure your ISP data cap threshold and billing renewal day
               </p>
             </div>
@@ -202,16 +218,17 @@ export const SettingsView: React.FC = () => {
               type="checkbox"
               checked={quotaEnabled}
               onChange={(e) => setQuotaEnabled(e.target.checked)}
-              className="w-4 h-4 rounded bg-white/5 border-white/20 text-cyan-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
+              className="w-4 h-4 rounded cursor-pointer"
+              style={{ accentColor: 'var(--accent-primary)' }}
             />
-            <span className="text-xs font-medium text-slate-300">Enable Quota Tracking</span>
+            <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Enable Quota Tracking</span>
           </label>
         </div>
 
         <form onSubmit={handleSaveBilling} className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
                 Data Cap (Gigabytes)
               </label>
               <HelpTooltip
@@ -228,21 +245,26 @@ export const SettingsView: React.FC = () => {
                 value={quotaGbInput}
                 onChange={(e) => setQuotaGbInput(e.target.value)}
                 disabled={!quotaEnabled}
-                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-cyan-500/60 transition-colors disabled:opacity-50"
+                className="w-full px-3.5 py-2 rounded-xl border font-mono text-sm focus:outline-none transition-colors disabled:opacity-50"
+                style={{
+                  backgroundColor: 'var(--bg-input)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-main)',
+                }}
                 placeholder="500"
               />
-              <span className="absolute right-3.5 top-2.5 text-xs text-slate-400 font-mono">
+              <span className="absolute right-3.5 top-2.5 text-xs font-mono" style={{ color: 'var(--text-dim)' }}>
                 GB
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px]" style={{ color: 'var(--text-dim)' }}>
               Current: {formatBytes(billingConfig.monthlyQuotaBytes, unitPreference)}
             </p>
           </div>
 
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
                 Billing Rollover Day
               </label>
               <HelpTooltip
@@ -258,21 +280,26 @@ export const SettingsView: React.FC = () => {
                 value={cycleDayInput}
                 onChange={(e) => setCycleDayInput(e.target.value)}
                 disabled={!quotaEnabled}
-                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-cyan-500/60 transition-colors disabled:opacity-50"
+                className="w-full px-3.5 py-2 rounded-xl border font-mono text-sm focus:outline-none transition-colors disabled:opacity-50"
+                style={{
+                  backgroundColor: 'var(--bg-input)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-main)',
+                }}
                 placeholder="1"
               />
-              <span className="absolute right-3.5 top-2.5 text-xs text-slate-400 font-mono">
+              <span className="absolute right-3.5 top-2.5 text-xs font-mono" style={{ color: 'var(--text-dim)' }}>
                 Day
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px]" style={{ color: 'var(--text-dim)' }}>
               Resets every month on day {billingConfig.cycleStartDay}
             </p>
           </div>
 
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
                 Warning Threshold (%)
               </label>
               <HelpTooltip
@@ -288,14 +315,19 @@ export const SettingsView: React.FC = () => {
                 value={thresholdInput}
                 onChange={(e) => setThresholdInput(e.target.value)}
                 disabled={!quotaEnabled}
-                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-cyan-500/60 transition-colors disabled:opacity-50"
+                className="w-full px-3.5 py-2 rounded-xl border font-mono text-sm focus:outline-none transition-colors disabled:opacity-50"
+                style={{
+                  backgroundColor: 'var(--bg-input)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-main)',
+                }}
                 placeholder="85"
               />
-              <span className="absolute right-3.5 top-2.5 text-xs text-slate-400 font-mono">
+              <span className="absolute right-3.5 top-2.5 text-xs font-mono" style={{ color: 'var(--text-dim)' }}>
                 %
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px]" style={{ color: 'var(--text-dim)' }}>
               Alerts when consumption exceeds {billingConfig.alertThresholdPercent}%
             </p>
           </div>
@@ -312,19 +344,28 @@ export const SettingsView: React.FC = () => {
       <GlassCard className="p-6 space-y-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+            <div
+              className="p-2.5 rounded-xl border"
+              style={{
+                backgroundColor: 'color-mix(in srgb, var(--accent-tx) 15%, transparent)',
+                borderColor: 'color-mix(in srgb, var(--accent-tx) 25%, transparent)',
+                color: 'var(--accent-tx)',
+              }}
+            >
               <Database className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-white">Interface & Database Management</h3>
+                <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>
+                  Interface & Database Management
+                </h3>
                 <HelpTooltip
                   title="Database Sync & Interface Registration"
                   content="vnstat records network interfaces into SQLite database. Untracked interfaces can be added with vnstat --add. You can also trigger immediate database synchronization via vnstat -u."
                   formula="vnstat -u && vnstat --add -i <iface>"
                 />
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 Manage registered interfaces and sync SQLite database counters
               </p>
             </div>
@@ -335,24 +376,30 @@ export const SettingsView: React.FC = () => {
             size="sm"
             onClick={handleSyncDb}
             disabled={isUpdatingDb}
-            icon={<RefreshCw className={`w-3.5 h-3.5 ${isUpdatingDb ? 'animate-spin text-cyan-400' : ''}`} />}
+            icon={<RefreshCw className={`w-3.5 h-3.5 ${isUpdatingDb ? 'animate-spin' : ''}`} style={{ color: 'var(--accent-primary)' }} />}
           >
             {isUpdatingDb ? 'Synchronizing...' : 'Sync Database Now'}
           </AppleButton>
         </div>
 
         {/* Selected Interface Alias */}
-        <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
+        <div
+          className="p-4 rounded-xl border space-y-3"
+          style={{
+            backgroundColor: 'var(--bg-surface-subtle)',
+            borderColor: 'var(--border-subtle)',
+          }}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Tag className="w-4 h-4 text-purple-400" />
-              <span className="text-xs font-semibold text-slate-200">
-                Rename Active Interface: <span className="text-cyan-400 font-mono">{selectedInterface}</span>
+              <Tag className="w-4 h-4" style={{ color: 'var(--accent-tx)' }} />
+              <span className="text-xs font-semibold" style={{ color: 'var(--text-main)' }}>
+                Rename Active Interface: <span className="font-mono" style={{ color: 'var(--accent-primary)' }}>{selectedInterface}</span>
               </span>
             </div>
             {activeIface?.alias && (
-              <span className="text-xs text-slate-400 font-mono">
-                Current: <span className="text-white">'{activeIface.alias}'</span>
+              <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
+                Current: <span style={{ color: 'var(--text-main)' }}>'{activeIface.alias}'</span>
               </span>
             )}
           </div>
@@ -362,7 +409,12 @@ export const SettingsView: React.FC = () => {
               type="text"
               value={aliasInput}
               onChange={(e) => setAliasInput(e.target.value)}
-              className="flex-1 px-3.5 py-2 rounded-xl bg-black/20 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-purple-500/60 transition-colors"
+              className="flex-1 px-3.5 py-2 rounded-xl border text-xs font-mono focus:outline-none transition-colors"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                borderColor: 'var(--border-subtle)',
+                color: 'var(--text-main)',
+              }}
               placeholder="e.g. Primary Fiber Optic, Office VPN"
             />
             <AppleButton
@@ -379,13 +431,18 @@ export const SettingsView: React.FC = () => {
         {/* Interface Registry Table */}
         <div className="space-y-2 pt-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
               System Network Interfaces ({interfaces.length})
             </span>
-            <span className="text-[11px] text-slate-500 font-mono">Detected via /proc/net/dev</span>
+            <span className="text-[11px] font-mono" style={{ color: 'var(--text-dim)' }}>Detected via /proc/net/dev</span>
           </div>
 
-          <div className="border border-white/10 rounded-xl overflow-hidden divide-y divide-white/5 font-mono text-xs">
+          <div
+            className="border rounded-xl overflow-hidden divide-y font-mono text-xs"
+            style={{
+              borderColor: 'var(--border-subtle)',
+            }}
+          >
             {interfaces.map((iface: InterfaceSummary) => {
               const isSelected = iface.name === selectedInterface;
               const isBusy = actionInProgress === iface.name;
@@ -393,16 +450,25 @@ export const SettingsView: React.FC = () => {
               return (
                 <div
                   key={iface.name}
-                  className={`p-3.5 flex items-center justify-between transition-colors ${
-                    isSelected ? 'bg-cyan-500/5' : 'hover:bg-white/5'
-                  }`}
+                  className="p-3.5 flex items-center justify-between transition-colors"
+                  style={{
+                    backgroundColor: isSelected ? 'var(--accent-primary-subtle)' : undefined,
+                    borderColor: 'var(--border-subtle)',
+                  }}
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-white text-sm">{iface.name}</span>
+                        <span className="font-bold text-sm" style={{ color: 'var(--text-main)' }}>{iface.name}</span>
                         {isSelected && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-cyan-500/20 text-cyan-300 font-sans border border-cyan-500/30">
+                          <span
+                            className="px-1.5 py-0.5 rounded text-[10px] font-sans border"
+                            style={{
+                              backgroundColor: 'var(--accent-primary-subtle)',
+                              borderColor: 'var(--accent-primary-border)',
+                              color: 'var(--accent-primary)',
+                            }}
+                          >
                             Active
                           </span>
                         )}
@@ -416,7 +482,7 @@ export const SettingsView: React.FC = () => {
                           {iface.is_up ? 'UP' : 'DOWN'}
                         </span>
                       </div>
-                      <span className="text-[11px] text-slate-400 mt-0.5 font-sans">
+                      <span className="text-[11px] mt-0.5 font-sans" style={{ color: 'var(--text-muted)' }}>
                         Kernel Counters: RX {formatBytes(iface.rx_bytes, unitPreference)} • TX {formatBytes(iface.tx_bytes, unitPreference)}
                       </span>
                     </div>
@@ -450,7 +516,7 @@ export const SettingsView: React.FC = () => {
                         size="sm"
                         onClick={() => handleAddInterface(iface.name)}
                         disabled={isBusy}
-                        icon={<PlusCircle className="w-3.5 h-3.5 text-cyan-400" />}
+                        icon={<PlusCircle className="w-3.5 h-3.5" style={{ color: 'var(--accent-primary)' }} />}
                       >
                         {isBusy ? 'Adding...' : 'Track Interface'}
                       </AppleButton>
@@ -611,14 +677,16 @@ export const SettingsView: React.FC = () => {
       <GlassCard className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-white">Units & Rates Representation</h3>
+            <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>
+              Units & Rates Representation
+            </h3>
             <HelpTooltip
               title="Unit Standard Formats"
               content="SI uses decimal powers of 10 (1000 = 1 KB). IEC uses binary powers of 2 (1024 = 1 KiB), standard in computer engineering. Bits multiplies byte quantities by 8 (standard for telecom broadband lines)."
               formula="1 KiB = 1024 B, 1 KB = 1000 B, 1 Mbps = 125,000 B/s"
             />
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             SI (1000 base: KB/MB/GB), IEC (1024 base: KiB/MiB/GiB), or Bits (Kbps/Mbps/Gbps)
           </p>
         </div>
@@ -638,24 +706,36 @@ export const SettingsView: React.FC = () => {
       {/* Export Center */}
       <GlassCard className="p-6 space-y-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-rx) 15%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-rx) 25%, transparent)',
+              color: 'var(--accent-rx)',
+            }}
+          >
             <Download className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-white">Data Export & Diagnostic Center</h3>
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>
+                Data Export & Diagnostic Center
+              </h3>
               <HelpTooltip
                 title="Export Formats"
                 content="Exports vnstat SQLite records to ~/Downloads as CSV table or raw JSON dump for external statistical software (R, Pandas, Grafana)."
               />
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
               Export historical dataset to ~/Downloads or copy JSON database structure
             </p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-white/5 mt-3">
+        <div
+          className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t mt-3"
+          style={{ borderColor: 'var(--border-subtle)' }}
+        >
           <div className="flex flex-wrap gap-2.5">
             <AppleButton
               variant="glass"
@@ -691,7 +771,7 @@ export const SettingsView: React.FC = () => {
           <AppleButton
             variant="ghost"
             onClick={handleResetDefaults}
-            className="text-slate-400 hover:text-amber-400"
+            style={{ color: 'var(--text-muted)' }}
             icon={<RotateCcw className="w-3.5 h-3.5" />}
           >
             Reset Defaults
@@ -700,13 +780,16 @@ export const SettingsView: React.FC = () => {
       </GlassCard>
 
       {/* System Diagnostics */}
-      <GlassCard className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-400 font-mono">
+      <GlassCard
+        className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono"
+        style={{ color: 'var(--text-muted)' }}
+      >
         <div className="flex items-center gap-2">
-          <Database className="w-4 h-4 text-slate-400 shrink-0" />
+          <Database className="w-4 h-4 shrink-0" style={{ color: 'var(--text-dim)' }} />
           <span>vnStat Daemon 2.13 (SQLite 3.53.4) • /var/lib/vnstat/vnstat.db</span>
         </div>
         <div className="flex items-center gap-2">
-          <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+          <Sliders className="w-3.5 h-3.5" style={{ color: 'var(--accent-primary)' }} />
           <span>Native Linux Desktop • Tokio 1s Sampler</span>
         </div>
       </GlassCard>

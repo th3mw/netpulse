@@ -20,48 +20,61 @@ export const FiveMinuteView: React.FC = () => {
       {/* Summary Header Card */}
       <GlassCard className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-primary) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-primary) 25%, transparent)',
+              color: 'var(--accent-primary)',
+            }}
+          >
             <Clock className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-semibold text-white">5-Minute Granular Telemetry</h3>
+              <h3 className="text-base font-semibold" style={{ color: 'var(--text-main)' }}>5-Minute Granular Telemetry</h3>
               <HelpTooltip
                 title="5-Minute Sampling Interval"
                 content="vnstat captures high-resolution 300-second traffic blocks. Essential for catching short-lived bandwidth spikes, game downloads, or buffer-bloat events that hourly averages smooth out."
                 formula="Slot Duration = 300 seconds (5 min)"
               />
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
               High-resolution 300-second sample slots from vnstat database ({slots.length} slots available)
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-4 text-xs font-mono">
-          <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-right">
+          <div
+            className="p-2.5 rounded-xl border text-right"
+            style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-subtle)' }}
+          >
             <div className="flex items-center justify-end gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase">Recent Window Total</span>
+              <span className="text-[10px] uppercase" style={{ color: 'var(--text-dim)' }}>Recent Window Total</span>
               <HelpTooltip
                 title="Window Total"
                 content="Sum of received and sent bytes across all currently logged 5-minute slots in the SQLite database."
                 side="left"
               />
             </div>
-            <div className="text-sm font-bold text-white mt-0.5">
+            <div className="text-sm font-bold mt-0.5" style={{ color: 'var(--text-main)' }}>
               {formatBytes(totalInPeriod, unitPreference)}
             </div>
           </div>
-          <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-right">
+          <div
+            className="p-2.5 rounded-xl border text-right"
+            style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-subtle)' }}
+          >
             <div className="flex items-center justify-end gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase">Highest Slot Burst</span>
+              <span className="text-[10px] uppercase" style={{ color: 'var(--text-dim)' }}>Highest Slot Burst</span>
               <HelpTooltip
                 title="Peak 5-Min Burst"
                 content="The single 5-minute slot with maximum aggregate transfer volume during the sampled period."
                 side="left"
               />
             </div>
-            <div className="text-sm font-bold text-cyan-400 mt-0.5">
+            <div className="text-sm font-bold mt-0.5" style={{ color: 'var(--accent-primary)' }}>
               {formatBytes(maxSlot, unitPreference)}
             </div>
           </div>
@@ -72,7 +85,7 @@ export const FiveMinuteView: React.FC = () => {
       <GlassCard className="p-5 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
               Micro-Burst Activity Curve (5-Min Slots)
             </h4>
             <HelpTooltip
@@ -94,13 +107,20 @@ export const FiveMinuteView: React.FC = () => {
                 className="flex-1 h-full flex flex-col justify-end items-center group relative"
               >
                 {/* Tooltip */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2 rounded-xl bg-slate-900 border border-white/15 text-[10px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap">
-                  <div className="font-semibold text-white">
+                <div
+                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2 rounded-xl border text-[10px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                  style={{
+                    backgroundColor: 'var(--bg-surface)',
+                    borderColor: 'var(--border-card)',
+                    color: 'var(--text-main)',
+                  }}
+                >
+                  <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
                     {formatDate(slot.date)} {formatTime(slot.time)}
                   </div>
-                  <div className="text-emerald-400">RX: {formatBytes(slot.rx, unitPreference)}</div>
-                  <div className="text-purple-400">TX: {formatBytes(slot.tx, unitPreference)}</div>
-                  <div className="text-slate-200 border-t border-white/10 mt-0.5 pt-0.5 font-bold">
+                  <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(slot.rx, unitPreference)}</div>
+                  <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(slot.tx, unitPreference)}</div>
+                  <div className="border-t mt-0.5 pt-0.5 font-bold" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }}>
                     Avg Rate: {formatRate(slotTotal / 300, unitPreference)}
                   </div>
                 </div>
@@ -139,17 +159,24 @@ export const FiveMinuteView: React.FC = () => {
 
       {/* Granular Table */}
       <GlassCard className="p-0 overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
-          <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+        <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-subtle)' }}>
+          <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-main)' }}>
             Slot Log Entries
           </h4>
-          <span className="text-xs text-slate-400 font-mono">Showing {slots.length} entries</span>
+          <span className="text-xs font-mono" style={{ color: 'var(--text-dim)' }}>Showing {slots.length} entries</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-white/5 text-slate-400 font-medium border-b border-white/5">
+              <tr
+                className="font-medium border-b"
+                style={{
+                  backgroundColor: 'var(--bg-surface-subtle)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-muted)',
+                }}
+              >
                 <th className="px-5 py-3">Timestamp / Time</th>
                 <th className="px-5 py-3">Download (RX)</th>
                 <th className="px-5 py-3">Upload (TX)</th>
@@ -157,15 +184,15 @@ export const FiveMinuteView: React.FC = () => {
                 <th className="px-5 py-3 text-right">Avg Rate (300s)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 font-mono">
+            <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               {[...slots].reverse().map((slot: IntervalEntry, idx: number) => {
                 const slotTotal = slot.rx + slot.tx;
                 const avgRate = slotTotal / 300;
                 return (
                   <tr key={idx} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 text-slate-300">
+                    <td className="px-5 py-3" style={{ color: 'var(--text-main)' }}>
                       {formatDate(slot.date)}{' '}
-                      <span className="text-slate-400">{formatTime(slot.time)}</span>
+                      <span style={{ color: 'var(--text-dim)' }}>{formatTime(slot.time)}</span>
                     </td>
                     <td className="px-5 py-3 font-medium" style={{ color: 'var(--accent-rx)' }}>
                       {formatBytes(slot.rx, unitPreference)}

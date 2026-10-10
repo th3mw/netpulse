@@ -37,21 +37,21 @@ export const TopDaysView: React.FC = () => {
               <Flame className="w-4 h-4 text-amber-400 animate-bounce" />
             </div>
 
-            <div className="text-2xl font-black text-amber-300 font-mono">
+            <div className="text-2xl font-black font-mono" style={{ color: 'var(--text-main)' }}>
               {formatBytes(topDays[0].rx + topDays[0].tx, unitPreference)}
             </div>
-            <div className="text-xs text-slate-300 mt-1 flex items-center gap-1.5 font-medium">
-              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            <div className="text-xs mt-1 flex items-center gap-1.5 font-medium" style={{ color: 'var(--text-muted)' }}>
+              <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--text-dim)' }} />
               {formatDate(topDays[0].date)} ({dayNames[new Date(topDays[0].timestamp * 1000).getDay()]})
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-amber-500/20 text-[11px] font-mono">
+            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t text-[11px] font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               <div>
-                <span className="opacity-60">RX:</span>{' '}
+                <span className="opacity-60" style={{ color: 'var(--text-dim)' }}>RX:</span>{' '}
                 <span style={{ color: 'var(--accent-rx)' }}>{formatBytes(topDays[0].rx, unitPreference)}</span>
               </div>
               <div>
-                <span className="opacity-60">TX:</span>{' '}
+                <span className="opacity-60" style={{ color: 'var(--text-dim)' }}>TX:</span>{' '}
                 <span style={{ color: 'var(--accent-tx)' }}>{formatBytes(topDays[0].tx, unitPreference)}</span>
               </div>
             </div>
@@ -60,28 +60,35 @@ export const TopDaysView: React.FC = () => {
 
         {/* Rank 2 - Silver */}
         {topDays[1] && (
-          <GlassCard className="p-5 relative overflow-hidden border-slate-300/30 bg-gradient-to-b from-slate-400/10 to-transparent">
+          <GlassCard className="p-5 relative overflow-hidden">
             <div className="flex items-center justify-between mb-3">
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-300/20 text-slate-200 border border-slate-300/30 text-xs font-bold font-mono">
-                <Medal className="w-3.5 h-3.5 text-slate-300" /> #2 RANK
+              <span
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-bold font-mono"
+                style={{
+                  backgroundColor: 'var(--bg-input)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                <Medal className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} /> #2 RANK
               </span>
             </div>
 
-            <div className="text-2xl font-black text-slate-100 font-mono">
+            <div className="text-2xl font-black font-mono" style={{ color: 'var(--text-main)' }}>
               {formatBytes(topDays[1].rx + topDays[1].tx, unitPreference)}
             </div>
-            <div className="text-xs text-slate-300 mt-1 flex items-center gap-1.5 font-medium">
-              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            <div className="text-xs mt-1 flex items-center gap-1.5 font-medium" style={{ color: 'var(--text-muted)' }}>
+              <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--text-dim)' }} />
               {formatDate(topDays[1].date)} ({dayNames[new Date(topDays[1].timestamp * 1000).getDay()]})
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/10 text-[11px] font-mono">
+            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t text-[11px] font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               <div>
-                <span className="opacity-60">RX:</span>{' '}
+                <span className="opacity-60" style={{ color: 'var(--text-dim)' }}>RX:</span>{' '}
                 <span style={{ color: 'var(--accent-rx)' }}>{formatBytes(topDays[1].rx, unitPreference)}</span>
               </div>
               <div>
-                <span className="opacity-60">TX:</span>{' '}
+                <span className="opacity-60" style={{ color: 'var(--text-dim)' }}>TX:</span>{' '}
                 <span style={{ color: 'var(--accent-tx)' }}>{formatBytes(topDays[1].tx, unitPreference)}</span>
               </div>
             </div>
@@ -90,28 +97,35 @@ export const TopDaysView: React.FC = () => {
 
         {/* Rank 3 - Bronze */}
         {topDays[2] && (
-          <GlassCard className="p-5 relative overflow-hidden border-orange-600/30 bg-gradient-to-b from-orange-600/10 to-transparent">
+          <GlassCard className="p-5 relative overflow-hidden">
             <div className="flex items-center justify-between mb-3">
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-600/20 text-orange-300 border border-orange-600/30 text-xs font-bold font-mono">
-                <Award className="w-3.5 h-3.5 text-orange-400" /> #3 RANK
+              <span
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-bold font-mono"
+                style={{
+                  backgroundColor: 'color-mix(in srgb, var(--accent-tx) 15%, transparent)',
+                  borderColor: 'color-mix(in srgb, var(--accent-tx) 30%, transparent)',
+                  color: 'var(--accent-tx)',
+                }}
+              >
+                <Award className="w-3.5 h-3.5" style={{ color: 'var(--accent-tx)' }} /> #3 RANK
               </span>
             </div>
 
-            <div className="text-2xl font-black text-orange-200 font-mono">
+            <div className="text-2xl font-black font-mono" style={{ color: 'var(--text-main)' }}>
               {formatBytes(topDays[2].rx + topDays[2].tx, unitPreference)}
             </div>
-            <div className="text-xs text-slate-300 mt-1 flex items-center gap-1.5 font-medium">
-              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            <div className="text-xs mt-1 flex items-center gap-1.5 font-medium" style={{ color: 'var(--text-muted)' }}>
+              <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--text-dim)' }} />
               {formatDate(topDays[2].date)} ({dayNames[new Date(topDays[2].timestamp * 1000).getDay()]})
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/10 text-[11px] font-mono">
+            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t text-[11px] font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               <div>
-                <span className="opacity-60">RX:</span>{' '}
+                <span className="opacity-60" style={{ color: 'var(--text-dim)' }}>RX:</span>{' '}
                 <span style={{ color: 'var(--accent-rx)' }}>{formatBytes(topDays[2].rx, unitPreference)}</span>
               </div>
               <div>
-                <span className="opacity-60">TX:</span>{' '}
+                <span className="opacity-60" style={{ color: 'var(--text-dim)' }}>TX:</span>{' '}
                 <span style={{ color: 'var(--accent-tx)' }}>{formatBytes(topDays[2].tx, unitPreference)}</span>
               </div>
             </div>
@@ -121,9 +135,9 @@ export const TopDaysView: React.FC = () => {
 
       {/* Leaderboard Table */}
       <GlassCard className="p-0 overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
+        <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-subtle)' }}>
           <div className="flex items-center gap-1.5">
-            <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-main)' }}>
               All-Time Top Days Leaderboard
             </h4>
             <HelpTooltip
@@ -131,13 +145,20 @@ export const TopDaysView: React.FC = () => {
               content="Lists up to 25 peak record traffic days sorted in descending order of total throughput. Progress bars indicate relative percentage compared to record day #1."
             />
           </div>
-          <span className="text-xs text-slate-400 font-mono">Top {topDays.length} Records</span>
+          <span className="text-xs font-mono" style={{ color: 'var(--text-dim)' }}>Top {topDays.length} Records</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-white/5 text-slate-400 font-medium border-b border-white/5">
+              <tr
+                className="font-medium border-b"
+                style={{
+                  backgroundColor: 'var(--bg-surface-subtle)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-muted)',
+                }}
+              >
                 <th className="px-5 py-3 w-16">Rank</th>
                 <th className="px-5 py-3">Date</th>
                 <th className="px-5 py-3">Day of Week</th>
@@ -147,7 +168,7 @@ export const TopDaysView: React.FC = () => {
                 <th className="px-5 py-3 text-right">% of Record #1</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 font-mono">
+            <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               {topDays.map((d: IntervalEntry, idx: number) => {
                 const dTotal = d.rx + d.tx;
                 const pct = recordDayTotal > 0 ? (dTotal / recordDayTotal) * 100 : 0;
@@ -161,7 +182,14 @@ export const TopDaysView: React.FC = () => {
                           1
                         </span>
                       ) : idx === 1 ? (
-                        <span className="w-6 h-6 rounded-full bg-slate-300/20 text-slate-200 font-bold flex items-center justify-center text-xs border border-slate-300/30">
+                        <span
+                          className="w-6 h-6 rounded-full font-bold flex items-center justify-center text-xs border"
+                          style={{
+                            backgroundColor: 'var(--bg-input)',
+                            color: 'var(--text-main)',
+                            borderColor: 'var(--border-subtle)',
+                          }}
+                        >
                           2
                         </span>
                       ) : idx === 2 ? (
@@ -169,7 +197,7 @@ export const TopDaysView: React.FC = () => {
                           3
                         </span>
                       ) : (
-                        <span className="text-slate-400 font-semibold px-2">#{idx + 1}</span>
+                        <span className="font-semibold px-2" style={{ color: 'var(--text-dim)' }}>#{idx + 1}</span>
                       )}
                     </td>
                     <td className="px-5 py-3 font-semibold" style={{ color: 'var(--text-main)' }}>{formatDate(d.date)}</td>

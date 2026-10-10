@@ -25,14 +25,14 @@ export const MonthlyView: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-white">Monthly Bandwidth Trends</h3>
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Monthly Bandwidth Trends</h3>
               <HelpTooltip
                 title="Month-over-Month Telemetry"
                 content="Historical monthly traffic summaries. MoM Change measures percentage delta relative to immediately preceding calendar month."
                 formula="MoM Delta % = ((Current Month - Previous Month) / Previous Month) * 100"
               />
             </div>
-            <p className="text-xs text-slate-400">Month-over-month cumulative transfer records</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Month-over-month cumulative transfer records</p>
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">
             <span className="flex items-center gap-1.5" style={{ color: 'var(--accent-rx)' }}>
@@ -57,13 +57,20 @@ export const MonthlyView: React.FC = () => {
                 className="flex-1 h-full flex flex-col justify-end items-center group relative"
               >
                 {/* Tooltip */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl bg-slate-900 border border-white/15 text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap">
-                  <div className="font-semibold text-white">
+                <div
+                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl border text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                  style={{
+                    backgroundColor: 'var(--bg-surface)',
+                    borderColor: 'var(--border-card)',
+                    color: 'var(--text-main)',
+                  }}
+                >
+                  <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
                     {m.date.year} {monthLabel}
                   </div>
                   <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(m.rx, unitPreference)}</div>
                   <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(m.tx, unitPreference)}</div>
-                  <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
+                  <div className="font-bold border-t mt-1 pt-1" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-main)' }}>
                     Total: {formatBytes(mTotal, unitPreference)}
                   </div>
                 </div>
@@ -94,11 +101,11 @@ export const MonthlyView: React.FC = () => {
 
       {/* Monthly Table */}
       <GlassCard className="p-0 overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
-          <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+        <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-subtle)' }}>
+          <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-main)' }}>
             Monthly Log Records
           </h4>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs font-mono" style={{ color: 'var(--text-dim)' }}>
             Cumulative Total: {formatBytes(totalMonthsTraffic, unitPreference)}
           </span>
         </div>
@@ -106,7 +113,14 @@ export const MonthlyView: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-white/5 text-slate-400 font-medium border-b border-white/5">
+              <tr
+                className="font-medium border-b"
+                style={{
+                  backgroundColor: 'var(--bg-surface-subtle)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-muted)',
+                }}
+              >
                 <th className="px-5 py-3">Month</th>
                 <th className="px-5 py-3">Download (RX)</th>
                 <th className="px-5 py-3">Upload (TX)</th>
@@ -115,7 +129,7 @@ export const MonthlyView: React.FC = () => {
                 <th className="px-5 py-3 text-right">MoM Change</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 font-mono">
+            <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               {[...months].reverse().map((m: IntervalEntry, idx: number, arr: IntervalEntry[]) => {
                 const mTotal = m.rx + m.tx;
                 const prevMonth = arr[idx + 1];

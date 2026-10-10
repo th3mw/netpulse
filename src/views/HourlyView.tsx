@@ -25,37 +25,51 @@ export const HourlyView: React.FC = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-primary) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-primary) 25%, transparent)',
+              color: 'var(--accent-primary)',
+            }}
+          >
             <BarChart3 className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">24h Total Traffic</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>24h Total Traffic</span>
               <HelpTooltip
                 title="Rolling 24-Hour Sum"
                 content="Aggregated data transferred over the last 24 one-hour measurement blocks recorded by the vnstat daemon."
                 formula="Sum = Σ(hour.rx + hour.tx) for last 24h"
               />
             </div>
-            <div className="text-xl font-bold text-white font-mono mt-0.5">
+            <div className="text-xl font-bold font-mono mt-0.5" style={{ color: 'var(--text-main)' }}>
               {formatBytes(total24h, unitPreference)}
             </div>
           </div>
         </GlassCard>
 
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-rx) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-rx) 25%, transparent)',
+              color: 'var(--accent-rx)',
+            }}
+          >
             <Zap className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">Peak Hour Spike</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>Peak Hour Spike</span>
               <HelpTooltip
                 title="Peak Hour Volume"
                 content="The single 60-minute window with the largest total data volume within the active 24-hour cycle."
               />
             </div>
-            <div className="text-xl font-bold text-amber-400 font-mono mt-0.5">
+            <div className="text-xl font-bold font-mono mt-0.5" style={{ color: 'var(--accent-rx)' }}>
               {peakHour?.time ? `${peakHour.time.hour}:00` : '-'} (
               {formatBytes((peakHour?.rx || 0) + (peakHour?.tx || 0), unitPreference)})
             </div>
@@ -63,19 +77,26 @@ export const HourlyView: React.FC = () => {
         </GlassCard>
 
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-tx) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-tx) 25%, transparent)',
+              color: 'var(--accent-tx)',
+            }}
+          >
             <Clock className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">95th % Rate Ceiling</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>95th % Rate Ceiling</span>
               <HelpTooltip
                 title="95th Percentile Rate"
                 content="Calculated by sorting all 5-minute/hourly samples and discarding top 5% extreme bursts. Industry-standard ISP transit billing method."
                 formula="Sort samples ascending, pick sample at rank N * 0.95"
               />
             </div>
-            <div className="text-xl font-bold text-purple-300 font-mono mt-0.5">
+            <div className="text-xl font-bold font-mono mt-0.5" style={{ color: 'var(--accent-tx)' }}>
               {percentileReport?.total_95th_str || '-'}
             </div>
           </div>
@@ -86,7 +107,7 @@ export const HourlyView: React.FC = () => {
       <GlassCard className="p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-white">Hourly Bandwidth Profile (Past 24 Hours)</h3>
+            <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Hourly Bandwidth Profile (Past 24 Hours)</h3>
             <HelpTooltip
               title="24-Hour Hourly Timeline"
               content="Bars display each elapsed hour of the day. Emerald is incoming download; purple is outgoing upload. Amber outline flags the peak hour."
@@ -115,14 +136,21 @@ export const HourlyView: React.FC = () => {
                 className="flex-1 h-full flex flex-col justify-end items-center group relative"
               >
                 {/* Tooltip */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl bg-slate-900 border border-white/15 text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap">
-                  <div className="font-semibold text-white">
+                <div
+                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl border text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                  style={{
+                    backgroundColor: 'var(--bg-surface)',
+                    borderColor: 'var(--border-card)',
+                    color: 'var(--text-main)',
+                  }}
+                >
+                  <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
                     {formatDate(h.date)} {h.time ? `${String(h.time.hour).padStart(2, '0')}:00` : ''}
-                    {isPeak && <span className="text-amber-400 ml-1.5 font-bold">[PEAK]</span>}
+                    {isPeak && <span className="ml-1.5 font-bold" style={{ color: 'var(--accent-primary)' }}>[PEAK]</span>}
                   </div>
                   <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(h.rx, unitPreference)}</div>
                   <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(h.tx, unitPreference)}</div>
-                  <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
+                  <div className="font-bold border-t mt-1 pt-1" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-main)' }}>
                     Total: {formatBytes(hTotal, unitPreference)} ({total24h > 0 ? ((hTotal / total24h) * 100).toFixed(1) : 0}%)
                   </div>
                 </div>
@@ -143,7 +171,7 @@ export const HourlyView: React.FC = () => {
                   />
                 </div>
 
-                <span className="text-[10px] text-slate-400 font-mono mt-1.5">
+                <span className="text-[10px] font-mono mt-1.5" style={{ color: 'var(--text-dim)' }}>
                   {h.time ? h.time.hour : idx}h
                 </span>
               </div>
@@ -154,17 +182,24 @@ export const HourlyView: React.FC = () => {
 
       {/* Hourly Detail Table */}
       <GlassCard className="p-0 overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
-          <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+        <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-subtle)' }}>
+          <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-main)' }}>
             Hourly Log Records
           </h4>
-          <span className="text-xs text-slate-400 font-mono">{hours.length} Recorded Hours</span>
+          <span className="text-xs font-mono" style={{ color: 'var(--text-dim)' }}>{hours.length} Recorded Hours</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-white/5 text-slate-400 font-medium border-b border-white/5">
+              <tr
+                className="font-medium border-b"
+                style={{
+                  backgroundColor: 'var(--bg-surface-subtle)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-muted)',
+                }}
+              >
                 <th className="px-5 py-3">Hour Slot</th>
                 <th className="px-5 py-3">Download (RX)</th>
                 <th className="px-5 py-3">Upload (TX)</th>
@@ -173,7 +208,7 @@ export const HourlyView: React.FC = () => {
                 <th className="px-5 py-3 text-right">% of Window</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 font-mono">
+            <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               {[...hours].reverse().map((h: IntervalEntry, idx: number) => {
                 const hTotal = h.rx + h.tx;
                 const avgRate = hTotal / 3600;

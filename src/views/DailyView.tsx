@@ -45,55 +45,76 @@ export const DailyView: React.FC = () => {
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-primary) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-primary) 25%, transparent)',
+              color: 'var(--accent-primary)',
+            }}
+          >
             <Calendar className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">Average Daily Volume</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>Average Daily Volume</span>
               <HelpTooltip
                 title="Daily Mean"
                 content="Arithmetic mean of daily traffic across all recorded days in the database."
                 formula="Avg = Total Recorded Bytes / Total Recorded Days"
               />
             </div>
-            <div className="text-xl font-bold text-white font-mono mt-0.5">
+            <div className="text-xl font-bold font-mono mt-0.5" style={{ color: 'var(--text-main)' }}>
               {formatBytes(avgDayTraffic, unitPreference)}/day
             </div>
           </div>
         </GlassCard>
 
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-rx) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-rx) 25%, transparent)',
+              color: 'var(--accent-rx)',
+            }}
+          >
             <CalendarDays className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">Weekday Avg (Mon-Fri)</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>Weekday Avg (Mon-Fri)</span>
               <HelpTooltip
                 title="Weekday Profile"
                 content="Average daily transfer volume on working business days (Monday through Friday). Great for identifying remote work and business consumption."
               />
             </div>
-            <div className="text-xl font-bold text-blue-300 font-mono mt-0.5">
+            <div className="text-xl font-bold font-mono mt-0.5" style={{ color: 'var(--accent-rx)' }}>
               {formatBytes(avgWeekday, unitPreference)}/day
             </div>
           </div>
         </GlassCard>
 
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-tx) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-tx) 25%, transparent)',
+              color: 'var(--accent-tx)',
+            }}
+          >
             <CalendarDays className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">Weekend Avg (Sat-Sun)</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>Weekend Avg (Sat-Sun)</span>
               <HelpTooltip
                 title="Weekend Profile"
                 content="Average daily transfer volume on weekend days (Saturday and Sunday). Highlights leisure streaming, gaming, and off-peak backups."
               />
             </div>
-            <div className="text-xl font-bold text-purple-300 font-mono mt-0.5">
+            <div className="text-xl font-bold font-mono mt-0.5" style={{ color: 'var(--accent-tx)' }}>
               {formatBytes(avgWeekend, unitPreference)}/day
             </div>
           </div>
@@ -104,7 +125,7 @@ export const DailyView: React.FC = () => {
       <GlassCard className="p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-white">Daily History Profile</h3>
+            <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Daily History Profile</h3>
             <HelpTooltip
               title="Daily Volume Bars"
               content="Bars display each recorded calendar day. Stacked emerald (RX) and purple (TX) show download vs upload volume."
@@ -133,13 +154,20 @@ export const DailyView: React.FC = () => {
                 className="flex-1 h-full flex flex-col justify-end items-center group relative"
               >
                 {/* Tooltip */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl bg-slate-900 border border-white/15 text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap">
-                  <div className="font-semibold text-white">
+                <div
+                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl border text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                  style={{
+                    backgroundColor: 'var(--bg-surface)',
+                    borderColor: 'var(--border-card)',
+                    color: 'var(--text-main)',
+                  }}
+                >
+                  <div className="font-semibold" style={{ color: 'var(--text-main)' }}>
                     {formatDate(d.date)} ({dayOfWeekName})
                   </div>
                   <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(d.rx, unitPreference)}</div>
                   <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(d.tx, unitPreference)}</div>
-                  <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
+                  <div className="font-bold border-t mt-1 pt-1" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-main)' }}>
                     Total: {formatBytes(dTotal, unitPreference)}
                   </div>
                 </div>
@@ -166,7 +194,10 @@ export const DailyView: React.FC = () => {
           })}
         </div>
 
-        <div className="flex justify-between text-[11px] text-slate-400 font-mono pt-1 border-t border-white/5">
+        <div
+          className="flex justify-between text-[11px] font-mono pt-1 border-t"
+          style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-dim)' }}
+        >
           <span>Older Recorded Days</span>
           <span>Showing Last 30 Recorded Days</span>
           <span>Today</span>
@@ -175,17 +206,24 @@ export const DailyView: React.FC = () => {
 
       {/* Daily Records Table */}
       <GlassCard className="p-0 overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
-          <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+        <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-subtle)' }}>
+          <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-main)' }}>
             Daily Log Table
           </h4>
-          <span className="text-xs text-slate-400 font-mono">{days.length} Recorded Days</span>
+          <span className="text-xs font-mono" style={{ color: 'var(--text-dim)' }}>{days.length} Recorded Days</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-white/5 text-slate-400 font-medium border-b border-white/5">
+              <tr
+                className="font-medium border-b"
+                style={{
+                  backgroundColor: 'var(--bg-surface-subtle)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-muted)',
+                }}
+              >
                 <th className="px-5 py-3">Date</th>
                 <th className="px-5 py-3">Day of Week</th>
                 <th className="px-5 py-3">Download (RX)</th>
@@ -194,7 +232,7 @@ export const DailyView: React.FC = () => {
                 <th className="px-5 py-3 text-right">Avg Rate (86400s)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 font-mono">
+            <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               {[...days].reverse().map((d: IntervalEntry, idx: number) => {
                 const dTotal = d.rx + d.tx;
                 const dayOfWeek = dayNames[new Date(d.timestamp * 1000).getDay()];

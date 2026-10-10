@@ -32,23 +32,36 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   helpContent,
   helpFormula,
 }) => {
-  const accentClasses = {
-    cyan: 'from-cyan-500/20 to-transparent border-cyan-500/30 text-cyan-400',
-    purple: 'from-purple-500/20 to-transparent border-purple-500/30 text-purple-400',
-    emerald: 'from-emerald-500/20 to-transparent border-emerald-500/30 text-emerald-400',
-    amber: 'from-amber-500/20 to-transparent border-amber-500/30 text-amber-400',
-    rose: 'from-rose-500/20 to-transparent border-rose-500/30 text-rose-400',
-    blue: 'from-blue-500/20 to-transparent border-blue-500/30 text-blue-400',
-    primary: 'from-[var(--accent-primary)]/20 to-transparent border-[var(--accent-primary)]/30 text-[var(--accent-primary)]',
-    rx: 'from-[var(--accent-rx)]/20 to-transparent border-[var(--accent-rx)]/30 text-[var(--accent-rx)]',
-    tx: 'from-[var(--accent-tx)]/20 to-transparent border-[var(--accent-tx)]/30 text-[var(--accent-tx)]',
-  }[accentColor];
+  const getAccentVar = (acc: string) => {
+    switch (acc) {
+      case 'rx':
+      case 'emerald':
+        return 'var(--accent-rx)';
+      case 'tx':
+      case 'purple':
+        return 'var(--accent-tx)';
+      case 'primary':
+      case 'cyan':
+      case 'blue':
+        return 'var(--accent-primary)';
+      case 'amber':
+      case 'rose':
+        return 'color-mix(in srgb, var(--accent-primary) 65%, var(--accent-tx))';
+      default:
+        return 'var(--accent-primary)';
+    }
+  };
+
+  const accentVar = getAccentVar(accentColor);
 
   return (
     <GlassCard className={`p-4 relative overflow-hidden flex flex-col justify-between ${className}`}>
       {/* Subtle background glow */}
       <div
-        className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${accentClasses} blur-2xl opacity-40 pointer-events-none`}
+        className="absolute top-0 right-0 w-32 h-32 blur-2xl opacity-35 pointer-events-none rounded-full"
+        style={{
+          background: `radial-gradient(circle at top right, color-mix(in srgb, ${accentVar} 30%, transparent) 0%, transparent 75%)`,
+        }}
       />
 
       <div className="flex items-center justify-between mb-2">
@@ -81,9 +94,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({
             <div
               className="p-1.5 rounded-lg border"
               style={{
-                backgroundColor: 'var(--bg-input)',
-                borderColor: 'var(--border-subtle)',
-                color: 'var(--text-muted)',
+                backgroundColor: `color-mix(in srgb, ${accentVar} 12%, transparent)`,
+                borderColor: `color-mix(in srgb, ${accentVar} 25%, transparent)`,
+                color: accentVar,
               }}
             >
               {icon}

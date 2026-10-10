@@ -19,31 +19,38 @@ export const YearlyView: React.FC = () => {
       {/* Yearly Summary Card */}
       <GlassCard className="p-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-primary) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-primary) 25%, transparent)',
+              color: 'var(--accent-primary)',
+            }}
+          >
             <Archive className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-semibold text-white">Annual Telemetry Records</h3>
+              <h3 className="text-base font-semibold" style={{ color: 'var(--text-main)' }}>Annual Telemetry Records</h3>
               <HelpTooltip
                 title="Yearly Database Logs"
                 content="Long-term multi-year cumulative bandwidth records archived in the vnstat SQLite database. Preserved across system reboots and kernel upgrades."
               />
             </div>
-            <p className="text-xs text-slate-400">Multi-year cumulative volume tracked by vnstat</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Multi-year cumulative volume tracked by vnstat</p>
           </div>
         </div>
 
         <div className="text-right font-mono">
           <div className="flex items-center justify-end gap-1.5">
-            <span className="text-[10px] text-slate-400 uppercase">Cumulative Lifetime Traffic</span>
+            <span className="text-[10px] uppercase" style={{ color: 'var(--text-dim)' }}>Cumulative Lifetime Traffic</span>
             <HelpTooltip
               title="Lifetime Total"
               content="Sum of all data transferred across all recorded years for this network interface."
               side="left"
             />
           </div>
-          <div className="text-xl font-bold text-white mt-0.5">
+          <div className="text-xl font-bold mt-0.5" style={{ color: 'var(--text-main)' }}>
             {formatBytes(totalYearsTraffic, unitPreference)}
           </div>
         </div>
@@ -52,7 +59,7 @@ export const YearlyView: React.FC = () => {
       {/* Yearly Comparison Chart */}
       <GlassCard className="p-5 space-y-4">
         <div className="flex items-center gap-2">
-          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
             Annual Volume Distribution
           </h4>
           <HelpTooltip
@@ -73,11 +80,18 @@ export const YearlyView: React.FC = () => {
                 className="flex-1 max-w-[120px] h-full flex flex-col justify-end items-center group relative"
               >
                 {/* Tooltip */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl bg-slate-900 border border-white/15 text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap">
-                  <div className="font-semibold text-white">Year {y.date.year}</div>
+                <div
+                  className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full mb-2 p-2.5 rounded-xl border text-[11px] font-mono shadow-2xl backdrop-blur-xl z-30 whitespace-nowrap"
+                  style={{
+                    backgroundColor: 'var(--bg-surface)',
+                    borderColor: 'var(--border-card)',
+                    color: 'var(--text-main)',
+                  }}
+                >
+                  <div className="font-semibold" style={{ color: 'var(--text-main)' }}>Year {y.date.year}</div>
                   <div style={{ color: 'var(--accent-rx)' }}>RX: {formatBytes(y.rx, unitPreference)}</div>
                   <div style={{ color: 'var(--accent-tx)' }}>TX: {formatBytes(y.tx, unitPreference)}</div>
-                  <div className="text-slate-100 font-bold border-t border-white/10 mt-1 pt-1">
+                  <div className="font-bold border-t mt-1 pt-1" style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-main)' }}>
                     Total: {formatBytes(yTotal, unitPreference)}
                   </div>
                 </div>
@@ -107,8 +121,8 @@ export const YearlyView: React.FC = () => {
 
       {/* Yearly Table */}
       <GlassCard className="p-0 overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/8">
-          <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+        <div className="px-5 py-4 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+          <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-main)' }}>
             Yearly Table Logs
           </h4>
         </div>
@@ -116,7 +130,14 @@ export const YearlyView: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-white/5 text-slate-400 font-medium border-b border-white/5">
+              <tr
+                className="font-medium border-b"
+                style={{
+                  backgroundColor: 'var(--bg-surface-subtle)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-muted)',
+                }}
+              >
                 <th className="px-5 py-3">Year</th>
                 <th className="px-5 py-3">Download (RX)</th>
                 <th className="px-5 py-3">Upload (TX)</th>
@@ -124,7 +145,7 @@ export const YearlyView: React.FC = () => {
                 <th className="px-5 py-3 text-right">Estimated Monthly Avg</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 font-mono">
+            <tbody className="divide-y font-mono" style={{ borderColor: 'var(--border-subtle)' }}>
               {[...years].reverse().map((y: IntervalEntry, idx: number) => {
                 const yTotal = y.rx + y.tx;
                 const estMonthly = yTotal / 12;

@@ -33,6 +33,7 @@ Built with **Tauri v2 (Rust)**, **React 19**, **TypeScript**, **Bun**, **Tailwin
   - **Emerald (Terminal Obsidian)**: Deep forest-tinted obsidian with jade green RX and lime TX; sysadmin terminal vibe.
   - **Nordic (Arctic Slate)**: Cold Scandinavian slate with muted sea blue and frosted white accents.
   - **macOS Light Mode**: Daytime platinum glass with dark charcoal typography, royal blue primary accents, and refined contrast.
+- **Deep Theme Reactivity**: All metric cards, speedometer gauges, SVG area charts, bar distributions, heatmaps, tables, and typography react dynamically to CSS tokens (`var(--accent-primary)`, `var(--accent-rx)`, `var(--accent-tx)`, `var(--text-main)`, `var(--text-muted)`), guaranteeing optimal contrast and legibility across all dark and light themes without hardcoded artifacts.
 - **Instant Theme Switching**: 1-click header palette quick-picker popover and full visual swatch gallery in Settings.
 - **Translucent Glass Materials**: Frosted acrylic cards with `backdrop-filter: blur(24px)` and specular border highlights.
 - **Micro-Interaction Physics**: Responsive Emil Kowalski scale feedback (`transform: scale(0.97)` on `:active` with 160ms cubic-bezier transition).

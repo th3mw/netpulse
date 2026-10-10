@@ -189,14 +189,17 @@ export const HeatmapView: React.FC = () => {
           </div>
 
           {/* Hourly Totals Footer Row */}
-          <div className="grid grid-cols-[64px_repeat(24,1fr)_80px] gap-1.5 mt-3 pt-3 border-t border-white/10 text-center text-[9px] font-mono text-slate-400">
-            <div className="text-left font-semibold text-slate-400">Hr Total</div>
+          <div
+            className="grid grid-cols-[64px_repeat(24,1fr)_80px] gap-1.5 mt-3 pt-3 border-t text-center text-[9px] font-mono"
+            style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-dim)' }}
+          >
+            <div className="text-left font-semibold" style={{ color: 'var(--text-muted)' }}>Hr Total</div>
             {Array.from({ length: 24 }).map((_, h) => (
               <div key={h} className="truncate">
                 {formatBytes(hourTotals[h], unitPreference, 0)}
               </div>
             ))}
-            <div className="text-right font-bold text-white">
+            <div className="text-right font-bold" style={{ color: 'var(--text-main)' }}>
               {formatBytes(
                 dayTotals.reduce((a, b) => a + b, 0),
                 unitPreference
@@ -208,17 +211,20 @@ export const HeatmapView: React.FC = () => {
 
       {/* Hover Inspection Callout */}
       {hoveredCell && (
-        <GlassCard className="p-4 flex items-center justify-between border-cyan-500/30 animate-fade-in">
+        <GlassCard
+          className="p-4 flex items-center justify-between border animate-fade-in"
+          style={{ borderColor: 'var(--accent-primary-border)' }}
+        >
           <div className="flex items-center gap-2.5">
-            <Flame className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs font-medium text-slate-300">
+            <Flame className="w-4 h-4" style={{ color: 'var(--accent-primary)' }} />
+            <span className="text-xs font-medium" style={{ color: 'var(--text-main)' }}>
               Inspecting {dayLabels[hoveredCell.day]} at {String(hoveredCell.hour).padStart(2, '0')}:00:
             </span>
-            <span className="text-xs font-bold text-cyan-400 font-mono">
+            <span className="text-xs font-bold font-mono" style={{ color: 'var(--accent-primary)' }}>
               {formatBytes(hoveredCell.intensity * maxBytes, unitPreference)}
             </span>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
             {(hoveredCell.intensity * 100).toFixed(1)}% of maximum recorded hour
           </span>
         </GlassCard>

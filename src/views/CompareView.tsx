@@ -20,35 +20,52 @@ export const CompareView: React.FC = () => {
       {/* System Total Summary */}
       <GlassCard className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-primary) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-primary) 25%, transparent)',
+              color: 'var(--accent-primary)',
+            }}
+          >
             <ArrowLeftRight className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-semibold text-white">Interface Comparative Analysis</h3>
+              <h3 className="text-base font-semibold" style={{ color: 'var(--text-main)' }}>
+                Interface Comparative Analysis
+              </h3>
               <HelpTooltip
                 title="System-Wide Network Comparison"
                 content="Aggregates and compares throughput share across all physical (Wi-Fi, Ethernet) and virtual (VPN, Docker bridges, WireGuard) network interfaces on the host."
                 formula="Interface Share % = (NIC Traffic / Total System Traffic) * 100"
               />
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
               Aggregated system traffic across all {interfaces.length} detected kernel interfaces
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-4 text-xs font-mono">
-          <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-right">
+          <div
+            className="p-2.5 rounded-xl border text-right"
+            style={{
+              backgroundColor: 'var(--bg-surface-subtle)',
+              borderColor: 'var(--border-subtle)',
+            }}
+          >
             <div className="flex items-center justify-end gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase">System Total Traffic</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>
+                System Total Traffic
+              </span>
               <HelpTooltip
                 title="Cumulative System Traffic"
                 content="Sum of received and transmitted bytes across all active and inactive network interfaces detected in /proc/net/dev."
                 side="left"
               />
             </div>
-            <div className="text-sm font-bold text-white mt-0.5">
+            <div className="text-sm font-bold mt-0.5" style={{ color: 'var(--text-main)' }}>
               {formatBytes(totalSysTraffic, unitPreference)}
             </div>
           </div>
@@ -86,7 +103,7 @@ export const CompareView: React.FC = () => {
       {/* Interface Traffic Distribution Bar */}
       <GlassCard className="p-5 space-y-3">
         <div className="flex items-center gap-2">
-          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <h4 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
             System Traffic Share Distribution
           </h4>
           <HelpTooltip
@@ -95,27 +112,33 @@ export const CompareView: React.FC = () => {
           />
         </div>
 
-        <div className="h-4 w-full rounded-xl overflow-hidden flex border border-white/10 p-0.5 bg-slate-900/80">
+        <div
+          className="h-4 w-full rounded-xl overflow-hidden flex border p-0.5"
+          style={{
+            borderColor: 'var(--border-subtle)',
+            backgroundColor: 'var(--bg-input)',
+          }}
+        >
           {interfaces
             .filter((i: InterfaceSummary) => i.rx_bytes + i.tx_bytes > 0)
             .map((iface: InterfaceSummary, idx: number) => {
               const traffic = iface.rx_bytes + iface.tx_bytes;
               const pct = totalSysTraffic > 0 ? (traffic / totalSysTraffic) * 100 : 0;
-              const colors = [
-                'bg-cyan-500',
-                'bg-purple-500',
-                'bg-emerald-500',
-                'bg-amber-500',
-                'bg-rose-500',
-                'bg-blue-500',
+              const palette = [
+                'var(--accent-primary)',
+                'var(--accent-tx)',
+                'var(--accent-rx)',
+                '#3b82f6',
+                '#f59e0b',
+                '#ec4899',
               ];
-              const bg = colors[idx % colors.length];
+              const bg = palette[idx % palette.length];
 
               return (
                 <div
                   key={iface.name}
-                  className={`${bg} transition-all duration-300 h-full first:rounded-l-lg last:rounded-r-lg`}
-                  style={{ width: `${pct}%` }}
+                  className="transition-all duration-300 h-full first:rounded-l-lg last:rounded-r-lg"
+                  style={{ width: `${pct}%`, backgroundColor: bg }}
                   title={`${iface.name}: ${pct.toFixed(1)}%`}
                 />
               );
@@ -128,21 +151,21 @@ export const CompareView: React.FC = () => {
             .map((iface: InterfaceSummary, idx: number) => {
               const traffic = iface.rx_bytes + iface.tx_bytes;
               const pct = totalSysTraffic > 0 ? (traffic / totalSysTraffic) * 100 : 0;
-              const colors = [
-                'bg-cyan-500',
-                'bg-purple-500',
-                'bg-emerald-500',
-                'bg-amber-500',
-                'bg-rose-500',
-                'bg-blue-500',
+              const palette = [
+                'var(--accent-primary)',
+                'var(--accent-tx)',
+                'var(--accent-rx)',
+                '#3b82f6',
+                '#f59e0b',
+                '#ec4899',
               ];
-              const dotColor = colors[idx % colors.length];
+              const dotColor = palette[idx % palette.length];
 
               return (
-                <div key={iface.name} className="flex items-center gap-1.5 text-slate-300">
-                  <span className={`w-2.5 h-2.5 rounded-full ${dotColor}`} />
+                <div key={iface.name} className="flex items-center gap-1.5" style={{ color: 'var(--text-main)' }}>
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: dotColor }} />
                   <span>{iface.name}</span>
-                  <span className="text-slate-500 font-semibold">({pct.toFixed(1)}%)</span>
+                  <span className="font-semibold" style={{ color: 'var(--text-dim)' }}>({pct.toFixed(1)}%)</span>
                 </div>
               );
             })}
@@ -185,7 +208,7 @@ export const CompareView: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold font-mono" style={{ color: 'var(--text-main)' }}>{iface.name}</h4>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
                       {iface.in_database ? 'Tracked in vnStat DB' : 'System Device Only'}
                     </span>
                   </div>
@@ -203,7 +226,7 @@ export const CompareView: React.FC = () => {
                     <CheckCircle className="w-3 h-3" /> Active
                   </span>
                 ) : (
-                  <span className="text-xs font-mono text-slate-400">{sharePct.toFixed(1)}%</span>
+                  <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>{sharePct.toFixed(1)}%</span>
                 )}
               </div>
 

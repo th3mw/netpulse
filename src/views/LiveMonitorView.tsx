@@ -68,8 +68,8 @@ export const LiveMonitorView: React.FC = () => {
               <div
                 className="p-2 rounded-xl border"
                 style={{
-                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                  borderColor: 'rgba(16, 185, 129, 0.25)',
+                  backgroundColor: 'color-mix(in srgb, var(--accent-rx) 12%, transparent)',
+                  borderColor: 'color-mix(in srgb, var(--accent-rx) 25%, transparent)',
                   color: 'var(--accent-rx)',
                 }}
               >
@@ -136,8 +136,8 @@ export const LiveMonitorView: React.FC = () => {
               <div
                 className="p-2 rounded-xl border"
                 style={{
-                  backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                  borderColor: 'rgba(168, 85, 247, 0.25)',
+                  backgroundColor: 'color-mix(in srgb, var(--accent-tx) 12%, transparent)',
+                  borderColor: 'color-mix(in srgb, var(--accent-tx) 25%, transparent)',
                   color: 'var(--accent-tx)',
                 }}
               >
@@ -334,55 +334,76 @@ export const LiveMonitorView: React.FC = () => {
       {/* Session Diagnostics Widget */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-rx) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-rx) 25%, transparent)',
+              color: 'var(--accent-rx)',
+            }}
+          >
             <Zap className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">Session Downloaded</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>Session Downloaded</span>
               <HelpTooltip
                 title="Session Downloaded"
                 content="Total download volume recorded in memory since launching the app."
               />
             </div>
-            <div className="text-base font-bold text-white font-mono">
+            <div className="text-base font-bold font-mono" style={{ color: 'var(--text-main)' }}>
               {formatBytes(sessionRxTotal, unitPreference)}
             </div>
           </div>
         </GlassCard>
 
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-tx) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-tx) 25%, transparent)',
+              color: 'var(--accent-tx)',
+            }}
+          >
             <Zap className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">Session Uploaded</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>Session Uploaded</span>
               <HelpTooltip
                 title="Session Uploaded"
                 content="Total upload volume recorded in memory since launching the app."
               />
             </div>
-            <div className="text-base font-bold text-white font-mono">
+            <div className="text-base font-bold font-mono" style={{ color: 'var(--text-main)' }}>
               {formatBytes(sessionTxTotal, unitPreference)}
             </div>
           </div>
         </GlassCard>
 
         <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--accent-primary) 12%, transparent)',
+              borderColor: 'color-mix(in srgb, var(--accent-primary) 25%, transparent)',
+              color: 'var(--accent-primary)',
+            }}
+          >
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold">Monitor Status</span>
+              <span className="text-[10px] uppercase font-semibold" style={{ color: 'var(--text-dim)' }}>Monitor Status</span>
               <HelpTooltip
                 title="Kernel Streaming Engine"
                 content="Rust background task polls Linux /proc/net/dev every 1000ms with non-blocking async timers."
               />
             </div>
-            <div className="text-base font-bold text-emerald-400 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="text-base font-bold flex items-center gap-1.5" style={{ color: 'var(--accent-primary)' }}>
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--accent-primary)' }} />
               Active Streaming
             </div>
           </div>
