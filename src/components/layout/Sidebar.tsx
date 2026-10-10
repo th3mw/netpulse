@@ -16,6 +16,7 @@ import {
   ArrowDown,
   ArrowUp,
   ChevronDown,
+  HelpCircle,
 } from 'lucide-react';
 import { useNetworkStore } from '../../store/useNetworkStore';
 import type { NavigationTab, UnitPreference } from '../../types/vnstat';
@@ -53,9 +54,11 @@ const navSections: { title: string; items: NavItem[] }[] = [
       { id: 'heatmap', label: 'Activity Heatmap', icon: Grid },
       { id: 'compare', label: 'Compare Interfaces', icon: ArrowLeftRight },
       { id: 'settings', label: 'Settings & Quota', icon: Settings },
+      { id: 'help', label: 'Help & Knowledge', icon: HelpCircle },
     ],
   },
 ];
+
 
 export const Sidebar: React.FC = () => {
   const {

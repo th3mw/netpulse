@@ -11,7 +11,9 @@ export type NavigationTab =
   | 'top'
   | 'heatmap'
   | 'compare'
-  | 'settings';
+  | 'settings'
+  | 'help';
+
 
 export interface DateObj {
   year: number;

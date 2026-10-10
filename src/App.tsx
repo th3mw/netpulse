@@ -14,6 +14,7 @@ import { TopDaysView } from './views/TopDaysView';
 import { HeatmapView } from './views/HeatmapView';
 import { CompareView } from './views/CompareView';
 import { SettingsView } from './views/SettingsView';
+import { HelpView } from './views/HelpView';
 
 export function App() {
   const {
@@ -65,10 +66,13 @@ export function App() {
         return <CompareView />;
       case 'settings':
         return <SettingsView />;
+      case 'help':
+        return <HelpView />;
       default:
         return <OverviewView />;
     }
   };
+
 
   return (
     <AppLayout>

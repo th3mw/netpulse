@@ -49,7 +49,12 @@ const titlesMap: Record<string, { title: string; subtitle: string }> = {
     title: 'Settings & Quota',
     subtitle: 'Monthly quota allowance, billing cycle start day, and interface aliases',
   },
+  help: {
+    title: 'Documentation & Help Guide',
+    subtitle: 'Detailed explanations of network telemetry, formulas, unit conversions, and daemon commands',
+  },
 };
+
 
 export const Header: React.FC = () => {
   const {
