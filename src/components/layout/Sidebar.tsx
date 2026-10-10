@@ -12,7 +12,6 @@ import {
   ArrowLeftRight,
   Settings,
   Wifi,
-  Network,
   ArrowDown,
   ArrowUp,
   ChevronDown,
@@ -22,6 +21,7 @@ import { useNetworkStore } from '../../store/useNetworkStore';
 import type { NavigationTab, UnitPreference } from '../../types/vnstat';
 import { formatRate } from '../../lib/formatters';
 import { SegmentedControl } from '../ui/SegmentedControl';
+import appLogo from '../../assets/logo.png';
 
 interface NavItem {
   id: NavigationTab;
@@ -92,22 +92,19 @@ export const Sidebar: React.FC = () => {
         style={{ borderColor: 'var(--border-subtle)' }}
       >
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center shadow-md transition-colors duration-300"
-              style={{
-                backgroundColor: 'var(--accent-primary)',
-                color: 'var(--accent-primary-fg)',
-              }}
-            >
-              <Network className="w-4 h-4" />
-            </div>
+          <div className="flex items-center gap-2.5">
+            <img
+              src={appLogo}
+              alt="NetPulse"
+              className="w-7 h-7 rounded-lg shadow-md border object-cover shrink-0"
+              style={{ borderColor: 'var(--border-subtle)' }}
+            />
             <div>
               <h1 className="text-sm font-semibold tracking-tight leading-tight" style={{ color: 'var(--text-main)' }}>
-                VNstat
+                NetPulse
               </h1>
               <span className="text-[10px] font-mono" style={{ color: 'var(--text-dim)' }}>
-                v2.13 macOS Edition
+                vnStat Telemetry
               </span>
             </div>
           </div>

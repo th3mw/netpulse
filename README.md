@@ -1,4 +1,4 @@
-# VNstat Desktop (macOS Sequoia Edition)
+# NetPulse — Desktop vnStat Telemetry Suite (macOS Sequoia Edition)
 
 A native Linux desktop application wrapping the [`vnstat`](https://linux.die.net/man/1/vnstat) network monitor daemon, engineered with Apple design craft, Emil Kowalski interaction physics, and comprehensive telemetry coverage.
 
