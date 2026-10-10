@@ -140,6 +140,10 @@ export const HeatmapView: React.FC = () => {
                   const intensity = matrix[dIdx][hIdx];
                   const bytes = intensity * maxBytes;
 
+                  const isTopRows = dIdx < 2;
+                  const isRightCols = hIdx >= 21;
+                  const isLeftCols = hIdx <= 2;
+
                   return (
                     <div
                       key={hIdx}
@@ -152,7 +156,11 @@ export const HeatmapView: React.FC = () => {
                     >
                       {/* Tooltip */}
                       <div
-                        className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-2 rounded-xl border text-[10px] font-mono shadow-2xl backdrop-blur-2xl z-50 whitespace-nowrap"
+                        className={`opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none absolute mb-2 p-2 rounded-xl border text-[10px] font-mono shadow-2xl backdrop-blur-2xl z-50 whitespace-nowrap ${
+                          isTopRows ? 'top-full mt-2' : 'bottom-full mb-2'
+                        } ${
+                          isRightCols ? 'right-0' : isLeftCols ? 'left-0' : 'left-1/2 -translate-x-1/2'
+                        }`}
                         style={{
                           backgroundColor: 'var(--bg-surface)',
                           borderColor: 'var(--border-card)',
