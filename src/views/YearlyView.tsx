@@ -1,16 +1,18 @@
 import React from 'react';
-import { Archive, ArrowDown, ArrowUp } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { formatBytes } from '../../lib/formatters';
+import { Archive } from 'lucide-react';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { formatBytes } from '../lib/formatters';
+import type { IntervalEntry } from '../types/vnstat';
+
 
 export const YearlyView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
-  const years = iface?.traffic.year || [];
+  const years: IntervalEntry[] = iface?.traffic.year || [];
 
-  const maxYear = Math.max(...years.map((y) => y.rx + y.tx), 1);
-  const totalYearsTraffic = years.reduce((acc, y) => acc + y.rx + y.tx, 0);
+  const maxYear = Math.max(...years.map((y: IntervalEntry) => y.rx + y.tx), 1);
+  const totalYearsTraffic = years.reduce((acc: number, y: IntervalEntry) => acc + y.rx + y.tx, 0);
 
   return (
     <div className="space-y-6">
@@ -41,7 +43,7 @@ export const YearlyView: React.FC = () => {
         </h4>
 
         <div className="h-44 flex items-end gap-6 pt-4">
-          {years.map((y, idx) => {
+          {years.map((y: IntervalEntry, idx: number) => {
             const yTotal = y.rx + y.tx;
             const heightPercent = Math.max(15, (yTotal / maxYear) * 100);
             const rxRatio = yTotal > 0 ? y.rx / yTotal : 0.5;
@@ -101,7 +103,7 @@ export const YearlyView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 font-mono">
-              {[...years].reverse().map((y, idx) => {
+              {[...years].reverse().map((y: IntervalEntry, idx: number) => {
                 const yTotal = y.rx + y.tx;
                 const estMonthly = yTotal / 12;
                 return (

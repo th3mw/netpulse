@@ -1,15 +1,17 @@
 import React from 'react';
 import { Trophy, Medal, Award, Flame, Calendar } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { formatBytes, formatDate } from '../../lib/formatters';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { formatBytes, formatDate } from '../lib/formatters';
+import type { IntervalEntry } from '../types/vnstat';
+
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export const TopDaysView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
-  const topDays = iface?.traffic.top || [];
+  const topDays: IntervalEntry[] = iface?.traffic.top || [];
 
   const recordDay = topDays[0];
   const recordDayTotal = recordDay ? recordDay.rx + recordDay.tx : 1;
@@ -133,7 +135,7 @@ export const TopDaysView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 font-mono">
-              {topDays.map((d, idx) => {
+              {topDays.map((d: IntervalEntry, idx: number) => {
                 const dTotal = d.rx + d.tx;
                 const pct = recordDayTotal > 0 ? (dTotal / recordDayTotal) * 100 : 0;
                 const dayOfWeek = dayNames[new Date(d.timestamp * 1000).getDay()];

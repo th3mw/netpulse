@@ -10,28 +10,32 @@ import {
   CheckCircle,
   AlertTriangle,
 } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { MetricCard } from '../ui/MetricCard';
-import { formatBytes, formatDateTime, formatRate } from '../../lib/formatters';
-import { calculateMonthProjection, calculateRxTxBalance } from '../../lib/calculations';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { MetricCard } from '../components/ui/MetricCard';
+import { formatBytes, formatDateTime } from '../lib/formatters';
+
+import { calculateMonthProjection, calculateRxTxBalance } from '../lib/calculations';
+import type { IntervalEntry } from '../types/vnstat';
+
+
+
 
 export const OverviewView: React.FC = () => {
   const {
     selectedInterface,
     vnstatData,
     percentileReport,
-    currentLive,
     unitPreference,
     billingConfig,
   } = useNetworkStore();
 
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
   const total = iface?.traffic.total || { rx: 0, tx: 0 };
-  const days = iface?.traffic.day || [];
-  const hours = iface?.traffic.hour || [];
-  const months = iface?.traffic.month || [];
-  const topDays = iface?.traffic.top || [];
+  const days: IntervalEntry[] = iface?.traffic.day || [];
+  const hours: IntervalEntry[] = iface?.traffic.hour || [];
+  const months: IntervalEntry[] = iface?.traffic.month || [];
+  const topDays: IntervalEntry[] = iface?.traffic.top || [];
 
   const today = days[days.length - 1] || { rx: 0, tx: 0 };
   const yesterday = days.length > 1 ? days[days.length - 2] : null;
@@ -54,8 +58,8 @@ export const OverviewView: React.FC = () => {
 
   // Peak 24-hour hour
   const peakHour = hours.reduce(
-    (max, h) => (h.rx + h.tx > max.rx + max.tx ? h : max),
-    hours[0] || { rx: 0, tx: 0, time: { hour: 0, minute: 0 } }
+    (max: IntervalEntry, h: IntervalEntry) => (h.rx + h.tx > max.rx + max.tx ? h : max),
+    hours[0] || ({ rx: 0, tx: 0, time: { hour: 0, minute: 0 } } as IntervalEntry)
   );
 
   return (
@@ -277,10 +281,10 @@ export const OverviewView: React.FC = () => {
 
         {/* 24-Hour Bar Chart */}
         <div className="h-36 flex items-end gap-1.5 pt-4">
-          {hours.slice(-24).map((h, idx) => {
+          {hours.slice(-24).map((h: IntervalEntry, idx: number) => {
             const hTotal = h.rx + h.tx;
             const maxVal = Math.max(
-              ...hours.slice(-24).map((x) => x.rx + x.tx),
+              ...hours.slice(-24).map((x: IntervalEntry) => x.rx + x.tx),
               1
             );
             const heightPercent = Math.max(6, (hTotal / maxVal) * 100);

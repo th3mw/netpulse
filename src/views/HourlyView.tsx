@@ -1,20 +1,22 @@
 import React from 'react';
-import { BarChart3, Clock, Zap, ArrowDown, ArrowUp } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { formatBytes, formatDate, formatRate } from '../../lib/formatters';
+import { BarChart3, Clock, Zap } from 'lucide-react';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { formatBytes, formatDate, formatRate } from '../lib/formatters';
+import type { IntervalEntry } from '../types/vnstat';
+
 
 export const HourlyView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference, percentileReport } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
-  const hours = iface?.traffic.hour || [];
+  const hours: IntervalEntry[] = iface?.traffic.hour || [];
 
-  const maxHour = Math.max(...hours.map((h) => h.rx + h.tx), 1);
-  const total24h = hours.reduce((acc, h) => acc + h.rx + h.tx, 0);
+  const maxHour = Math.max(...hours.map((h: IntervalEntry) => h.rx + h.tx), 1);
+  const total24h = hours.reduce((acc: number, h: IntervalEntry) => acc + h.rx + h.tx, 0);
 
   const peakHour = hours.reduce(
-    (max, h) => (h.rx + h.tx > max.rx + max.tx ? h : max),
-    hours[0] || { rx: 0, tx: 0 }
+    (max: IntervalEntry, h: IntervalEntry) => (h.rx + h.tx > max.rx + max.tx ? h : max),
+    hours[0] || ({ rx: 0, tx: 0 } as IntervalEntry)
   );
 
   return (
@@ -74,7 +76,7 @@ export const HourlyView: React.FC = () => {
         </div>
 
         <div className="h-44 flex items-end gap-2 pt-4">
-          {hours.slice(-24).map((h, idx) => {
+          {hours.slice(-24).map((h: IntervalEntry, idx: number) => {
             const hTotal = h.rx + h.tx;
             const heightPercent = Math.max(8, (hTotal / maxHour) * 100);
             const rxRatio = hTotal > 0 ? h.rx / hTotal : 0.5;
@@ -142,7 +144,7 @@ export const HourlyView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 font-mono">
-              {[...hours].reverse().map((h, idx) => {
+              {[...hours].reverse().map((h: IntervalEntry, idx: number) => {
                 const hTotal = h.rx + h.tx;
                 const avgRate = hTotal / 3600;
                 const pct = total24h > 0 ? (hTotal / total24h) * 100 : 0;

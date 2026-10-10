@@ -1,16 +1,18 @@
 import React from 'react';
 import { ArrowLeftRight, Wifi, Shield, Network, ArrowDown, ArrowUp, CheckCircle } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { AppleButton } from '../ui/AppleButton';
-import { formatBytes } from '../../lib/formatters';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { AppleButton } from '../components/ui/AppleButton';
+import { formatBytes } from '../lib/formatters';
+import type { InterfaceSummary } from '../types/vnstat';
+
 
 export const CompareView: React.FC = () => {
   const { interfaces, selectedInterface, setSelectedInterface, setActiveTab, unitPreference } =
     useNetworkStore();
 
-  const totalSysRx = interfaces.reduce((acc, i) => acc + i.rx_bytes, 0);
-  const totalSysTx = interfaces.reduce((acc, i) => acc + i.tx_bytes, 0);
+  const totalSysRx = interfaces.reduce((acc: number, i: InterfaceSummary) => acc + i.rx_bytes, 0);
+  const totalSysTx = interfaces.reduce((acc: number, i: InterfaceSummary) => acc + i.tx_bytes, 0);
   const totalSysTraffic = totalSysRx + totalSysTx;
 
   return (
@@ -59,8 +61,8 @@ export const CompareView: React.FC = () => {
 
         <div className="h-4 w-full rounded-xl overflow-hidden flex border border-white/10 p-0.5 bg-slate-900/80">
           {interfaces
-            .filter((i) => i.rx_bytes + i.tx_bytes > 0)
-            .map((iface, idx) => {
+            .filter((i: InterfaceSummary) => i.rx_bytes + i.tx_bytes > 0)
+            .map((iface: InterfaceSummary, idx: number) => {
               const traffic = iface.rx_bytes + iface.tx_bytes;
               const pct = totalSysTraffic > 0 ? (traffic / totalSysTraffic) * 100 : 0;
               const colors = [
@@ -86,8 +88,8 @@ export const CompareView: React.FC = () => {
 
         <div className="flex flex-wrap items-center gap-4 text-xs font-mono pt-1">
           {interfaces
-            .filter((i) => i.rx_bytes + i.tx_bytes > 0)
-            .map((iface, idx) => {
+            .filter((i: InterfaceSummary) => i.rx_bytes + i.tx_bytes > 0)
+            .map((iface: InterfaceSummary, idx: number) => {
               const traffic = iface.rx_bytes + iface.tx_bytes;
               const pct = totalSysTraffic > 0 ? (traffic / totalSysTraffic) * 100 : 0;
               const colors = [
@@ -113,7 +115,7 @@ export const CompareView: React.FC = () => {
 
       {/* Interface Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {interfaces.map((iface) => {
+        {interfaces.map((iface: InterfaceSummary) => {
           const isSelected = iface.name === selectedInterface;
           const ifaceTotal = iface.rx_bytes + iface.tx_bytes;
           const sharePct = totalSysTraffic > 0 ? (ifaceTotal / totalSysTraffic) * 100 : 0;

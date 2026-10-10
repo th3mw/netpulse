@@ -1,4 +1,5 @@
-import { IntervalEntry } from '../types/vnstat';
+import type { IntervalEntry } from '../types/vnstat';
+
 
 export interface MonthProjectionResult {
   projectedBytes: number;

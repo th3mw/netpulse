@@ -1,18 +1,20 @@
 import React from 'react';
-import { Calendar, TrendingUp, CalendarDays } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { formatBytes, formatDate, formatRate } from '../../lib/formatters';
+import { Calendar, CalendarDays } from 'lucide-react';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { formatBytes, formatDate, formatRate } from '../lib/formatters';
+import type { IntervalEntry } from '../types/vnstat';
+
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export const DailyView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
-  const days = iface?.traffic.day || [];
+  const days: IntervalEntry[] = iface?.traffic.day || [];
 
-  const maxDay = Math.max(...days.map((d) => d.rx + d.tx), 1);
-  const totalDaysTraffic = days.reduce((acc, d) => acc + d.rx + d.tx, 0);
+  const maxDay = Math.max(...days.map((d: IntervalEntry) => d.rx + d.tx), 1);
+  const totalDaysTraffic = days.reduce((acc: number, d: IntervalEntry) => acc + d.rx + d.tx, 0);
   const avgDayTraffic = days.length > 0 ? totalDaysTraffic / days.length : 0;
 
   // Calculate weekday vs weekend averages
@@ -21,7 +23,7 @@ export const DailyView: React.FC = () => {
   let weekendTotal = 0;
   let weekendCount = 0;
 
-  days.forEach((d) => {
+  days.forEach((d: IntervalEntry) => {
     const date = new Date(d.timestamp * 1000);
     const dayOfWeek = date.getDay();
     const sum = d.rx + d.tx;
@@ -93,7 +95,7 @@ export const DailyView: React.FC = () => {
         </div>
 
         <div className="h-44 flex items-end gap-1.5 pt-4">
-          {days.slice(-30).map((d, idx) => {
+          {days.slice(-30).map((d: IntervalEntry, idx: number) => {
             const dTotal = d.rx + d.tx;
             const heightPercent = Math.max(8, (dTotal / maxDay) * 100);
             const rxRatio = dTotal > 0 ? d.rx / dTotal : 0.5;
@@ -164,7 +166,7 @@ export const DailyView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 font-mono">
-              {[...days].reverse().map((d, idx) => {
+              {[...days].reverse().map((d: IntervalEntry, idx: number) => {
                 const dTotal = d.rx + d.tx;
                 const dayOfWeek = dayNames[new Date(d.timestamp * 1000).getDay()];
                 const isWeekend = dayOfWeek === 'Sun' || dayOfWeek === 'Sat';

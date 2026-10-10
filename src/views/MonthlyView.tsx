@@ -1,8 +1,10 @@
 import React from 'react';
-import { TrendingUp, Calendar, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { formatBytes, formatDate } from '../../lib/formatters';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { formatBytes } from '../lib/formatters';
+import type { IntervalEntry } from '../types/vnstat';
+
 
 const monthNames = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
@@ -11,10 +13,10 @@ const monthNames = [
 export const MonthlyView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
-  const months = iface?.traffic.month || [];
+  const months: IntervalEntry[] = iface?.traffic.month || [];
 
-  const maxMonth = Math.max(...months.map((m) => m.rx + m.tx), 1);
-  const totalMonthsTraffic = months.reduce((acc, m) => acc + m.rx + m.tx, 0);
+  const maxMonth = Math.max(...months.map((m: IntervalEntry) => m.rx + m.tx), 1);
+  const totalMonthsTraffic = months.reduce((acc: number, m: IntervalEntry) => acc + m.rx + m.tx, 0);
 
   return (
     <div className="space-y-6">
@@ -36,7 +38,7 @@ export const MonthlyView: React.FC = () => {
         </div>
 
         <div className="h-48 flex items-end gap-3 pt-6">
-          {months.map((m, idx) => {
+          {months.map((m: IntervalEntry, idx: number) => {
             const mTotal = m.rx + m.tx;
             const heightPercent = Math.max(12, (mTotal / maxMonth) * 100);
             const rxRatio = mTotal > 0 ? m.rx / mTotal : 0.5;
@@ -104,7 +106,7 @@ export const MonthlyView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 font-mono">
-              {[...months].reverse().map((m, idx, arr) => {
+              {[...months].reverse().map((m: IntervalEntry, idx: number, arr: IntervalEntry[]) => {
                 const mTotal = m.rx + m.tx;
                 const prevMonth = arr[idx + 1];
                 const prevTotal = prevMonth ? prevMonth.rx + prevMonth.tx : 0;

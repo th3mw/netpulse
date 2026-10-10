@@ -1,4 +1,5 @@
-import { DateObj, TimeObj, UnitPreference } from '../types/vnstat';
+import type { DateObj, TimeObj, UnitPreference } from '../types/vnstat';
+
 
 export function formatBytes(
   bytes: number,

@@ -1,16 +1,18 @@
 import React from 'react';
-import { Clock, ArrowDown, ArrowUp, Zap } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { formatBytes, formatDate, formatTime, formatRate } from '../../lib/formatters';
+import { Clock } from 'lucide-react';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { formatBytes, formatDate, formatTime, formatRate } from '../lib/formatters';
+import type { IntervalEntry } from '../types/vnstat';
+
 
 export const FiveMinuteView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
-  const slots = iface?.traffic.fiveminute || [];
+  const slots: IntervalEntry[] = iface?.traffic.fiveminute || [];
 
-  const maxSlot = Math.max(...slots.map((s) => s.rx + s.tx), 1);
-  const totalInPeriod = slots.reduce((acc, s) => acc + s.rx + s.tx, 0);
+  const maxSlot = Math.max(...slots.map((s: IntervalEntry) => s.rx + s.tx), 1);
+  const totalInPeriod = slots.reduce((acc: number, s: IntervalEntry) => acc + s.rx + s.tx, 0);
 
   return (
     <div className="space-y-6">
@@ -51,7 +53,7 @@ export const FiveMinuteView: React.FC = () => {
         </h4>
 
         <div className="h-28 flex items-end gap-1 pt-2">
-          {slots.slice(-36).map((slot, idx) => {
+          {slots.slice(-36).map((slot: IntervalEntry, idx: number) => {
             const slotTotal = slot.rx + slot.tx;
             const heightPercent = Math.max(6, (slotTotal / maxSlot) * 100);
             const rxRatio = slotTotal > 0 ? slot.rx / slotTotal : 0.5;
@@ -116,7 +118,7 @@ export const FiveMinuteView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 font-mono">
-              {[...slots].reverse().map((slot, idx) => {
+              {[...slots].reverse().map((slot: IntervalEntry, idx: number) => {
                 const slotTotal = slot.rx + slot.tx;
                 const avgRate = slotTotal / 300;
                 return (

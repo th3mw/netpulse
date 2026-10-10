@@ -1,122 +1,95 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
+import { motion, AnimatePresence } from 'motion/react';
+import { useNetworkStore } from './store/useNetworkStore';
+import { AppLayout } from './components/layout/AppLayout';
+import { OverviewView } from './views/OverviewView';
+import { LiveMonitorView } from './views/LiveMonitorView';
+import { FiveMinuteView } from './views/FiveMinuteView';
+import { HourlyView } from './views/HourlyView';
+import { DailyView } from './views/DailyView';
+import { MonthlyView } from './views/MonthlyView';
+import { YearlyView } from './views/YearlyView';
+import { TopDaysView } from './views/TopDaysView';
+import { HeatmapView } from './views/HeatmapView';
+import { CompareView } from './views/CompareView';
+import { SettingsView } from './views/SettingsView';
+
+export function App() {
+  const {
+    activeTab,
+    fetchInterfaces,
+    fetchVnstatData,
+    fetchPercentileReport,
+    initLiveMonitor,
+  } = useNetworkStore();
+
+  useEffect(() => {
+    // Initial data fetch
+    fetchInterfaces();
+    fetchVnstatData();
+    fetchPercentileReport();
+
+    // Start background live stream listener
+    let cleanup: (() => void) | undefined;
+    initLiveMonitor().then((unsub) => {
+      cleanup = unsub;
+    });
+
+    return () => {
+      if (cleanup) cleanup();
+    };
+  }, []);
+
+  const renderView = () => {
+    switch (activeTab) {
+      case 'overview':
+        return <OverviewView />;
+      case 'live':
+        return <LiveMonitorView />;
+      case 'fiveminute':
+        return <FiveMinuteView />;
+      case 'hourly':
+        return <HourlyView />;
+      case 'daily':
+        return <DailyView />;
+      case 'monthly':
+        return <MonthlyView />;
+      case 'yearly':
+        return <YearlyView />;
+      case 'top':
+        return <TopDaysView />;
+      case 'heatmap':
+        return <HeatmapView />;
+      case 'compare':
+        return <CompareView />;
+      case 'settings':
+        return <SettingsView />;
+      default:
+        return <OverviewView />;
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <AppLayout>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
+          transition={{
+            type: 'spring',
+            bounce: 0,
+            duration: 0.25,
+          }}
+          className="w-full"
         >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          {renderView()}
+        </motion.div>
+      </AnimatePresence>
+    </AppLayout>
+  );
 }
 
-export default App
+export default App;

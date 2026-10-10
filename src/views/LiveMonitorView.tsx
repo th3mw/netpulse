@@ -2,16 +2,13 @@ import React from 'react';
 import {
   ArrowDown,
   ArrowUp,
-  Activity,
   Zap,
-  RotateCcw,
   ShieldCheck,
   Radio,
 } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { AppleButton } from '../ui/AppleButton';
-import { formatBytes, formatPackets, formatRate } from '../../lib/formatters';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { formatBytes, formatPackets, formatRate } from '../lib/formatters';
 
 export const LiveMonitorView: React.FC = () => {
   const {
@@ -40,7 +37,6 @@ export const LiveMonitorView: React.FC = () => {
   // Build SVG polygon points for 60-second stream
   const width = 800;
   const height = 240;
-  const pointsCount = Math.max(liveHistory.length, 2);
 
   const getCoordinates = (rates: number[]) => {
     return rates

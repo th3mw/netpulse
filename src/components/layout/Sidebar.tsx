@@ -18,7 +18,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { useNetworkStore } from '../../store/useNetworkStore';
-import { NavigationTab, UnitPreference } from '../../types/vnstat';
+import type { NavigationTab, UnitPreference } from '../../types/vnstat';
 import { formatRate } from '../../lib/formatters';
 import { SegmentedControl } from '../ui/SegmentedControl';
 
@@ -72,8 +72,8 @@ export const Sidebar: React.FC = () => {
 
   const [ifaceDropdownOpen, setIfaceDropdownOpen] = React.useState(false);
 
-  const activeIfaceObj = interfaces.find((i) => i.name === selectedInterface);
   const alias = vnstatData?.interfaces.find((i) => i.name === selectedInterface)?.alias;
+
 
   return (
     <aside className="w-64 h-full flex flex-col bg-slate-950/80 border-r border-white/8 backdrop-blur-2xl select-none relative z-20">

@@ -1,16 +1,18 @@
 import React from 'react';
-import { Grid, Flame, Info } from 'lucide-react';
-import { useNetworkStore } from '../../store/useNetworkStore';
-import { GlassCard } from '../ui/GlassCard';
-import { calculateActivityHeatmap } from '../../lib/calculations';
-import { formatBytes } from '../../lib/formatters';
+import { Grid, Flame } from 'lucide-react';
+import { useNetworkStore } from '../store/useNetworkStore';
+import { GlassCard } from '../components/ui/GlassCard';
+import { calculateActivityHeatmap } from '../lib/calculations';
+import { formatBytes } from '../lib/formatters';
+import type { IntervalEntry } from '../types/vnstat';
+
 
 const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export const HeatmapView: React.FC = () => {
   const { selectedInterface, vnstatData, unitPreference } = useNetworkStore();
   const iface = vnstatData?.interfaces.find((i) => i.name === selectedInterface);
-  const hourly = iface?.traffic.hour || [];
+  const hourly: IntervalEntry[] = iface?.traffic.hour || [];
 
   const { matrix, maxBytes, dayTotals, hourTotals } = React.useMemo(
     () => calculateActivityHeatmap(hourly),
