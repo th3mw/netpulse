@@ -20,6 +20,9 @@ Built with **Tauri v2 (Rust)**, **React 19**, **TypeScript**, **Bun**, **Tailwin
 - **7×24 Activity Heatmap**: Interactive GitHub-style network density matrix across days of week and hours of day.
 - **Multi-Interface Comparison**: Side-by-side traffic distribution across all network cards (`wlan0`, `eth0`, VPN/WARP) with instant device switching.
 - **Quota & Billing Tracker**: Configurable monthly data cap with alert thresholds, billing cycle renewal day, and daily allowance budget.
+- **Dedicated Help & Documentation Center**: In-app search for networking topics, metric formulas (95th percentile, run-rate forecast, traffic balance), unit comparison matrix (SI vs IEC vs Bits), and interactive vnStat CLI cheatsheet.
+- **Component Contextual Help**: Micro `HelpTooltip` icons across all metrics, charts, tables, and settings explaining formulas and behaviors on hover/click with origin-aware spring physics.
+- **Full Settings & Interface Manager**: Register untracked network adapters (`vnstat --add`), unregister interfaces (`vnstat --remove`), synchronize database counters on demand (`vnstat -u`), set custom interface aliases (`vnstat --setalias`), configure quota alert thresholds, and export datasets.
 - **Data Export Center**: Export telemetry to CSV or raw JSON files, or copy structure to clipboard.
 
 ### 🎨 Apple & Emil Kowalski Design Language

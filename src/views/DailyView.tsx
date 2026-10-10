@@ -2,6 +2,7 @@ import React from 'react';
 import { Calendar, CalendarDays } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes, formatDate, formatRate } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
 
@@ -48,7 +49,14 @@ export const DailyView: React.FC = () => {
             <Calendar className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Average Daily Volume</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Average Daily Volume</span>
+              <HelpTooltip
+                title="Daily Mean"
+                content="Arithmetic mean of daily traffic across all recorded days in the database."
+                formula="Avg = Total Recorded Bytes / Total Recorded Days"
+              />
+            </div>
             <div className="text-xl font-bold text-white font-mono mt-0.5">
               {formatBytes(avgDayTraffic, unitPreference)}/day
             </div>
@@ -60,7 +68,13 @@ export const DailyView: React.FC = () => {
             <CalendarDays className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Weekday Avg (Mon-Fri)</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Weekday Avg (Mon-Fri)</span>
+              <HelpTooltip
+                title="Weekday Profile"
+                content="Average daily transfer volume on working business days (Monday through Friday). Great for identifying remote work and business consumption."
+              />
+            </div>
             <div className="text-xl font-bold text-blue-300 font-mono mt-0.5">
               {formatBytes(avgWeekday, unitPreference)}/day
             </div>
@@ -72,7 +86,13 @@ export const DailyView: React.FC = () => {
             <CalendarDays className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Weekend Avg (Sat-Sun)</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Weekend Avg (Sat-Sun)</span>
+              <HelpTooltip
+                title="Weekend Profile"
+                content="Average daily transfer volume on weekend days (Saturday and Sunday). Highlights leisure streaming, gaming, and off-peak backups."
+              />
+            </div>
             <div className="text-xl font-bold text-purple-300 font-mono mt-0.5">
               {formatBytes(avgWeekend, unitPreference)}/day
             </div>
@@ -83,7 +103,13 @@ export const DailyView: React.FC = () => {
       {/* Visual Daily Column Chart */}
       <GlassCard className="p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-white">Daily History Profile</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-white">Daily History Profile</h3>
+            <HelpTooltip
+              title="Daily Volume Bars"
+              content="Bars display each recorded calendar day. Stacked emerald (RX) and purple (TX) show download vs upload volume."
+            />
+          </div>
           <div className="flex items-center gap-4 text-xs font-mono">
             <span className="flex items-center gap-1.5 text-emerald-400">
               <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> RX

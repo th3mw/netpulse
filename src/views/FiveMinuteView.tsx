@@ -2,6 +2,7 @@ import React from 'react';
 import { Clock } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes, formatDate, formatTime, formatRate } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
 
@@ -23,7 +24,14 @@ export const FiveMinuteView: React.FC = () => {
             <Clock className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-white">5-Minute Granular Telemetry</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-semibold text-white">5-Minute Granular Telemetry</h3>
+              <HelpTooltip
+                title="5-Minute Sampling Interval"
+                content="vnstat captures high-resolution 300-second traffic blocks. Essential for catching short-lived bandwidth spikes, game downloads, or buffer-bloat events that hourly averages smooth out."
+                formula="Slot Duration = 300 seconds (5 min)"
+              />
+            </div>
             <p className="text-xs text-slate-400">
               High-resolution 300-second sample slots from vnstat database ({slots.length} slots available)
             </p>
@@ -32,13 +40,27 @@ export const FiveMinuteView: React.FC = () => {
 
         <div className="flex items-center gap-4 text-xs font-mono">
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-right">
-            <span className="text-[10px] text-slate-400 uppercase">Recent Window Total</span>
+            <div className="flex items-center justify-end gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase">Recent Window Total</span>
+              <HelpTooltip
+                title="Window Total"
+                content="Sum of received and sent bytes across all currently logged 5-minute slots in the SQLite database."
+                side="left"
+              />
+            </div>
             <div className="text-sm font-bold text-white mt-0.5">
               {formatBytes(totalInPeriod, unitPreference)}
             </div>
           </div>
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-right">
-            <span className="text-[10px] text-slate-400 uppercase">Highest Slot Burst</span>
+            <div className="flex items-center justify-end gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase">Highest Slot Burst</span>
+              <HelpTooltip
+                title="Peak 5-Min Burst"
+                content="The single 5-minute slot with maximum aggregate transfer volume during the sampled period."
+                side="left"
+              />
+            </div>
             <div className="text-sm font-bold text-cyan-400 mt-0.5">
               {formatBytes(maxSlot, unitPreference)}
             </div>
@@ -48,9 +70,17 @@ export const FiveMinuteView: React.FC = () => {
 
       {/* Visual Step Timeline */}
       <GlassCard className="p-5 space-y-3">
-        <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-          Micro-Burst Activity Curve (5-Min Slots)
-        </h4>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              Micro-Burst Activity Curve (5-Min Slots)
+            </h4>
+            <HelpTooltip
+              title="Slot Stack Composition"
+              content="Vertical bars represent individual 300-second slots. Emerald segment indicates download (RX); purple segment indicates upload (TX)."
+            />
+          </div>
+        </div>
 
         <div className="h-28 flex items-end gap-1 pt-2">
           {slots.slice(-36).map((slot: IntervalEntry, idx: number) => {

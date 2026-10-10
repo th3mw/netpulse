@@ -1,7 +1,7 @@
-import React from 'react';
 import { Archive } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
 
@@ -23,13 +23,26 @@ export const YearlyView: React.FC = () => {
             <Archive className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-white">Annual Telemetry Records</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-semibold text-white">Annual Telemetry Records</h3>
+              <HelpTooltip
+                title="Yearly Database Logs"
+                content="Long-term multi-year cumulative bandwidth records archived in the vnstat SQLite database. Preserved across system reboots and kernel upgrades."
+              />
+            </div>
             <p className="text-xs text-slate-400">Multi-year cumulative volume tracked by vnstat</p>
           </div>
         </div>
 
         <div className="text-right font-mono">
-          <span className="text-[10px] text-slate-400 uppercase">Cumulative Lifetime Traffic</span>
+          <div className="flex items-center justify-end gap-1.5">
+            <span className="text-[10px] text-slate-400 uppercase">Cumulative Lifetime Traffic</span>
+            <HelpTooltip
+              title="Lifetime Total"
+              content="Sum of all data transferred across all recorded years for this network interface."
+              side="left"
+            />
+          </div>
           <div className="text-xl font-bold text-white mt-0.5">
             {formatBytes(totalYearsTraffic, unitPreference)}
           </div>
@@ -38,9 +51,15 @@ export const YearlyView: React.FC = () => {
 
       {/* Yearly Comparison Chart */}
       <GlassCard className="p-5 space-y-4">
-        <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-          Annual Volume Distribution
-        </h4>
+        <div className="flex items-center gap-2">
+          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Annual Volume Distribution
+          </h4>
+          <HelpTooltip
+            title="Yearly Distribution"
+            content="Visual column bars comparing annual volume across active recorded years. Displays download vs upload proportions."
+          />
+        </div>
 
         <div className="h-44 flex items-end gap-6 pt-4">
           {years.map((y: IntervalEntry, idx: number) => {

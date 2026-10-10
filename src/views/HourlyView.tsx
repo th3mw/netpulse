@@ -2,6 +2,7 @@ import React from 'react';
 import { BarChart3, Clock, Zap } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes, formatDate, formatRate } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
 
@@ -28,7 +29,14 @@ export const HourlyView: React.FC = () => {
             <BarChart3 className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">24h Total Traffic</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">24h Total Traffic</span>
+              <HelpTooltip
+                title="Rolling 24-Hour Sum"
+                content="Aggregated data transferred over the last 24 one-hour measurement blocks recorded by the vnstat daemon."
+                formula="Sum = Σ(hour.rx + hour.tx) for last 24h"
+              />
+            </div>
             <div className="text-xl font-bold text-white font-mono mt-0.5">
               {formatBytes(total24h, unitPreference)}
             </div>
@@ -40,7 +48,13 @@ export const HourlyView: React.FC = () => {
             <Zap className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Peak Hour Spike</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Peak Hour Spike</span>
+              <HelpTooltip
+                title="Peak Hour Volume"
+                content="The single 60-minute window with the largest total data volume within the active 24-hour cycle."
+              />
+            </div>
             <div className="text-xl font-bold text-amber-400 font-mono mt-0.5">
               {peakHour?.time ? `${peakHour.time.hour}:00` : '-'} (
               {formatBytes((peakHour?.rx || 0) + (peakHour?.tx || 0), unitPreference)})
@@ -53,7 +67,14 @@ export const HourlyView: React.FC = () => {
             <Clock className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">95th % Rate Ceiling</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">95th % Rate Ceiling</span>
+              <HelpTooltip
+                title="95th Percentile Rate"
+                content="Calculated by sorting all 5-minute/hourly samples and discarding top 5% extreme bursts. Industry-standard ISP transit billing method."
+                formula="Sort samples ascending, pick sample at rank N * 0.95"
+              />
+            </div>
             <div className="text-xl font-bold text-purple-300 font-mono mt-0.5">
               {percentileReport?.total_95th_str || '-'}
             </div>
@@ -64,7 +85,13 @@ export const HourlyView: React.FC = () => {
       {/* Hourly Bar Chart */}
       <GlassCard className="p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-white">Hourly Bandwidth Profile (Past 24 Hours)</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-white">Hourly Bandwidth Profile (Past 24 Hours)</h3>
+            <HelpTooltip
+              title="24-Hour Hourly Timeline"
+              content="Bars display each elapsed hour of the day. Emerald is incoming download; purple is outgoing upload. Amber outline flags the peak hour."
+            />
+          </div>
           <div className="flex items-center gap-4 text-xs font-mono">
             <span className="flex items-center gap-1.5 text-emerald-400">
               <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> RX

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  HelpCircle,
   Search,
   BookOpen,
   Gauge,
@@ -16,7 +15,6 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { GlassCard } from '../components/ui/GlassCard';
-import { AppleButton } from '../components/ui/AppleButton';
 
 interface HelpSection {
   id: string;

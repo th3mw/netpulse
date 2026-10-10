@@ -1,8 +1,8 @@
-import React from 'react';
 import { ArrowLeftRight, Wifi, Shield, Network, ArrowDown, ArrowUp, CheckCircle } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
 import { AppleButton } from '../components/ui/AppleButton';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes } from '../lib/formatters';
 import type { InterfaceSummary } from '../types/vnstat';
 
@@ -24,7 +24,14 @@ export const CompareView: React.FC = () => {
             <ArrowLeftRight className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-white">Interface Comparative Analysis</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-semibold text-white">Interface Comparative Analysis</h3>
+              <HelpTooltip
+                title="System-Wide Network Comparison"
+                content="Aggregates and compares throughput share across all physical (Wi-Fi, Ethernet) and virtual (VPN, Docker bridges, WireGuard) network interfaces on the host."
+                formula="Interface Share % = (NIC Traffic / Total System Traffic) * 100"
+              />
+            </div>
             <p className="text-xs text-slate-400">
               Aggregated system traffic across all {interfaces.length} detected kernel interfaces
             </p>
@@ -33,7 +40,14 @@ export const CompareView: React.FC = () => {
 
         <div className="flex items-center gap-4 text-xs font-mono">
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-right">
-            <span className="text-[10px] text-slate-400 uppercase">System Total Traffic</span>
+            <div className="flex items-center justify-end gap-1.5">
+              <span className="text-[10px] text-slate-400 uppercase">System Total Traffic</span>
+              <HelpTooltip
+                title="Cumulative System Traffic"
+                content="Sum of received and transmitted bytes across all active and inactive network interfaces detected in /proc/net/dev."
+                side="left"
+              />
+            </div>
             <div className="text-sm font-bold text-white mt-0.5">
               {formatBytes(totalSysTraffic, unitPreference)}
             </div>
@@ -55,9 +69,15 @@ export const CompareView: React.FC = () => {
 
       {/* Interface Traffic Distribution Bar */}
       <GlassCard className="p-5 space-y-3">
-        <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-          System Traffic Share Distribution
-        </h4>
+        <div className="flex items-center gap-2">
+          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            System Traffic Share Distribution
+          </h4>
+          <HelpTooltip
+            title="Relative Traffic Partitioning"
+            content="Color-segmented horizontal ratio bar illustrating percentage of total host bandwidth consumed by each distinct network adapter."
+          />
+        </div>
 
         <div className="h-4 w-full rounded-xl overflow-hidden flex border border-white/10 p-0.5 bg-slate-900/80">
           {interfaces

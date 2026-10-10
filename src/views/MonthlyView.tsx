@@ -1,7 +1,7 @@
-import React from 'react';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { useNetworkStore } from '../store/useNetworkStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { formatBytes } from '../lib/formatters';
 import type { IntervalEntry } from '../types/vnstat';
 
@@ -24,7 +24,14 @@ export const MonthlyView: React.FC = () => {
       <GlassCard className="p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-white">Monthly Bandwidth Trends</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-white">Monthly Bandwidth Trends</h3>
+              <HelpTooltip
+                title="Month-over-Month Telemetry"
+                content="Historical monthly traffic summaries. MoM Change measures percentage delta relative to immediately preceding calendar month."
+                formula="MoM Delta % = ((Current Month - Previous Month) / Previous Month) * 100"
+              />
+            </div>
             <p className="text-xs text-slate-400">Month-over-month cumulative transfer records</p>
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">

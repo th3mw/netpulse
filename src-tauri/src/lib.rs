@@ -217,6 +217,49 @@ fn set_interface_alias(interface: String, alias: String) -> Result<String, Strin
 }
 
 #[tauri::command]
+fn add_interface_to_db(interface: String) -> Result<String, String> {
+    let output = Command::new("vnstat")
+        .args(["--add", "-i", &interface])
+        .output()
+        .map_err(|e| format!("Failed to add interface: {}", e))?;
+
+    if !output.status.success() {
+        let err = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("vnstat --add failed: {}", err));
+    }
+    Ok(format!("Interface {} added to vnstat database", interface))
+}
+
+#[tauri::command]
+fn remove_interface_from_db(interface: String) -> Result<String, String> {
+    let output = Command::new("vnstat")
+        .args(["--remove", "-i", &interface, "--force"])
+        .output()
+        .map_err(|e| format!("Failed to remove interface: {}", e))?;
+
+    if !output.status.success() {
+        let err = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("vnstat --remove failed: {}", err));
+    }
+    Ok(format!("Interface {} removed from vnstat database", interface))
+}
+
+#[tauri::command]
+fn update_database(interface: Option<String>) -> Result<String, String> {
+    let mut cmd = Command::new("vnstat");
+    cmd.arg("-u");
+    if let Some(iface) = interface {
+        cmd.args(["-i", &iface]);
+    }
+    let output = cmd.output().map_err(|e| format!("Failed to update database: {}", e))?;
+    if !output.status.success() {
+        let err = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("vnstat -u failed: {}", err));
+    }
+    Ok("Database synchronized successfully".to_string())
+}
+
+#[tauri::command]
 fn save_export_file(filename: String, contents: String) -> Result<String, String> {
     let mut path = dirs_home().unwrap_or_else(|| PathBuf::from("/tmp"));
     let downloads = path.join("Downloads");
@@ -317,6 +360,9 @@ pub fn run() {
             get_interfaces,
             get_95th_percentile,
             set_interface_alias,
+            add_interface_to_db,
+            remove_interface_from_db,
+            update_database,
             save_export_file,
         ])
         .run(tauri::generate_context!())

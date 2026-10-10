@@ -32,12 +32,16 @@ interface NetworkState {
   setActiveTab: (tab: NavigationTab) => void;
   setUnitPreference: (pref: UnitPreference) => void;
   setBillingConfig: (config: Partial<BillingConfig>) => void;
+  resetConfig: () => void;
   fetchInterfaces: () => Promise<void>;
   fetchVnstatData: () => Promise<void>;
   fetchPercentileReport: () => Promise<void>;
   initLiveMonitor: () => Promise<() => void>;
   saveExport: (format: 'json' | 'csv') => Promise<string>;
   setAlias: (alias: string) => Promise<void>;
+  addInterfaceToDb: (iface: string) => Promise<string>;
+  removeInterfaceFromDb: (iface: string) => Promise<string>;
+  updateDatabase: (iface?: string) => Promise<string>;
 }
 
 // Fallback sample data if running in pure browser without Tauri backend
@@ -279,6 +283,54 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
       await get().fetchVnstatData();
     } catch (e) {
       console.error('Failed to set alias:', e);
+      throw e;
+    }
+  },
+
+  resetConfig: () => {
+    set({
+      unitPreference: 'SI',
+      billingConfig: {
+        monthlyQuotaBytes: 500 * 1000 * 1000 * 1000,
+        cycleStartDay: 1,
+        enabled: true,
+        alertThresholdPercent: 85,
+      },
+    });
+  },
+
+  addInterfaceToDb: async (iface) => {
+    try {
+      const msg = await invoke<string>('add_interface_to_db', { interface: iface });
+      await get().fetchInterfaces();
+      await get().fetchVnstatData();
+      return msg;
+    } catch (e) {
+      console.error('Failed to add interface:', e);
+      throw e;
+    }
+  },
+
+  removeInterfaceFromDb: async (iface) => {
+    try {
+      const msg = await invoke<string>('remove_interface_from_db', { interface: iface });
+      await get().fetchInterfaces();
+      await get().fetchVnstatData();
+      return msg;
+    } catch (e) {
+      console.error('Failed to remove interface:', e);
+      throw e;
+    }
+  },
+
+  updateDatabase: async (iface) => {
+    try {
+      const msg = await invoke<string>('update_database', { interface: iface || null });
+      await get().fetchInterfaces();
+      await get().fetchVnstatData();
+      return msg;
+    } catch (e) {
+      console.error('Failed to update database:', e);
       throw e;
     }
   },
