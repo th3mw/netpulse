@@ -191,7 +191,7 @@ const helpItems: HelpSection[] = [
         <p>
           <strong style={{ color: 'var(--text-main)' }}>SI (Decimal / Base 1000):</strong> Standard defined by the
           International System of Units. 1 KB = 1,000 Bytes, 1 MB = 1,000,000 Bytes, 1 GB = 10⁹ Bytes.
-          Used by Apple macOS, drive manufacturers, and telecommunications standards.
+          Used by networking hardware, storage drive manufacturers, and telecommunications standards.
         </p>
         <p>
           <strong style={{ color: 'var(--text-main)' }}>IEC (Binary / Base 1024):</strong> Standard defined by the

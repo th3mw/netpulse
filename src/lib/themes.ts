@@ -16,8 +16,8 @@ export const APP_THEMES: ThemeMeta[] = [
   },
   {
     id: 'graphite',
-    name: 'Graphite Pro',
-    description: 'macOS dark neutral charcoal with Apple system accents and zero blue glare',
+    name: 'Graphite',
+    description: 'Neutral obsidian dark charcoal with balanced high-contrast accents',
     category: 'dark',
     previewColors: {
       bg: '#121214',
@@ -69,7 +69,7 @@ export const APP_THEMES: ThemeMeta[] = [
   {
     id: 'light',
     name: 'Studio Light',
-    description: 'Clean macOS daytime desktop with platinum glass and crisp dark type',
+    description: 'Clean daytime desktop with platinum surfaces and crisp dark typography',
     category: 'light',
     previewColors: {
       bg: '#f4f4f7',

@@ -584,7 +584,7 @@ export const SettingsView: React.FC = () => {
                 </h3>
                 <HelpTooltip
                   title="Calibrated Color Themes"
-                  content="Select from 6 desktop appearance themes. Designed for users with different light sensitivities or aesthetic preferences. Graphite Pro provides neutral macOS dark without blue glare; Solar Amber eliminates blue light fatigue; Studio Light provides classic macOS daytime clarity."
+                  content="Select from 6 desktop appearance themes. Designed for users with different light sensitivities or aesthetic preferences. Graphite provides neutral dark without blue glare; Solar Amber eliminates blue light fatigue; Studio Light provides classic daytime clarity."
                 />
               </div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>

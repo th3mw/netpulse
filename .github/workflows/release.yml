@@ -78,7 +78,7 @@ jobs:
             - 📅 24-hour, daily, monthly, and yearly historical timelines
             - 🗺️ 7x24 interactive day-of-week network density heatmap
             - 🌟 Starred persistent default interface selection
-            - 🎨 6 calibrated themes (Cyber Neon, Graphite macOS Pro, Solar Night Shift, Emerald Terminal, Nordic, macOS Light)
+            - 🎨 6 calibrated themes (Cyber Neon, Graphite, Solar, Emerald, Nordic, Studio Light)
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
