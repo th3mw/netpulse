@@ -420,20 +420,184 @@
       flex-wrap: wrap;
     }
 
-    .select-pill {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-family: var(--font-mono);
-      cursor: pointer;
-      outline: none;
+    /* Custom Cockpit Dropdown */
+    .custom-dropdown {
+      position: relative;
+      display: inline-block;
+      user-select: none;
     }
 
-    .select-pill:focus {
+    .custom-dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(12, 18, 32, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 14px 6px 10px;
+      border-radius: 12px;
+      color: var(--text);
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-dropdown-btn:hover {
       border-color: var(--cyan);
+      background: rgba(22, 32, 58, 0.9);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .dropdown-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cyan);
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .dropdown-label {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .dropdown-name {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .dropdown-type {
+      font-size: 0.725rem;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .dropdown-chevron {
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+      margin-left: 2px;
+    }
+
+    .custom-dropdown.open .dropdown-chevron {
+      transform: rotate(180deg);
+      color: var(--cyan);
+    }
+
+    .custom-dropdown.open .custom-dropdown-btn {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.25);
+    }
+
+    .custom-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      min-width: 240px;
+      background: rgba(14, 20, 36, 0.96);
+      border: 1px solid var(--border-bright);
+      border-radius: 14px;
+      padding: 6px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 120;
+      display: none;
+      animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .custom-dropdown.open .custom-dropdown-menu {
+      display: block;
+    }
+
+    @keyframes dropdownIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .dropdown-item.selected {
+      background: rgba(6, 182, 212, 0.12);
+    }
+
+    .item-icon-box {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .dropdown-item:hover .item-icon-box,
+    .dropdown-item.selected .item-icon-box {
+      color: var(--cyan);
+      background: rgba(6, 182, 212, 0.2);
+      border-color: rgba(6, 182, 212, 0.3);
+    }
+
+    .item-text {
+      flex: 1;
+    }
+
+    .item-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .item-sub {
+      font-size: 0.725rem;
+      color: var(--text-dim);
+    }
+
+    .item-check {
+      color: var(--cyan);
+      opacity: 0;
+      transform: scale(0.7);
+      transition: all 0.15s ease;
+    }
+
+    .dropdown-item.selected .item-check {
+      opacity: 1;
+      transform: scale(1);
     }
 
     .cockpit-grid {
@@ -872,6 +1036,12 @@
       border-bottom: 1px solid var(--border);
       background: rgba(10, 16, 28, 0.6);
       overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .tabs-header::-webkit-scrollbar {
+      display: none;
     }
 
     .tab-btn {
@@ -897,14 +1067,22 @@
     }
 
     .tab-content {
-      padding: 28px;
+      padding: 28px 32px;
       font-family: var(--font-mono);
       font-size: 0.9rem;
       color: #38bdf8;
       background: rgba(8, 12, 20, 0.9);
       line-height: 1.7;
-      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       position: relative;
+    }
+
+    .tab-content::-webkit-scrollbar {
+      display: none;
     }
 
     .tab-copy-btn {
@@ -1158,12 +1336,57 @@
           </div>
 
           <div class="demo-controls">
-            <!-- Interface Switcher -->
-            <select class="select-pill" id="iface-select" onchange="switchInterface(this.value)">
-              <option value="wlan0">wlan0 (Wi-Fi 6)</option>
-              <option value="eth0">eth0 (10GbE Fiber)</option>
-              <option value="wg0">wg0 (WireGuard VPN)</option>
-            </select>
+            <!-- Custom Interface Dropdown -->
+            <div class="custom-dropdown" id="cockpit-dropdown">
+              <button class="custom-dropdown-btn" onclick="toggleCockpitDropdown(event)" aria-haspopup="listbox" aria-expanded="false" id="dropdown-trigger">
+                <span class="dropdown-icon" id="current-iface-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+                </span>
+                <span class="dropdown-label">
+                  <span class="dropdown-name" id="current-iface-name">wlan0</span>
+                  <span class="dropdown-type" id="current-iface-type">Wi-Fi 6</span>
+                </span>
+                <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="custom-dropdown-menu" id="cockpit-dropdown-menu" role="listbox">
+                <div class="dropdown-item selected" onclick="selectInterface('wlan0', 'Wi-Fi 6', 'wifi')" role="option" data-iface="wlan0">
+                  <div class="item-icon-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+                  </div>
+                  <div class="item-text">
+                    <div class="item-title">wlan0</div>
+                    <div class="item-sub">Wi-Fi 6 (802.11ax)</div>
+                  </div>
+                  <div class="item-check">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                </div>
+                <div class="dropdown-item" onclick="selectInterface('eth0', '10GbE Fiber', 'ethernet')" role="option" data-iface="eth0">
+                  <div class="item-icon-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                  </div>
+                  <div class="item-text">
+                    <div class="item-title">eth0</div>
+                    <div class="item-sub">10GbE Fiber Ethernet</div>
+                  </div>
+                  <div class="item-check">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                </div>
+                <div class="dropdown-item" onclick="selectInterface('wg0', 'WireGuard VPN', 'vpn')" role="option" data-iface="wg0">
+                  <div class="item-icon-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  </div>
+                  <div class="item-text">
+                    <div class="item-title">wg0</div>
+                    <div class="item-sub">WireGuard VPN Tunnel</div>
+                  </div>
+                  <div class="item-check">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <!-- Burst Simulation Button -->
             <button class="copy-btn" onclick="triggerTrafficBurst()" title="Simulate a 100MB download spike">
@@ -1861,6 +2084,67 @@ bun run tauri build`
     }
 
     // 5. Interactive Live Cockpit Simulation
+    const ifaceIcons = {
+      wifi: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>`,
+      ethernet: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>`,
+      vpn: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`
+    };
+
+    function toggleCockpitDropdown(e) {
+      e.stopPropagation();
+      const dd = document.getElementById('cockpit-dropdown');
+      const isOpen = dd.classList.contains('open');
+      document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+      if (!isOpen) {
+        dd.classList.add('open');
+        document.getElementById('dropdown-trigger').setAttribute('aria-expanded', 'true');
+      } else {
+        document.getElementById('dropdown-trigger').setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    function selectInterface(iface, type, iconType) {
+      document.getElementById('current-iface-name').innerText = iface;
+      document.getElementById('current-iface-type').innerText = type;
+      document.getElementById('current-iface-icon').innerHTML = ifaceIcons[iconType];
+      
+      document.querySelectorAll('.dropdown-item').forEach(item => {
+        if (item.getAttribute('data-iface') === iface) {
+          item.classList.add('selected');
+        } else {
+          item.classList.remove('selected');
+        }
+      });
+
+      const dd = document.getElementById('cockpit-dropdown');
+      if (dd) {
+        dd.classList.remove('open');
+        document.getElementById('dropdown-trigger').setAttribute('aria-expanded', 'false');
+      }
+
+      switchInterface(iface);
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#cockpit-dropdown')) {
+        const dd = document.getElementById('cockpit-dropdown');
+        if (dd && dd.classList.contains('open')) {
+          dd.classList.remove('open');
+          document.getElementById('dropdown-trigger').setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const dd = document.getElementById('cockpit-dropdown');
+        if (dd && dd.classList.contains('open')) {
+          dd.classList.remove('open');
+          document.getElementById('dropdown-trigger').setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+
     const ifaceProfiles = {
       wlan0: { baseRx: 42.8, rxRange: 15, baseTx: 8.4, txRange: 4, peakRx: 112.4, peakTx: 24.1, totalRx: 15.2, totalTx: 3.4 },
       eth0: { baseRx: 480.2, rxRange: 120, baseTx: 92.6, txRange: 35, peakRx: 940.5, peakTx: 320.0, totalRx: 128.4, totalTx: 44.2 },
