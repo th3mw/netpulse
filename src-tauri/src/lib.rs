@@ -58,30 +58,38 @@ struct NetDevSnapshot {
 type DevStatsMap = Arc<Mutex<HashMap<String, NetDevSnapshot>>>;
 
 fn read_proc_net_dev() -> Result<HashMap<String, (u64, u64, u64, u64)>, String> {
-    let content = fs::read_to_string("/proc/net/dev")
-        .map_err(|e| format!("Failed to read /proc/net/dev: {}", e))?;
-    let mut map = HashMap::new();
+    #[cfg(target_os = "linux")]
+    {
+        let content = fs::read_to_string("/proc/net/dev")
+            .map_err(|e| format!("Failed to read /proc/net/dev: {}", e))?;
+        let mut map = HashMap::new();
 
-    for line in content.lines().skip(2) {
-        let parts: Vec<&str> = line.split(':').collect();
-        if parts.len() != 2 {
-            continue;
+        for line in content.lines().skip(2) {
+            let parts: Vec<&str> = line.split(':').collect();
+            if parts.len() != 2 {
+                continue;
+            }
+            let iface = parts[0].trim().to_string();
+            let stats: Vec<&str> = parts[1].split_whitespace().collect();
+            if stats.len() < 10 {
+                continue;
+            }
+
+            let rx_bytes = stats[0].parse::<u64>().unwrap_or(0);
+            let rx_packets = stats[1].parse::<u64>().unwrap_or(0);
+            let tx_bytes = stats[8].parse::<u64>().unwrap_or(0);
+            let tx_packets = stats[9].parse::<u64>().unwrap_or(0);
+
+            map.insert(iface, (rx_bytes, rx_packets, tx_bytes, tx_packets));
         }
-        let iface = parts[0].trim().to_string();
-        let stats: Vec<&str> = parts[1].split_whitespace().collect();
-        if stats.len() < 10 {
-            continue;
-        }
 
-        let rx_bytes = stats[0].parse::<u64>().unwrap_or(0);
-        let rx_packets = stats[1].parse::<u64>().unwrap_or(0);
-        let tx_bytes = stats[8].parse::<u64>().unwrap_or(0);
-        let tx_packets = stats[9].parse::<u64>().unwrap_or(0);
-
-        map.insert(iface, (rx_bytes, rx_packets, tx_bytes, tx_packets));
+        Ok(map)
     }
 
-    Ok(map)
+    #[cfg(not(target_os = "linux"))]
+    {
+        Ok(HashMap::new())
+    }
 }
 
 #[tauri::command]
@@ -127,6 +135,20 @@ fn get_interfaces() -> Result<Vec<InterfaceSummary>, String> {
             rx_bytes: rx,
             tx_bytes: tx,
         });
+    }
+
+    if list.is_empty() && !db_str.trim().is_empty() {
+        for iface in db_str.split_whitespace() {
+            if !iface.is_empty() {
+                list.push(InterfaceSummary {
+                    name: iface.to_string(),
+                    is_up: true,
+                    in_database: true,
+                    rx_bytes: 0,
+                    tx_bytes: 0,
+                });
+            }
+        }
     }
 
     list.sort_by(|a, b| {
@@ -261,7 +283,7 @@ fn update_database(interface: Option<String>) -> Result<String, String> {
 
 #[tauri::command]
 fn save_export_file(filename: String, contents: String) -> Result<String, String> {
-    let mut path = dirs_home().unwrap_or_else(|| PathBuf::from("/tmp"));
+    let mut path = dirs_home().unwrap_or_else(std::env::temp_dir);
     let downloads = path.join("Downloads");
     if downloads.exists() {
         path = downloads;
@@ -272,7 +294,14 @@ fn save_export_file(filename: String, contents: String) -> Result<String, String
 }
 
 fn dirs_home() -> Option<PathBuf> {
-    std::env::var_os("HOME").map(PathBuf::from)
+    #[cfg(windows)]
+    {
+        std::env::var_os("USERPROFILE").map(PathBuf::from)
+    }
+    #[cfg(not(windows))]
+    {
+        std::env::var_os("HOME").map(PathBuf::from)
+    }
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

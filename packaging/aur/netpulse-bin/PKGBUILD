@@ -1,0 +1,33 @@
+# Maintainer: th3mw <https://github.com/th3mw>
+pkgname=netpulse-bin
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Native desktop vnStat telemetry and network bandwidth monitor suite (binary release)"
+arch=('x86_64')
+url="https://github.com/th3mw/netpulse"
+license=('MIT')
+depends=(
+    'vnstat'
+    'webkit2gtk-4.1'
+    'gtk3'
+    'libayatana-appindicator'
+    'openssl'
+)
+provides=('netpulse')
+conflicts=('netpulse')
+source_x86_64=("https://github.com/th3mw/netpulse/releases/download/v${pkgver}/netpulse_${pkgver}_amd64.deb")
+sha256sums_x86_64=('SKIP')
+
+package() {
+    # Extract data archive unpacked by bsdtar from Debian package
+    if [ -f data.tar.gz ]; then
+        tar -xf data.tar.gz -C "${pkgdir}"
+    elif [ -f data.tar.xz ]; then
+        tar -xf data.tar.xz -C "${pkgdir}"
+    elif [ -f data.tar.zst ]; then
+        tar -xf data.tar.zst -C "${pkgdir}"
+    fi
+
+    # Ensure binary execution permissions
+    chmod 755 "${pkgdir}/usr/bin/netpulse"
+}

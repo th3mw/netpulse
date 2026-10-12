@@ -36,8 +36,20 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "android": {
-      "debugApplicationIdSuffix": ".debug"
+    "shortDescription": "Native desktop vnStat telemetry and network bandwidth monitor suite",
+    "longDescription": "NetPulse is a native desktop interface for vnStat with 60-second streaming throughput gauges, 5-minute to yearly telemetry, 7x24 heatmap, and multi-adapter monitoring.",
+    "category": "Network",
+    "copyright": "2026 NetPulse",
+    "linux": {
+      "deb": {
+        "depends": ["vnstat"]
+      },
+      "rpm": {
+        "depends": ["vnstat"]
+      },
+      "appimage": {
+        "bundleMediaFramework": false
+      }
     }
   }
 }

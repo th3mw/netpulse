@@ -96,31 +96,43 @@ flowchart TD
 - **Bun** (>= 1.2)
 - **Rust / Cargo** (>= 1.85)
 
-### Installation
+### 📦 Quick Install
+
+#### Arch Linux / AUR
+Install the official precompiled binary package using your AUR helper:
+```bash
+yay -S netpulse-bin
+# or
+paru -S netpulse-bin
+```
+
+#### GitHub Releases (Precompiled Binaries)
+Download release assets for your OS directly from [GitHub Releases](https://github.com/th3mw/netpulse/releases):
+- **Debian / Ubuntu / Pop!_OS / Linux Mint**: Download `.deb` (auto-resolves `vnstat` dependency)
+- **Universal Linux**: Download `.AppImage` (`chmod +x NetPulse*.AppImage && ./NetPulse*.AppImage`)
+- **Fedora / RHEL / openSUSE**: Download `.rpm`
+- **macOS**: Download `.dmg`
+- **Windows**: Download `.msi` or `.exe` installer
+
+---
+
+### 🛠️ Building from Source
+
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/VNstat.git
-cd VNstat
+git clone https://github.com/th3mw/netpulse.git
+cd netpulse
 
 # Install frontend dependencies
 bun install
-```
 
-### Running in Development
-```bash
-# Launch the native desktop application
+# Launch in development
 bun run tauri dev
 
-# Or run frontend standalone in browser (with simulated telemetry)
-bun run dev
-```
-
-### Building for Production
-```bash
-# Build native Linux binary package
+# Build production bundles
 bun run tauri build
 ```
-The compiled release executable and `.deb` / `.appimage` / `.tar.gz` packages will be generated in `src-tauri/target/release/bundle/`.
+Release packages will be generated in `src-tauri/target/release/bundle/`.
 
 ---
 

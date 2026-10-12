@@ -1,0 +1,38 @@
+# Maintainer: th3mw <https://github.com/th3mw>
+pkgname=netpulse
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Native desktop vnStat telemetry and network bandwidth monitor suite (source build)"
+arch=('x86_64')
+url="https://github.com/th3mw/netpulse"
+license=('MIT')
+depends=(
+    'vnstat'
+    'webkit2gtk-4.1'
+    'gtk3'
+    'libayatana-appindicator'
+    'openssl'
+)
+makedepends=(
+    'cargo'
+    'rust'
+    'bun'
+    'pkgconf'
+)
+provides=('netpulse')
+conflicts=('netpulse-bin')
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/th3mw/netpulse/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    bun install
+    bun run tauri build --bundles deb
+}
+
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    install -Dm755 "src-tauri/target/release/netpulse" "${pkgdir}/usr/bin/netpulse"
+    install -Dm644 "src-tauri/icons/128x128.png" "${pkgdir}/usr/share/icons/hicolor/128x128/apps/netpulse.png"
+    install -Dm644 "src-tauri/icons/32x32.png" "${pkgdir}/usr/share/icons/hicolor/32x32/apps/netpulse.png"
+}
