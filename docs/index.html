@@ -1288,12 +1288,12 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
-      <div class="badge-pill">Native Linux Desktop vnStat Suite</div>
+      <div class="badge-pill">Supported Platforms: Linux • FreeBSD • OpenBSD • macOS</div>
       <h1>
-        Real-Time Telemetry & Bandwidth Monitoring for <span class="gradient-text">Linux</span>
+        Real-Time Telemetry & Bandwidth Monitoring for <span class="gradient-text">UNIX & Linux</span>
       </h1>
       <p>
-        Zero Electron bloat. High-performance sub-second throughput streaming directly from <code>/proc/net/dev</code>, paired with deep historical analytics and complete adapter management for the <code>vnstat</code> daemon.
+        Zero Electron bloat. High-performance sub-second throughput streaming, paired with deep historical analytics and complete adapter management for the <code>vnstat</code> daemon across Linux, FreeBSD, OpenBSD, and macOS.
       </p>
 
       <div class="hero-actions">
@@ -1877,6 +1877,8 @@ vnstat -u -i wlan0</pre>
           <button class="tab-btn" onclick="switchTab('deb')">Debian / Ubuntu (.deb)</button>
           <button class="tab-btn" onclick="switchTab('appimage')">AppImage</button>
           <button class="tab-btn" onclick="switchTab('rpm')">Fedora / RHEL (.rpm)</button>
+          <button class="tab-btn" onclick="switchTab('macos')">macOS (.dmg)</button>
+          <button class="tab-btn" onclick="switchTab('bsd')">FreeBSD & OpenBSD</button>
           <button class="tab-btn" onclick="switchTab('source')">Source (Bun + Rust)</button>
         </div>
 
@@ -2013,6 +2015,25 @@ sudo dnf install ./netpulse-*.x86_64.rpm
 
 <span class="comment"># Start the monitoring service</span>
 sudo systemctl enable --now vnstat`,
+
+      macos: `<span class="comment"># 1. Install vnstat daemon via Homebrew</span>
+brew install vnstat
+brew services start vnstat
+
+<span class="comment"># 2. Download and install NetPulse DMG</span>
+# Open netpulse_0.1.0_aarch64.dmg and move NetPulse to /Applications`,
+
+      bsd: `<span class="comment"># FreeBSD: Install vnstat package and start service</span>
+sudo pkg install vnstat
+sudo service vnstat enable && sudo service vnstat start
+
+<span class="comment"># OpenBSD: Install vnstat and start daemon</span>
+doas pkg_add vnstat
+doas rcctl enable vnstat && doas rcctl start vnstat
+
+<span class="comment"># Compile NetPulse from source</span>
+git clone https://github.com/th3mw/netpulse.git && cd netpulse
+bun install && bun run tauri build`,
 
       source: `<span class="comment"># Clone and build using Bun and Cargo</span>
 git clone https://github.com/th3mw/netpulse.git && cd netpulse

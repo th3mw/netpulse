@@ -18,8 +18,6 @@ jobs:
             args: ''
           - platform: 'macos-latest'
             args: ''
-          - platform: 'windows-latest'
-            args: ''
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -61,7 +59,12 @@ jobs:
           tagName: v__VERSION__
           releaseName: 'NetPulse v__VERSION__'
           releaseBody: |
-            ## NetPulse v__VERSION__ — Desktop vnStat Telemetry Suite
+            ## NetPulse v__VERSION__ — Native vnStat Telemetry Suite
+
+            ### 💻 Supported Platforms
+            - **Linux**: Arch Linux / AUR, Debian, Ubuntu, Fedora, RHEL, openSUSE, Universal AppImage
+            - **FreeBSD & OpenBSD**: Fully supported with vnStat daemon and source build
+            - **macOS**: Native Apple Silicon / Universal disk image (`.dmg`)
 
             ### 📦 Downloads & Installation
             - **Linux (Debian / Ubuntu / Pop!_OS / Mint)**: `.deb` package (auto-depends on `vnstat`)
@@ -69,7 +72,7 @@ jobs:
             - **Linux (Fedora / RHEL / openSUSE)**: `.rpm` package
             - **Arch Linux / AUR**: Install via `yay -S netpulse-bin` or `paru -S netpulse-bin`
             - **macOS**: `.dmg` disk image
-            - **Windows**: `.msi` or `.exe` installer
+            - **FreeBSD / OpenBSD / Source**: `bun install && bun run tauri build`
 
             ### 🌟 Key Features
             - ⚡ Real-time 60-second bandwidth stream with dedicated side Y-axis auto-scaling benchmarks

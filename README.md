@@ -4,16 +4,16 @@
 
 # NetPulse
 
-### Native Linux Desktop vnStat Telemetry & Network Bandwidth Monitor
+### Native vnStat Telemetry & Network Bandwidth Monitor
 
 [![Release](https://img.shields.io/github/v/release/th3mw/netpulse?style=flat-square&color=06b6d4)](https://github.com/th3mw/netpulse/releases)
 [![AUR version](https://img.shields.io/aur/version/netpulse-bin?style=flat-square&color=10b981)](https://aur.archlinux.org/packages/netpulse-bin)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Website](https://img.shields.io/badge/Docs%20%26%20Website-GitHub%20Pages-a855f7?style=flat-square)](https://th3mw.github.io/netpulse/)
-[![Platform: Linux](https://img.shields.io/badge/Platform-Linux-orange?style=flat-square&logo=linux)](https://github.com/th3mw/netpulse)
+[![Platforms](https://img.shields.io/badge/Platforms-Linux%20%7C%20FreeBSD%20%7C%20OpenBSD%20%7C%20macOS-blue?style=flat-square)](https://github.com/th3mw/netpulse)
 
 <p align="center">
-  A high-performance, native desktop telemetry interface for the <a href="https://linux.die.net/man/1/vnstat"><code>vnstat</code></a> background daemon. Engineered with Tauri v2 (Rust) and React 19, delivering sub-second real-time streaming, persistent historical metrics, and complete adapter lifecycle management.
+  A high-performance, native desktop telemetry interface for the <a href="https://linux.die.net/man/1/vnstat"><code>vnstat</code></a> background daemon. Engineered with Tauri v2 (Rust) and React 19, delivering sub-second real-time streaming, persistent historical metrics, and complete adapter lifecycle management across <strong>Linux, FreeBSD, OpenBSD, and macOS</strong>.
 </p>
 
 [**Website**](https://th3mw.github.io/netpulse/) • [**Download Releases**](https://github.com/th3mw/netpulse/releases) • [**AUR Package**](https://aur.archlinux.org/packages/netpulse-bin) • [**Architecture**](#-architecture--data-flow)
@@ -25,6 +25,7 @@
 ## 📑 Table of Contents
 
 - [Overview](#-overview)
+- [Supported Platforms](#-supported-platforms)
 - [Architecture & Data Flow](#-architecture--data-flow)
 - [Core Capabilities](#-core-capabilities)
   - [Live Bandwidth Cockpit](#1-live-bandwidth-cockpit)
@@ -38,6 +39,8 @@
   - [Debian / Ubuntu / Pop!_OS](#debian--ubuntu--pop_os)
   - [Universal AppImage](#universal-appimage)
   - [Fedora / RHEL / openSUSE](#fedora--rhel--opensuse)
+  - [macOS (.dmg)](#macos-dmg)
+  - [FreeBSD & OpenBSD](#freebsd--openbsd)
   - [Building from Source](#building-from-source)
 - [Configuration & Daemon Setup](#-configuration--daemon-setup)
 - [Development & Verification](#-development--verification)
@@ -55,7 +58,23 @@
 1. **Sub-second live streaming**: 60-second rolling telemetry with dynamic Y-axis auto-benchmarks.
 2. **Deep historical analytics**: 5-minute slots, hourly distribution, 24-hour timeline, daily, monthly, and yearly traffic profiles.
 3. **Multi-adapter management**: Add, remove, synchronize, alias, and monitor interfaces on the fly without memorizing CLI syntax.
-4. **Zero Electron bloat**: Native binary footprint powered by Tauri v2 with WebKitGTK and Rust.
+4. **Zero Electron bloat**: Native binary footprint powered by Tauri v2 with WebKitGTK / native webviews and Rust.
+
+---
+
+## 💻 Supported Platforms
+
+NetPulse is built for POSIX, UNIX, and BSD environments where the `vnstat` daemon operates:
+
+| Platform | Support Tier | Package Formats | Notes |
+| :--- | :--- | :--- | :--- |
+| **Linux** | Tier 1 (Official) | `AUR (netpulse-bin)`, `.deb`, `.rpm`, `.AppImage` | WebKitGTK, native Wayland & X11 support |
+| **FreeBSD** | Tier 1 (Source & Ports) | Source, FreeBSD Ports | Requires `vnstat` service (`pkg install vnstat`) |
+| **OpenBSD** | Tier 1 (Source & Ports) | Source, OpenBSD Ports | Requires `vnstat` service (`pkg_add vnstat`) |
+| **macOS** | Tier 1 (Official) | Native `.dmg` (Apple Silicon & Intel) | Requires `vnstat` via Homebrew (`brew install vnstat`) |
+
+> [!NOTE]
+> NetPulse does not support Microsoft Windows. It is engineered specifically for Linux, BSD, and macOS systems with POSIX network stacks and `vnstat` daemon integration.
 
 ---
 
@@ -191,6 +210,31 @@ Download the `.rpm` package from the [Releases Page](https://github.com/th3mw/ne
 
 ```bash
 sudo dnf install ./netpulse-*.x86_64.rpm
+```
+
+### macOS (.dmg)
+
+Download the `.dmg` package from the [Releases Page](https://github.com/th3mw/netpulse/releases).
+
+1. Open the downloaded `.dmg` and drag **NetPulse** into your `Applications` folder.
+2. Ensure `vnstat` is installed and running via Homebrew:
+   ```bash
+   brew install vnstat
+   brew services start vnstat
+   ```
+
+### FreeBSD & OpenBSD
+
+Install `vnstat` via your system package manager and compile NetPulse using Bun and Cargo:
+
+```bash
+# FreeBSD:
+sudo pkg install vnstat
+sudo service vnstat enable && sudo service vnstat start
+
+# OpenBSD:
+doas pkg_add vnstat
+doas rcctl enable vnstat && doas rcctl start vnstat
 ```
 
 ---
